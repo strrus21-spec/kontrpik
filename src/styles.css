@@ -659,7 +659,7 @@ body.compact #counterpick{padding-top:12px}
 
 /* ===== главная — экран-меню с фото-фоном ===== */
 .landing{min-height:100vh;min-height:100dvh;align-content:start;padding-top:max(16vh,110px);-webkit-mask-image:none;mask-image:none;
-  background:radial-gradient(ellipse 50% 40% at 50% 30%,rgba(8,10,13,.45),rgba(8,10,13,0) 70%),linear-gradient(180deg,rgba(13,16,20,.55),rgba(13,16,20,.05) 30%,rgba(13,16,20,0) 70%,rgba(13,16,20,.6)),url(./assets/bg-photo.jpg) center 60%/cover no-repeat}
+  background:radial-gradient(ellipse 50% 40% at 50% 30%,rgba(8,10,13,.45),rgba(8,10,13,0) 70%),linear-gradient(180deg,rgba(13,16,20,.55),rgba(13,16,20,.05) 30%,rgba(13,16,20,0) 70%,rgba(13,16,20,.6)),url(./assets/bg-photo.jpg) center 40%/cover no-repeat}
 @media (max-width:700px){.landing{min-height:100dvh;padding-top:150px;background-position:center 60%}}
 #home{gap:0}
 body[data-tab="home"] .footer{display:none}
