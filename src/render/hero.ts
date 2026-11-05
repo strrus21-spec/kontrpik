@@ -1,4 +1,5 @@
 // Карточка героя (6.3) в <dialog>, адрес /hero/{slug}.
+import { pushUrl, replaceUrl } from '../nav.ts';
 import { t } from '../i18n.ts';
 import { heroProfile, type Matchup } from '../hero.ts';
 import { itemAdvice } from '../items.ts';
@@ -73,7 +74,7 @@ export function openHero(x: Ctx, id: number, push = true) {
   if (!dlg.open) dlg.showModal();
   dlg.scrollTop = 0;
   const url = BASE + 'hero/' + slug(h.name);
-  if (push && location.pathname !== url) { history.pushState({ hero: h.name }, '', url); pushed = true; }
+  if (push && location.pathname !== url && pushUrl({ hero: h.name }, url)) pushed = true;
 }
 
 function hide() {
@@ -88,7 +89,7 @@ export function closeHero() {
   if (!current) return;
   if (pushed && history.state?.hero) { history.back(); return; }
   hide();
-  if (slugFromPath()) history.replaceState(null, '', BASE);
+  if (slugFromPath()) replaceUrl(null, BASE);
 }
 
 /** Открыть по адресу (прямая ссылка или «назад/вперёд»). */
@@ -97,7 +98,7 @@ export function syncHeroFromPath(x: Ctx) {
   if (!sl) { hide(); return; }
   const h = x.data.heroes.find(o => slug(o.name) === sl);
   if (h) openHero(x, h.i, false);
-  else { history.replaceState(null, '', BASE); }
+  else { replaceUrl(null, BASE); }
 }
 
 export function bindHero(x: Ctx, onDraftChange: () => void) {

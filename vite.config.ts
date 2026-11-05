@@ -12,7 +12,7 @@ const spaFallback = (): Plugin => ({
 export default defineConfig({
   // Абсолютный base нужен для адресов /hero/… . В деплое задаётся путь сайта (например /kontrpik/).
   base: process.env.VITE_BASE || '/',
-  plugins: [spaFallback()],
-  build: { target: 'es2022', assetsInlineLimit: 0, rollupOptions: { input: { main: 'index.html', overlay: 'overlay/index.html', vote: 'vote/index.html' } } },
+  plugins: process.env.STANDALONE ? [] : [spaFallback()],
+  build: { target: 'es2022', assetsInlineLimit: 0, rollupOptions: { input: process.env.STANDALONE ? { main: 'index.html' } : { main: 'index.html', overlay: 'overlay/index.html', vote: 'vote/index.html' } } },
   test: { include: ['tests/**/*.test.ts'] },
 });

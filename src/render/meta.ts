@@ -4,6 +4,7 @@ import { pickBaseline, sortRows, tierList, trendMap, type MetaRow, type Snapshot
 import { heroMatch } from '../search.ts';
 import type { SrcKey } from '../types.ts';
 import { heroLink } from './hero.ts';
+import { embedded } from '../data.ts';
 import { $, esc, fmt } from './html.ts';
 import type { Ctx } from './draft.ts';
 
@@ -29,7 +30,8 @@ function load() {
 async function loadExtras(onReady: () => void) {
   const base = import.meta.env.BASE_URL;
   const get = async <T>(p: string): Promise<T | null> => { try { const r = await fetch(base + p); return r.ok ? await r.json() : null; } catch { return null; } };
-  const [p, idx] = await Promise.all([get<Patch>('data/patch.json'), get<string[]>('data/history/index.json')]);
+  const emb = embedded();
+  const [p, idx] = emb ? [(emb.patch as Patch) || null, null] : await Promise.all([get<Patch>('data/patch.json'), get<string[]>('data/history/index.json')]);
   patch = p;
   if (idx && idx.length > 1) {
     const latest = idx[idx.length - 1], since = pickBaseline(idx, latest);

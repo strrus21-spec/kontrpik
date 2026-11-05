@@ -10,6 +10,7 @@ npm test           # Vitest: алгоритм счёта (контрольный
 npm run build      # tsc + vite build → dist/
 npm run e2e        # Playwright: 1440 и 400 px, RU и EN (после npm run build)
 npm run data       # выгрузка свежей статистики OpenDota в public/data
+npm run standalone # один файл kontrpik.html: открывается двойным щелчком, без сервера и интернета
 ```
 
 ## Структура

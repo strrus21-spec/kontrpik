@@ -6,3 +6,5 @@ playwright-report/
 worker/node_modules/
 worker/.wrangler/
 .wrangler/
+dist-standalone/
+kontrpik.html

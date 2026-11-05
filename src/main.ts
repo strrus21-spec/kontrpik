@@ -1,3 +1,4 @@
+import { replaceUrl } from './nav.ts';
 import '@fontsource/cormorant-sc/600.css';
 import '@fontsource/cormorant-sc/700.css';
 import '@fontsource/tektur/500.css';
@@ -53,7 +54,7 @@ async function start() {
   if (hasDraftQuery(location.search)) {
     applyDraftQuery(x.state, location.search, data.heroes);
     saveState(x.state, data.heroes);
-    history.replaceState(null, '', location.pathname + location.hash);
+    replaceUrl(null, location.pathname + location.hash);
   }
   loadMe();
   preloadIcons(data.heroes);
@@ -90,7 +91,7 @@ async function start() {
 start();
 
 // PWA: service worker только в сборке; установка — по событию браузера.
-if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+if (import.meta.env.PROD && 'serviceWorker' in navigator && location.protocol !== 'file:') {
   window.addEventListener('load', () => { navigator.serviceWorker.register(import.meta.env.BASE_URL + 'sw.js', { scope: import.meta.env.BASE_URL }).catch(() => {}); });
 }
 let installEvt: (Event & { prompt(): Promise<void> }) | null = null;

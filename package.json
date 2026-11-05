@@ -11,7 +11,8 @@
     "e2e": "VITE_ROOM_API=http://127.0.0.1:8787 vite build && playwright test",
     "data": "node scripts/build-data.ts",
     "extract-icons": "node scripts/extract-icons.ts",
-    "worker": "cd worker && npm run dev"
+    "worker": "cd worker && npm run dev",
+    "standalone": "node scripts/build-standalone.ts"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",

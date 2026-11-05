@@ -1,4 +1,5 @@
 // Раздел «Разбор матча» (6.6). Адрес для «Поделиться»: /match/{id}?p={slot}.
+import { replaceUrl } from '../nav.ts';
 import { LANG, dateOne, t } from '../i18n.ts';
 import { analyzeMatch, isRadiant, loadParsed, parseMatchId, recentMatches, won, type Match, type MPlayer, type RecentMatch } from '../match.ts';
 import { odHeroes, type OdHero } from '../odHeroes.ts';
@@ -77,7 +78,7 @@ async function analyze(x: Ctx, id: number, slot: number | null, push = true) {
 function updateUrl() {
   if (!current) return;
   const url = BASE + 'match/' + current.match.match_id + (current.slot !== null ? '?p=' + current.slot : '');
-  if (location.pathname + location.search !== url) history.replaceState(history.state, '', url);
+  if (location.pathname + location.search !== url) replaceUrl(history.state, url);
 }
 
 export function bindMatch(x: Ctx) {
