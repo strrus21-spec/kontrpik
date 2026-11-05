@@ -15,6 +15,7 @@ npm run data       # выгрузка свежей статистики OpenDota
 ## Структура
 - `src/scoring.ts` — алгоритм счёта (раздел 4 ТЗ), чистые функции.
 - `src/i18n.ts` — словари RU/EN. `src/state.ts` — localStorage (драфт хранится по именам героев).
+- `src/player.ts`, `src/me.ts` — «Мои герои» (Steam ID, профиль OpenDota, бонус за личный винрейт). `src/items.ts` — «Что купить» (угрозы → предметы). `src/share.ts` — ссылка на драфт.
 - `src/search.ts` — русские прозвища героев. `src/anim/` — анимированные схемы фишек. `src/render/` — разметка.
 - `public/data/` — `stats.json`, `positions.json`, `tips.json`, `history/` (ежедневные снимки). `public/icons/{slug}.png` — иконки.
 - `scripts/build-data.ts` + `scripts/lib/` — сборка данных (запросы из `scripts/opendota-queries.md`).

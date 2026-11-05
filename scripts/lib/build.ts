@@ -65,7 +65,7 @@ export async function build(o: BuildOptions): Promise<{ stats: Stats; positionsU
         log(`Иконка: ${h.localized_name}`);
       } catch (e) { log(`Иконка не скачалась: ${h.localized_name} (${(e as Error).message})`); }
     }
-    heroes.push([h.localized_name, h.primary_attr, h.roles, path]);
+    heroes.push([h.localized_name, h.primary_attr, h.roles, path, h.id]);
   }
 
   // Паблики

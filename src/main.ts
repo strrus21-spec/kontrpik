@@ -10,7 +10,9 @@ import './styles.css';
 
 import { initialLang, saveLang, setLang, t, LANG, type Lang } from './i18n.ts';
 import { loadData } from './data.ts';
-import { loadState } from './state.ts';
+import { loadState, saveState } from './state.ts';
+import { applyDraftQuery, hasDraftQuery } from './share.ts';
+import { bindMe, loadMe, renderMe } from './me.ts';
 import { IMG, preloadIcons } from './anim/engine.ts';
 import { redrawAll, startAnims } from './anim/player.ts';
 import { bindDraft, renderDraft, renderPosChips, renderSelects, type Ctx } from './render/draft.ts';
@@ -38,15 +40,23 @@ async function start() {
   catch (e) { console.error(e); $('out').innerHTML = `<p class="empty-state">${t().loadError}</p>`; return; }
 
   const x: Ctx = { data, state: loadState(data.heroes) };
+  // Ссылка на драфт: применяем и убираем из адреса, дальше драфт живёт в localStorage.
+  if (hasDraftQuery(location.search)) {
+    applyDraftQuery(x.state, location.search, data.heroes);
+    saveState(x.state, data.heroes);
+    history.replaceState(null, '', location.pathname + location.hash);
+  }
+  loadMe();
   preloadIcons(data.heroes);
   // после загрузки иконок перерисовать стоп-кадры анимаций
   let pending = 0;
   for (const im of Object.values(IMG)) im.addEventListener('load', () => { if (!pending) pending = requestAnimationFrame(() => { pending = 0; redrawAll(); }); }, { once: true });
 
   const renderAll = () => {
-    applyStatic(); renderSelects(x); renderPosChips(x); renderTipFilters(); renderFeatured(); renderDraft(x); renderTips();
+    applyStatic(); renderSelects(x); renderPosChips(x); renderTipFilters(); renderFeatured(); renderMe(); renderDraft(x); renderTips();
   };
   bindDraft(x); bindTips(data.tips);
+  bindMe(data.heroes, () => { renderMe(); renderDraft(x); });
   document.querySelector('.lang')!.addEventListener('click', e => {
     const b = (e.target as Element).closest<HTMLElement>('[data-lang]'); if (!b) return;
     e.stopPropagation(); setLang(b.dataset.lang as Lang); saveLang(LANG); renderAll();

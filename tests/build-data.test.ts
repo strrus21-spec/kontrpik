@@ -80,7 +80,7 @@ describe('build-data', () => {
     expect(stats.counts.all).toBe(603);
     expect(stats.counts.low + stats.counts.mid + stats.counts.high).toBe(603);
     expect(stats.from).toBeGreaterThan(1_793_000_000);
-    expect(stats.heroes[0]).toEqual(['Hero 000', 'str', ['Carry'], 'icons/hero-000.png']);
+    expect(stats.heroes[0]).toEqual(['Hero 000', 'str', ['Carry'], 'icons/hero-000.png', 1]);
     expect(existsSync(join(root, 'icons/hero-109.png'))).toBe(true);
     expect(positionsUpdated).toBe(true);
     const saved = JSON.parse(readFileSync(join(root, 'data/stats.json'), 'utf8'));

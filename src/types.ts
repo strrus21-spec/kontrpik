@@ -6,7 +6,8 @@ export type PubKey = Exclude<SrcKey, 'pro'>;
 export interface Tables { vs: number[]; with?: number[]; solo: number[] }
 
 export interface Stats {
-  heroes: [name: string, attr: Attr, roles: string[], icon: string][];
+  /** id — hero_id OpenDota (есть в данных, собранных scripts/build-data.ts). */
+  heroes: [name: string, attr: Attr, roles: string[], icon: string, id?: number][];
   n: number;
   counts: Record<PubKey, number>;
   pub: Record<PubKey, Required<Tables>>;
@@ -16,7 +17,7 @@ export interface Stats {
   updated: number;
 }
 
-export interface Hero { i: number; name: string; attr: Attr; roles: string[]; img: string }
+export interface Hero { i: number; name: string; attr: Attr; roles: string[]; img: string; odId?: number }
 
 /** {имя: [игры на pos1..pos5]} */
 export type Positions = Record<string, number[]>;

@@ -2,7 +2,10 @@
 import { t, LANG, dateOne, dateRange } from '../i18n.ts';
 import { banSuggestions, mainPos, rankPicks, verdictIndex, type PairRow, type PickRow } from '../scoring.ts';
 import { heroMatch } from '../search.ts';
-import { saveState, toggle, where, type DraftState, type Side } from '../state.ts';
+import { saveState, toggle, where, type DraftState, type Mode, type Side } from '../state.ts';
+import { bonusFor, me, mineLine, pool, renderMe, toggleStar } from '../me.ts';
+import { itemAdvice, roleForPos } from '../items.ts';
+import { draftQuery } from '../share.ts';
 import type { AppData } from '../data.ts';
 import type { Hero, Tables } from '../types.ts';
 import { animCanvas, bindAnims } from '../anim/player.ts';
@@ -46,7 +49,11 @@ export function renderPool(x: Ctx) {
     const list = x.data.heroes.filter(h => h.attr === a && heroMatch(h, q));
     if (!list.length) continue;
     html += `<div class="attr-group g-${a}"><div class="attr-label"><span class="dot ${a}"></span>${L.attr[a]}</div><div class="grid">` +
-      list.map(h => { const w = where(x.state, h.i); return `<button class="hero a-${h.attr} ${w ? 'is-' + w : ''}" data-id="${h.i}" aria-pressed="${!!w}">${ic(h)}${esc(h.name)}</button>`; }).join('') +
+      list.map(h => {
+        const w = where(x.state, h.i), star = me.stars.has(h.name);
+        const pressed = x.state.mode === 'star' ? star : !!w;
+        return `<button class="hero a-${h.attr} ${w ? 'is-' + w : ''}${star ? ' is-star' : ''}" data-id="${h.i}" aria-pressed="${pressed}">${ic(h)}${esc(h.name)}${star ? '<span class="star" aria-hidden="true">★</span>' : ''}</button>`;
+      }).join('') +
       `</div></div>`;
   }
   $('pool').innerHTML = html || `<p class="empty-state">${L.noHero}</p>`;
@@ -78,16 +85,43 @@ export function renderVsTips(x: Ctx) {
   bindAnims();
 }
 
+export function renderBuy(x: Ctx) {
+  const box = $('buy'), L = t(), s = x.state;
+  if (!s.enemy.length) { box.hidden = true; return; }
+  const names = s.enemy.map(i => x.data.heroes[i].name);
+  const list = itemAdvice(names, s.pos);
+  const role = roleForPos(s.pos);
+  const joinNames = (hs: string[]) => { const b = hs.map(h => `<b>${esc(h)}</b>`); return b.length > 1 ? b.slice(0, -1).join(', ') + L.and + b[b.length - 1] : b[0]; };
+  box.hidden = false;
+  box.innerHTML = `<div class="bans-head"><h3>${L.buyH}</h3><span>${role === 'support' ? L.buySup : L.buyCore}</span></div>` + (list.length
+    ? `<ul class="buy-list">${list.map(a => `<li><strong>${esc(a.item)}</strong> — ${a.reasons.map(r => {
+        const what = r.heroes.length === 1 && L.threatSpecial[r.heroes[0] + ':' + r.tag] || L.threat[r.tag];
+        return L.buyReason(joinNames(r.heroes), what);
+      }).join('; ')}</li>`).join('')}</ul>`
+    : `<p class="bans-note">${L.buyNone}</p>`);
+}
+
 export function renderResults(x: Ctx) {
   const out = $('out'), s = x.state, L = t(), H = x.data.heroes;
-  renderMeta(x); renderBans(x); renderVsTips(x);
+  renderMeta(x); renderBans(x); renderBuy(x); renderVsTips(x);
   if (!s.enemy.length && !s.ally.length) {
     out.innerHTML = `<p class="empty-state">${L.noPick}</p>`;
     if (topPick) { topPick = null; renderSlots(x); }
     return;
   }
   const pro = s.src === 'pro';
-  const rows = rankPicks({ T: tables(x), n: x.data.stats.n, heroes: H, positions: x.data.positions, draft: s, pos: s.pos, role: s.role, pro });
+  let rows = rankPicks({ T: tables(x), n: x.data.stats.n, heroes: H, positions: x.data.positions, draft: s, pos: s.pos, role: s.role, pro });
+  if (me.only) {
+    // «Только мои герои»: статистический счёт + бонус за личный винрейт (алгоритм раздела 4 не меняется).
+    const mine = pool();
+    rows = rows.filter(r => mine.has(r.h.name)).map(r => ({ ...r, score: r.score + bonusFor(r.h.name) })).sort((a, b) => b.score - a.score);
+    if (!rows.length) {
+      out.innerHTML = `<p class="empty-state">${mine.size ? L.meNoFit : L.meEmpty}</p>`;
+      if (topPick) { topPick = null; renderSlots(x); }
+      return;
+    }
+  }
+  const mineP = (r: PickRow, cls: string) => { const m = mineLine(r.h.name); return m ? `<p class="${cls}">${esc(m)}</p>` : ''; };
   const bars = (list: PairRow[], label: string) => list.length ? `<div class="bars"><span class="bars-label">${label}</span>${list.map(p => {
     const w = Math.min(100, Math.abs(p.adv) / 5 * 100), low = p.g < (pro ? 20 : 200) ? ' low' : '';
     return `<div class="bar-row${low}" title="${fmt(p.g)} ${L.games}${p.raw != null ? ', ' + L.pairWr + ' ' + p.raw.toFixed(1) + '%' : ''}">${ic(H[p.e])}<span class="bar-name">${esc(H[p.e].name)}</span><span class="bar-track"><span class="bar-mid"></span><span class="bar ${p.adv >= 0 ? 'up' : 'dn'}" style="width:${w / 2}%;${p.adv >= 0 ? 'left:50%' : 'right:50%'}"></span></span><b class="${p.adv >= 0 ? 'up' : 'dn'}">${sign(p.adv)}</b></div>`;
@@ -112,13 +146,13 @@ export function renderResults(x: Ctx) {
   out.innerHTML = `<div class="podium">${top.map((r, i) => `<article class="top">
       <div class="top-head"><img class="ic-big" src="${esc(r.h.img)}" alt="" width="44" height="44"><div class="top-name"><span class="place">${L.place(i + 1)}</span><strong>${esc(r.h.name)}</strong><span class="roles">${posBadges(x, r.h)}</span></div>
       <div class="score big ${r.score >= 0 ? 'pos' : 'neg'}">${sign(r.score)}<small>${verdict(r.score)}</small></div></div>
-      <p class="why">${why(r)}</p>
+      <p class="why">${why(r)}</p>${mineP(r, 'mine')}
       ${bars(r.cs, L.vsEnemies)}${bars(r.ss, L.withAllies)}
       ${take(r)}</article>`).join('')}</div>
     ${rest.length ? `<h3 class="more">${L.more}</h3><ol class="picks" start="4">${rest.map((r, i) => `<li class="pick"><span class="rank">${i + 4}</span>
       <div class="pname">${ic(r.h)}${esc(r.h.name)} <span class="roles">${posBadges(x, r.h)}</span></div>
       <div class="score ${r.score >= 0 ? 'pos' : 'neg'}">${sign(r.score)}</div>
-      <p class="why small">${why(r)}</p>
+      <p class="why small">${why(r)}</p>${mineP(r, 'mine small')}
       ${take(r)}</li>`).join('')}</ol>` : ''}`;
 }
 
@@ -143,6 +177,17 @@ export function renderDraft(x: Ctx) {
   renderSlots(x); renderPool(x); renderResults(x);
 }
 
+let shareTimer = 0;
+async function copyLink(x: Ctx, btn: HTMLButtonElement) {
+  const L = t();
+  const url = location.origin + location.pathname + '?' + draftQuery(x.state, x.data.heroes);
+  const msg = $('share-msg');
+  try { await navigator.clipboard.writeText(url); msg.textContent = L.copied; }
+  catch { msg.innerHTML = `${L.copyFail} <input class="share-url" readonly value="${esc(url)}" aria-label="${esc(L.copyLink)}">`; (msg.querySelector('input') as HTMLInputElement).select(); }
+  msg.hidden = false; btn.setAttribute('aria-describedby', 'share-msg');
+  clearTimeout(shareTimer); shareTimer = window.setTimeout(() => { if (msg.textContent === L.copied) msg.hidden = true; }, 2500);
+}
+
 export function bindDraft(x: Ctx) {
   const s = x.state;
   const commit = () => { save(x); renderDraft(x); };
@@ -161,8 +206,10 @@ export function bindDraft(x: Ctx) {
   document.addEventListener('click', e => {
     const b = (e.target as Element).closest<HTMLButtonElement>('button'); if (!b) return;
     const d = b.dataset;
-    if (d.mode) { s.mode = d.mode as Side; commit(); }
+    if (d.mode) { s.mode = d.mode as Mode; commit(); }
+    else if (d.id && s.mode === 'star') { toggleStar(x.data.heroes[+d.id].name); renderMe(); renderPool(x); renderResults(x); }
     else if (d.id) { toggle(s, +d.id); commit(); }
+    else if (d.share !== undefined) { copyLink(x, b); }
     else if (d.rm) { const [side, id] = d.rm.split(':'); s[side as Side] = s[side as Side].filter(v => v !== +id); commit(); }
     else if (d.clear) { s[d.clear as Side] = []; if (d.clear === 'enemy') s.example = false; commit(); }
     else if (d.take) { const id = +d.take; if (!where(s, id) && s.ally.length < 4) { s.ally.push(id); commit(); } }

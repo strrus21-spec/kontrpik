@@ -12,6 +12,13 @@ export function dateRange(lang: Lang, from: number, to: number): string {
 }
 export const dateOne = (lang: Lang, t: number) => fmtDate(lang, t, true);
 
+/** Русское склонение: 1 игра, 2 игры, 5 игр. */
+export function plural(n: number, forms: [string, string, string], lang: Lang = 'ru'): string {
+  if (lang !== 'ru') return forms[n === 1 ? 0 : 2];
+  const m10 = n % 10, m100 = n % 100;
+  return forms[m10 === 1 && m100 !== 11 ? 0 : m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? 1 : 2];
+}
+
 const ru = {
   attr: { str: 'Сила', agi: 'Ловкость', int: 'Интеллект', all: 'Универсальный' },
   role: { Carry: 'Керри', Support: 'Саппорт', Nuker: 'Нюкер', Disabler: 'Контроль', Initiator: 'Инициатор', Durable: 'Танк', Escape: 'Побег', Pusher: 'Пушер' } as Record<string, string>,
@@ -37,6 +44,35 @@ const ru = {
   noTips: 'Ничего не нашлось. Сбрось фильтры или измени запрос.', known: 'Знаю', allCats: 'Все', anyLvl: 'Любой уровень',
   vsTipsH: 'Как играть против этого пика', allTips: 'Все фишки',
   loading: 'Загружаю статистику…', loadError: 'Не удалось загрузить статистику. Проверь интернет и обнови страницу.',
+  // этап 2: мои герои
+  medals: ['Рекрут', 'Страж', 'Рыцарь', 'Герой', 'Легенда', 'Властелин', 'Божество', 'Титан'],
+  meH: 'Мои герои', meS: 'Рекомендации из героев, на которых ты играешь',
+  meLoad: 'Загрузить', meLoading: 'Загружаю профиль…', meChange: 'Сменить', meForget: 'Забыть профиль',
+  meHint: 'Нет ID под рукой? Отметь своих героев звёздочкой: режим «★ Мои» в списке героев.',
+  meClosed: 'Профиль закрыт. Включи в Dota: Настройки → Общедоступная история матчей, подожди пару минут и попробуй снова.',
+  meNotFound: 'Игрок не найден. Проверь ID.',
+  meBad: 'Не понимаю этот ID. Вставь число из профиля Dotabuff или OpenDota, Steam ID или ссылку на профиль.',
+  meVanity: 'Короткие ссылки Steam (/id/имя) не подходят. Открой свой профиль на Dotabuff и вставь ссылку оттуда.',
+  meNet: 'OpenDota не отвечает. Попробуй через минуту.',
+  meOnly: 'Только мои герои', meNoRank: 'без ранга',
+  mePool: (n: number) => `В пуле ${n} ${plural(n, ['герой', 'героя', 'героев'], 'ru')}: от 5 игр за 90 дней и отмеченные ★`,
+  meEmpty: 'Твой пул пуст. Введи Steam ID или отметь героев звёздочкой.',
+  meNoFit: 'Из твоего пула никто не подходит под фильтр. Сними фильтр позиции или добавь героев.',
+  meGames: (g: number, w: number) => `у тебя ${g} ${plural(g, ['игра', 'игры', 'игр'], 'ru')}, винрейт ${w}%`,
+  meStar: 'отмечен ★', meBonus: (b: string) => `${b} за личный винрейт`,
+  starOn: 'Отметить своим', starOff: 'Убрать из своих',
+  // что купить
+  buyH: 'Что купить против этого пика', buyCore: 'для керри, мида и офлейна', buySup: 'для саппорта',
+  buyNone: 'Для этих героев особых предметов не нужно.',
+  threat: {
+    evasion: 'уклонение', invis: 'невидимость', illusions: 'иллюзии', heal: 'сильное лечение', magic_burst: 'много магического урона',
+    silence: 'немота', disable_heavy: 'сильный контроль', physical_burst: 'быстрый урон атаками', passive_break: 'сильные пассивки',
+    summons: 'призванные юниты', mana_burn: 'сжигание маны', pierce_bkb: 'ульта сквозь BKB', lifesteal: 'вампиризм', push: 'быстрый пуш',
+  } as Record<string, string>,
+  threatSpecial: { 'Techies:invis': 'невидимые мины' } as Record<string, string>,
+  buyReason: (heroes: string, what: string) => `у ${heroes} ${what}`,
+  // ссылка
+  copyLink: 'Скопировать ссылку', copied: 'Ссылка скопирована', copyFail: 'Скопируй ссылку вручную:',
   st: {
     title: 'Контрпик Dota 2', h1a: 'Dota 2 ', h1b: 'помощник', sub: 'Подбор контрпика по статистике матчей и сборник фишек, которые помогают выигрывать.',
     nav1: 'Контрпик', nav2: 'Фишки', cpTitle: 'Контрпик', cpSub: 'Отметь врагов и союзников. Справа появятся герои, которые лучше всех играют против этого пика и сочетаются с твоей командой.',
@@ -47,6 +83,7 @@ const ru = {
     navLabel: 'Разделы', draftLabel: 'Драфт', heroesLabel: 'Герои', modeLabel: 'Куда добавлять героя', searchLabel: 'Поиск героя',
     resultsLabel: 'Рекомендации', srcLabel: 'Статистика', roleLabel: 'Фильтр по роли', posLabel: 'Позиция',
     tipsLabel: 'Фишки', catLabel: 'Тема', lvlLabel: 'Уровень', tqLabel: 'Поиск по фишкам',
+    mStar: '★ Мои', meInput: 'Steam ID или ссылка на профиль Dotabuff, OpenDota или Steam', copyLink: 'Скопировать ссылку',
   } as Record<string, string>,
 };
 
@@ -77,6 +114,32 @@ const en: Dict = {
   noTips: 'Nothing found. Reset the filters or change the search.', known: 'Got it', allCats: 'All', anyLvl: 'Any level',
   vsTipsH: 'How to play against this draft', allTips: 'All tips',
   loading: 'Loading statistics…', loadError: 'Could not load the statistics. Check your connection and reload the page.',
+  medals: ['Herald', 'Guardian', 'Crusader', 'Archon', 'Legend', 'Ancient', 'Divine', 'Immortal'],
+  meH: 'My heroes', meS: 'Recommendations from the heroes you actually play',
+  meLoad: 'Load', meLoading: 'Loading profile…', meChange: 'Change', meForget: 'Forget profile',
+  meHint: 'No ID at hand? Star your heroes: the “★ Mine” mode in the hero list.',
+  meClosed: 'The profile is private. In Dota, turn on Settings → Expose Public Match Data, wait a couple of minutes and try again.',
+  meNotFound: 'Player not found. Check the ID.',
+  meBad: 'Can’t read this ID. Paste the number from your Dotabuff or OpenDota profile, a Steam ID or a profile link.',
+  meVanity: 'Short Steam links (/id/name) won’t work. Open your Dotabuff profile and paste that link.',
+  meNet: 'OpenDota is not responding. Try again in a minute.',
+  meOnly: 'Only my heroes', meNoRank: 'unranked',
+  mePool: n => `${n} ${n === 1 ? 'hero' : 'heroes'} in your pool: 5+ games in 90 days and ★ starred`,
+  meEmpty: 'Your pool is empty. Enter your Steam ID or star some heroes.',
+  meNoFit: 'No hero from your pool fits the filter. Clear the position filter or add heroes.',
+  meGames: (g, w) => `you: ${g} ${g === 1 ? 'game' : 'games'}, ${w}% win rate`,
+  meStar: '★ starred', meBonus: b => `${b} for your win rate`,
+  starOn: 'Star as mine', starOff: 'Unstar',
+  buyH: 'What to buy against this draft', buyCore: 'for carry, mid and offlane', buySup: 'for supports',
+  buyNone: 'No special items needed against these heroes.',
+  threat: {
+    evasion: 'evasion', invis: 'invisibility', illusions: 'illusions', heal: 'strong healing', magic_burst: 'heavy magic damage',
+    silence: 'silences', disable_heavy: 'heavy disables', physical_burst: 'fast physical damage', passive_break: 'strong passives',
+    summons: 'summons', mana_burn: 'mana burn', pierce_bkb: 'an ultimate that goes through BKB', lifesteal: 'lifesteal', push: 'fast push',
+  },
+  threatSpecial: { 'Techies:invis': 'invisible mines' },
+  buyReason: (heroes, what) => `${heroes}: ${what}`,
+  copyLink: 'Copy link', copied: 'Link copied', copyFail: 'Copy the link manually:',
   st: {
     title: 'Dota 2 Counterpick', h1a: 'Dota 2 ', h1b: 'helper', sub: 'Counterpicks based on match statistics and a collection of tips that help you win.',
     nav1: 'Counterpick', nav2: 'Tips', cpTitle: 'Counterpick', cpSub: 'Mark enemies and allies. On the right you will see the heroes that do best against this draft and fit your team.',
@@ -87,6 +150,7 @@ const en: Dict = {
     navLabel: 'Sections', draftLabel: 'Draft', heroesLabel: 'Heroes', modeLabel: 'Where to add the hero', searchLabel: 'Hero search',
     resultsLabel: 'Recommendations', srcLabel: 'Statistics', roleLabel: 'Role filter', posLabel: 'Position',
     tipsLabel: 'Tips', catLabel: 'Topic', lvlLabel: 'Level', tqLabel: 'Search tips',
+    mStar: '★ Mine', meInput: 'Steam ID or a Dotabuff, OpenDota or Steam profile link', copyLink: 'Copy link',
   },
 };
 

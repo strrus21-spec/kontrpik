@@ -45,6 +45,7 @@
           <button id="m-enemy" class="m-enemy" aria-pressed="true" data-mode="enemy" data-t="mEnemy">Враг</button>
           <button id="m-ally" class="m-ally" aria-pressed="false" data-mode="ally" data-t="mAlly">Союзник</button>
           <button id="m-ban" class="m-ban" aria-pressed="false" data-mode="ban" data-t="mBan">Бан</button>
+          <button id="m-star" class="m-star" aria-pressed="false" data-mode="star" data-t="mStar">★ Мои</button>
         </div>
         <input id="q" type="search" data-tp="q" placeholder="Поиск: пудж, фантомка, Invoker…" aria-label="Поиск героя" data-ta="searchLabel">
       </div>
@@ -57,12 +58,16 @@
         <div class="tools">
           <select id="src" aria-label="Статистика" data-ta="srcLabel"></select>
           <select id="role" aria-label="Фильтр по роли" data-ta="roleLabel" hidden></select>
+          <button id="share" class="share" data-share data-t="copyLink">Скопировать ссылку</button>
         </div>
+        <p id="share-msg" class="share-msg" role="status" hidden></p>
       </div>
       <div class="chips poschips" id="poschips" role="group" aria-label="Позиция" data-ta="posLabel"></div>
+      <div id="me" class="bans me"></div>
       <div class="legend" id="legend"></div>
       <div id="bans" class="bans" hidden></div>
       <div id="out"></div>
+      <div id="buy" class="bans buy" hidden></div>
       <div id="vs-tips" class="vs-tips" hidden></div>
       <p class="note" id="note"></p>
     </section>

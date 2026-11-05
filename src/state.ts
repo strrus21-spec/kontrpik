@@ -2,9 +2,11 @@
 import type { Hero, SrcKey } from './types.ts';
 
 export type Side = 'enemy' | 'ally' | 'ban';
+/** Режим пула: сторона драфта или «★ Мои» (отметить своего героя). */
+export type Mode = Side | 'star';
 export interface DraftState {
   enemy: number[]; ally: number[]; ban: number[];
-  mode: Side; role: string; src: SrcKey; pos: number; q: string; example: boolean;
+  mode: Mode; role: string; src: SrcKey; pos: number; q: string; example: boolean;
 }
 
 export const DRAFT_KEY = 'kontrpik-draft';
@@ -17,7 +19,7 @@ const LIMIT: Record<Side, number> = { enemy: 5, ally: 4, ban: 24 };
 export const defaultState = (): DraftState =>
   ({ enemy: [], ally: [], ban: [], mode: 'enemy', role: '', src: 'all', pos: 0, q: '', example: false });
 
-interface Stored { enemy: string[]; ally: string[]; ban: string[]; mode: Side; src: SrcKey; pos: number; example: boolean }
+interface Stored { enemy: string[]; ally: string[]; ban: string[]; mode: Mode; src: SrcKey; pos: number; example: boolean }
 
 export function serialize(s: DraftState, heroes: Hero[]): Stored {
   const names = (ids: number[]) => ids.map(i => heroes[i]?.name).filter(Boolean) as string[];
@@ -41,7 +43,7 @@ export function deserialize(raw: unknown, legacy: unknown, heroes: Hero[]): Draf
     for (const side of ['enemy', 'ally', 'ban'] as Side[]) {
       s[side] = ids(src[side], fromIdx).filter(i => !seen.has(i) && seen.add(i)).slice(-LIMIT[side]);
     }
-    if (src.mode === 'enemy' || src.mode === 'ally' || src.mode === 'ban') s.mode = src.mode;
+    if (src.mode === 'enemy' || src.mode === 'ally' || src.mode === 'ban' || src.mode === 'star') s.mode = src.mode;
     if (SRCS.includes(src.src as SrcKey)) s.src = src.src as SrcKey;
     const p = Number(src.pos); if (Number.isInteger(p) && p >= 0 && p <= 5) s.pos = p;
     s.example = !!src.example;
@@ -70,6 +72,7 @@ export function where(s: DraftState, id: number): Side | null {
 
 /** Клик по герою в пуле: убрать из текущей стороны и/или добавить в сторону режима. */
 export function toggle(s: DraftState, id: number) {
+  if (s.mode === 'star') return;
   const cur = where(s, id);
   if (cur) s[cur] = s[cur].filter(x => x !== id);
   if (cur !== s.mode) {
