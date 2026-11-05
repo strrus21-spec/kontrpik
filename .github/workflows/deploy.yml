@@ -18,7 +18,7 @@ jobs:
       id-token: write
     environment:
       name: github-pages
-      url: ${{ steps.pages.outputs.page_url }}
+      url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
         with: { ref: main }
@@ -28,9 +28,12 @@ jobs:
       - name: Наложить данные из ветки data (если есть)
         run: |
           if git fetch --depth=1 origin data; then git archive FETCH_HEAD | tar -x -C public; fi
+      - id: pages
+        uses: actions/configure-pages@v5
       - run: npm run build
-      - uses: actions/configure-pages@v5
+        env:
+          VITE_BASE: ${{ steps.pages.outputs.base_path }}/
       - uses: actions/upload-pages-artifact@v3
         with: { path: dist }
-      - id: pages
+      - id: deploy
         uses: actions/deploy-pages@v4

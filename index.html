@@ -6,7 +6,7 @@
 <meta name="color-scheme" content="dark">
 <meta name="description" content="Подбор контрпика в Dota 2 по статистике матчей и сборник фишек. Counterpicks for Dota 2 based on match statistics.">
 <title>Контрпик Dota 2</title>
-<link rel="icon" type="image/png" href="./favicon.png">
+<link rel="icon" type="image/png" href="/favicon.png">
 </head>
 <body>
 <div class="wrap">
@@ -63,6 +63,7 @@
         <p id="share-msg" class="share-msg" role="status" hidden></p>
       </div>
       <div class="chips poschips" id="poschips" role="group" aria-label="Позиция" data-ta="posLabel"></div>
+      <div id="lane" class="bans lane" hidden></div>
       <div id="me" class="bans me"></div>
       <div class="legend" id="legend"></div>
       <div id="bans" class="bans" hidden></div>
@@ -86,6 +87,7 @@
     <p class="sources"><span data-t="src1">Изменения патча: </span><a href="https://www.dota2.com/patches/7.41" target="_blank" rel="noopener" data-t="src2">официальные заметки 7.41</a>, <a href="https://www.gosugamers.net/dota2/news/78166-dota-2-patch-7-41-removes-facets-and-adds-nine-new-items" target="_blank" rel="noopener">GosuGamers</a>, <a href="https://liquipedia.net/dota2/7.41e" target="_blank" rel="noopener">Liquipedia</a><span data-t="src3">. Статистика: </span><a href="https://www.opendota.com" target="_blank" rel="noopener">OpenDota</a>.</p>
   </section>
 </div>
+<dialog id="hero" class="hero-dlg" aria-labelledby="hero-title"><div id="hero-body"></div></dialog>
 <script type="module" src="/src/main.ts"></script>
 </body>
 </html>

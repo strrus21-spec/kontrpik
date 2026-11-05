@@ -16,6 +16,7 @@ npm run data       # выгрузка свежей статистики OpenDota
 - `src/scoring.ts` — алгоритм счёта (раздел 4 ТЗ), чистые функции.
 - `src/i18n.ts` — словари RU/EN. `src/state.ts` — localStorage (драфт хранится по именам героев).
 - `src/player.ts`, `src/me.ts` — «Мои герои» (Steam ID, профиль OpenDota, бонус за личный винрейт). `src/items.ts` — «Что купить» (угрозы → предметы). `src/share.ts` — ссылка на драфт.
+- `src/hero.ts`, `src/render/hero.ts` — карточка героя (адрес `/hero/{slug}`; в пуле — правый клик или долгое нажатие). `src/lane.ts` — «Моя линия».
 - `src/search.ts` — русские прозвища героев. `src/anim/` — анимированные схемы фишек. `src/render/` — разметка.
 - `public/data/` — `stats.json`, `positions.json`, `tips.json`, `history/` (ежедневные снимки). `public/icons/{slug}.png` — иконки.
 - `scripts/build-data.ts` + `scripts/lib/` — сборка данных (запросы из `scripts/opendota-queries.md`).
@@ -28,5 +29,7 @@ npm run data       # выгрузка свежей статистики OpenDota
 - `Deploy`: сборка + данные из ветки `data` → GitHub Pages. Запускается после `Data` и при пуше в main.
 - `CI`: сборка, Vitest, Playwright на каждый пуш и PR.
 - Необязательный секрет `OPENDOTA_API_KEY` снимает лимит 60 запросов в минуту.
+
+Сборка для подкаталога: `VITE_BASE=/kontrpik/ npm run build` (в деплое задаётся автоматически). `404.html` — копия `index.html` для прямых ссылок на героев.
 
 Первый запуск: Settings → Pages → Source: **GitHub Actions**; затем Actions → Data → Run workflow.

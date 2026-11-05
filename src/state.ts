@@ -7,6 +7,8 @@ export type Mode = Side | 'star';
 export interface DraftState {
   enemy: number[]; ally: number[]; ban: number[];
   mode: Mode; role: string; src: SrcKey; pos: number; q: string; example: boolean;
+  /** Герой, которого игрок взял («Беру его»). */
+  you: number | null;
 }
 
 export const DRAFT_KEY = 'kontrpik-draft';
@@ -17,13 +19,13 @@ const SRCS: SrcKey[] = ['all', 'low', 'mid', 'high', 'pro'];
 const LIMIT: Record<Side, number> = { enemy: 5, ally: 4, ban: 24 };
 
 export const defaultState = (): DraftState =>
-  ({ enemy: [], ally: [], ban: [], mode: 'enemy', role: '', src: 'all', pos: 0, q: '', example: false });
+  ({ enemy: [], ally: [], ban: [], mode: 'enemy', role: '', src: 'all', pos: 0, q: '', example: false, you: null });
 
-interface Stored { enemy: string[]; ally: string[]; ban: string[]; mode: Mode; src: SrcKey; pos: number; example: boolean }
+interface Stored { enemy: string[]; ally: string[]; ban: string[]; mode: Mode; src: SrcKey; pos: number; example: boolean; you?: string }
 
 export function serialize(s: DraftState, heroes: Hero[]): Stored {
   const names = (ids: number[]) => ids.map(i => heroes[i]?.name).filter(Boolean) as string[];
-  return { enemy: names(s.enemy), ally: names(s.ally), ban: names(s.ban), mode: s.mode, src: s.src, pos: s.pos, example: s.example };
+  return { enemy: names(s.enemy), ally: names(s.ally), ban: names(s.ban), mode: s.mode, src: s.src, pos: s.pos, example: s.example, ...(s.you !== null && heroes[s.you] ? { you: heroes[s.you].name } : {}) };
 }
 
 /** Восстановить состояние. raw — новый формат (имена), legacy — формат прототипа (индексы). */
@@ -47,6 +49,8 @@ export function deserialize(raw: unknown, legacy: unknown, heroes: Hero[]): Draf
     if (SRCS.includes(src.src as SrcKey)) s.src = src.src as SrcKey;
     const p = Number(src.pos); if (Number.isInteger(p) && p >= 0 && p <= 5) s.pos = p;
     s.example = !!src.example;
+    const you = typeof src.you === 'string' ? byName.get(src.you) : undefined;
+    if (you !== undefined && s.ally.includes(you)) s.you = you;
   }
   if (!s.enemy.length && !s.ally.length && !s.ban.length) {
     s.enemy = SAMPLE.map(n => byName.get(n)).filter((x): x is number => x !== undefined);

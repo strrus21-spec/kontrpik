@@ -11,6 +11,8 @@ import type { Hero, Tables } from '../types.ts';
 import { animCanvas, bindAnims } from '../anim/player.ts';
 import { tipTitle, tipText } from './tips.ts';
 import { $, esc, fmt, sign } from './html.ts';
+import { heroLink } from './hero.ts';
+import { laneFor, laneHints } from '../lane.ts';
 
 export interface Ctx { data: AppData; state: DraftState }
 
@@ -27,7 +29,7 @@ const posBadges = (x: Ctx, h: Hero) =>
 export function renderSlots(x: Ctx) {
   const H = x.data.heroes, s = x.state, L = t();
   const tile = (side: Side, id: number) =>
-    `<span class="slot"><span class="por">${ic(H[id])}</span><span class="sname">${esc(H[id].name)}</span><button class="x" data-rm="${side}:${id}" aria-label="${L.remove} ${esc(H[id].name)}">×</button></span>`;
+    `<span class="slot"><span class="por">${ic(H[id])}</span>${heroLink(H[id], 'sname hlink')}<button class="x" data-rm="${side}:${id}" aria-label="${L.remove} ${esc(H[id].name)}">×</button></span>`;
   for (const side of ['enemy', 'ally', 'ban'] as Side[]) {
     let html = '';
     if (side === 'ally') {
@@ -52,7 +54,7 @@ export function renderPool(x: Ctx) {
       list.map(h => {
         const w = where(x.state, h.i), star = me.stars.has(h.name);
         const pressed = x.state.mode === 'star' ? star : !!w;
-        return `<button class="hero a-${h.attr} ${w ? 'is-' + w : ''}${star ? ' is-star' : ''}" data-id="${h.i}" aria-pressed="${pressed}">${ic(h)}${esc(h.name)}${star ? '<span class="star" aria-hidden="true">★</span>' : ''}</button>`;
+        return `<button title="${esc(L.heroPoolTitle)}" class="hero a-${h.attr} ${w ? 'is-' + w : ''}${star ? ' is-star' : ''}" data-id="${h.i}" aria-pressed="${pressed}">${ic(h)}${esc(h.name)}${star ? '<span class="star" aria-hidden="true">★</span>' : ''}</button>`;
       }).join('') +
       `</div></div>`;
   }
@@ -85,6 +87,20 @@ export function renderVsTips(x: Ctx) {
   bindAnims();
 }
 
+export function renderLane(x: Ctx) {
+  const box = $('lane'), s = x.state, L = t(), H = x.data.heroes;
+  const you = s.you !== null && s.ally.includes(s.you) ? H[s.you] : topPick;
+  const lane = you && s.pos ? laneFor(tables(x), x.data.stats.n, you, s.pos, s.enemy.map(i => H[i]), x.data.positions) : null;
+  if (!lane || !you) { box.hidden = true; return; }
+  const names = lane.opponents.map(o => `${heroLink(o.h)} <span class="posb">Pos ${o.pos}</span>`);
+  const list = names.length > 1 ? names.slice(0, -1).join(', ') + L.and + names[names.length - 1] : names[0];
+  box.hidden = false;
+  box.className = `bans lane lane-${lane.level}`;
+  box.innerHTML = `<div class="bans-head"><h3>${L.laneH}</h3><span>${L.laneFor(esc(you.name))}</span></div>
+    <p class="lane-vs">${L.laneVs(list)} · <b class="lane-level">${L.laneLevel[lane.level]}</b> <span class="lane-sum">${sign(lane.sum)}</span></p>
+    <ul class="lane-hints">${laneHints(lane, s.pos).map(hn => `<li>${esc(L.laneHint[hn.key].replace('{h}', hn.hero || ''))}</li>`).join('')}</ul>`;
+}
+
 export function renderBuy(x: Ctx) {
   const box = $('buy'), L = t(), s = x.state;
   if (!s.enemy.length) { box.hidden = true; return; }
@@ -107,6 +123,7 @@ export function renderResults(x: Ctx) {
   if (!s.enemy.length && !s.ally.length) {
     out.innerHTML = `<p class="empty-state">${L.noPick}</p>`;
     if (topPick) { topPick = null; renderSlots(x); }
+    renderLane(x);
     return;
   }
   const pro = s.src === 'pro';
@@ -118,6 +135,7 @@ export function renderResults(x: Ctx) {
     if (!rows.length) {
       out.innerHTML = `<p class="empty-state">${mine.size ? L.meNoFit : L.meEmpty}</p>`;
       if (topPick) { topPick = null; renderSlots(x); }
+      renderLane(x);
       return;
     }
   }
@@ -142,15 +160,16 @@ export function renderResults(x: Ctx) {
   const top = rows.slice(0, 3), rest = rows.slice(3, 15);
   const prevTop = topPick; topPick = top[0] ? top[0].h : null;
   if (prevTop !== topPick) renderSlots(x);
+  renderLane(x);
   const take = (r: PickRow) => (s.ally.length < 4 ? `<button class="addbtn" data-take="${r.h.i}">${L.take}</button>` : '');
   out.innerHTML = `<div class="podium">${top.map((r, i) => `<article class="top">
-      <div class="top-head"><img class="ic-big" src="${esc(r.h.img)}" alt="" width="44" height="44"><div class="top-name"><span class="place">${L.place(i + 1)}</span><strong>${esc(r.h.name)}</strong><span class="roles">${posBadges(x, r.h)}</span></div>
+      <div class="top-head"><img class="ic-big" src="${esc(r.h.img)}" alt="" width="44" height="44"><div class="top-name"><span class="place">${L.place(i + 1)}</span><strong>${heroLink(r.h)}</strong><span class="roles">${posBadges(x, r.h)}</span></div>
       <div class="score big ${r.score >= 0 ? 'pos' : 'neg'}">${sign(r.score)}<small>${verdict(r.score)}</small></div></div>
       <p class="why">${why(r)}</p>${mineP(r, 'mine')}
       ${bars(r.cs, L.vsEnemies)}${bars(r.ss, L.withAllies)}
       ${take(r)}</article>`).join('')}</div>
     ${rest.length ? `<h3 class="more">${L.more}</h3><ol class="picks" start="4">${rest.map((r, i) => `<li class="pick"><span class="rank">${i + 4}</span>
-      <div class="pname">${ic(r.h)}${esc(r.h.name)} <span class="roles">${posBadges(x, r.h)}</span></div>
+      <div class="pname">${ic(r.h)}${heroLink(r.h)} <span class="roles">${posBadges(x, r.h)}</span></div>
       <div class="score ${r.score >= 0 ? 'pos' : 'neg'}">${sign(r.score)}</div>
       <p class="why small">${why(r)}</p>${mineP(r, 'mine small')}
       ${take(r)}</li>`).join('')}</ol>` : ''}`;
@@ -210,8 +229,8 @@ export function bindDraft(x: Ctx) {
     else if (d.id && s.mode === 'star') { toggleStar(x.data.heroes[+d.id].name); renderMe(); renderPool(x); renderResults(x); }
     else if (d.id) { toggle(s, +d.id); commit(); }
     else if (d.share !== undefined) { copyLink(x, b); }
-    else if (d.rm) { const [side, id] = d.rm.split(':'); s[side as Side] = s[side as Side].filter(v => v !== +id); commit(); }
-    else if (d.clear) { s[d.clear as Side] = []; if (d.clear === 'enemy') s.example = false; commit(); }
-    else if (d.take) { const id = +d.take; if (!where(s, id) && s.ally.length < 4) { s.ally.push(id); commit(); } }
+    else if (d.rm) { const [side, id] = d.rm.split(':'); s[side as Side] = s[side as Side].filter(v => v !== +id); if (s.you === +id) s.you = null; commit(); }
+    else if (d.clear) { s[d.clear as Side] = []; if (d.clear === 'enemy') s.example = false; if (d.clear === 'ally') s.you = null; commit(); }
+    else if (d.take) { const id = +d.take; if (!where(s, id) && s.ally.length < 4) { s.ally.push(id); s.you = id; commit(); } }
   });
 }
