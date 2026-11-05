@@ -15,7 +15,7 @@ export function showTab(tab: Tab, opts: { scroll?: boolean } = {}) {
     const el = document.getElementById(id);
     if (el) el.hidden = id !== tab;
   }
-  document.querySelectorAll<HTMLAnchorElement>('.nav a[href^="#"]').forEach(a => {
+  document.querySelectorAll<HTMLAnchorElement>('.nav a[href^="#"]:not(.logo)').forEach(a => {
     if (a.getAttribute('href') === '#' + tab) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
   });
   try { localStorage.setItem(KEY, tab); } catch { /* ignore */ }

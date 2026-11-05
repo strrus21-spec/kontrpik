@@ -125,7 +125,7 @@ test('Вкладки: один раздел на экране, адрес #вк�
   await page.waitForSelector('html[data-ready]');
   const visible = async () => (await Promise.all(['counterpick', 'meta', 'match', 'tips-block'].map(async id => [id, await page.locator('#' + id).isVisible()] as const))).filter(x => x[1]).map(x => x[0]);
   await expect.poll(visible).toEqual(['counterpick']);
-  await expect(page.locator('.nav a[href="#counterpick"]')).toHaveAttribute('aria-current', 'page');
+  await expect(page.locator('.nav a[href="#counterpick"]:not(.logo)')).toHaveAttribute('aria-current', 'page');
   await page.locator('.nav a[href="#meta"]').click();
   await expect.poll(visible).toEqual(['meta']);
   await expect(page).toHaveURL(/#meta$/);
@@ -136,7 +136,27 @@ test('Вкладки: один раздел на экране, адрес #вк�
   await page.reload(); await page.waitForSelector('html[data-ready]');
   await expect.poll(visible).toEqual(['meta']);
   // «Все фишки» под рекомендациями открывает вкладку фишек
-  await page.locator('.nav a[href="#counterpick"]').click();
+  await page.locator('.nav a[href="#counterpick"]:not(.logo)').click();
   await page.locator('#vs-tips .vt-more').click();
   await expect.poll(visible).toEqual(['tips-block']);
 });
+
+for (const width of [1440, 400]) {
+  test(`Логотип «На главную» (${width}px): с любой вкладки и из глубины страницы — «Контрпик», самый верх`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 800 });
+    await page.addInitScript(() => localStorage.setItem('kontrpik-lang', 'ru'));
+    await page.goto('/#meta');
+    await page.waitForSelector('html[data-ready]');
+    await page.mouse.wheel(0, 1500);
+    await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(200);
+    const logo = page.locator('#home');
+    await expect(logo).toBeVisible();
+    await expect(logo).toHaveAttribute('aria-label', 'На главную');
+    await logo.click();
+    await expect(page.locator('#counterpick')).toBeVisible();
+    await expect(page.locator('#meta')).toBeHidden();
+    await expect(page).toHaveURL(/#counterpick$/);
+    await expect.poll(() => page.evaluate(() => scrollY)).toBe(0);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+  });
+}

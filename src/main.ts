@@ -40,6 +40,7 @@ function applyStatic() {
   document.querySelectorAll<HTMLElement>('[data-t]').forEach(el => { if (S[el.dataset.t!] != null) el.textContent = S[el.dataset.t!]; });
   document.querySelectorAll<HTMLInputElement>('[data-tp]').forEach(el => { el.placeholder = S[el.dataset.tp!]; });
   document.querySelectorAll<HTMLElement>('[data-ta]').forEach(el => { el.setAttribute('aria-label', S[el.dataset.ta!]); });
+  $('home').title = S.homeLabel;
   document.querySelectorAll<HTMLElement>('[data-lang]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.lang === LANG)));
 }
 applyStatic();
@@ -85,6 +86,13 @@ async function start() {
   });
   renderAll();
   bindTabs();
+  // Логотип: на главную — вкладка «Контрпик» и самый верх страницы.
+  $('home').addEventListener('click', e => {
+    e.preventDefault();
+    if (location.hash !== '#counterpick') history.pushState(null, '', '#counterpick');
+    showTab('counterpick', { scroll: false });
+    window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  });
   showTab(initialTab(), { scroll: false });
   // ссылка с #вкладкой не должна проматывать мимо шапки
   if (!location.pathname.includes('/match/') && !location.pathname.includes('/hero/')) window.scrollTo(0, 0);
