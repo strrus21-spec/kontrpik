@@ -1,4 +1,4 @@
-// Сцены «как в игре» (графика game.ts). Перекрывают схемы из scenes.ts с тем же ключом.
+// Сцены «как в игре» (графика game.ts), часть 1: Pudge, Manta, BKB.
 import { cl, ez, lp, seg, type Scene } from './engine.ts';
 import { G2 } from './game.ts';
 
@@ -7,7 +7,7 @@ export const PERIOD: Record<string, number> = {};
 /** Кадр-стоп для prefers-reduced-motion: самый понятный момент. */
 export const STILL: Record<string, number> = {};
 
-const def = (key: string, period: number, still: number, fn: Scene) => { PERIOD[key] = period; STILL[key] = still; return [key, fn] as const; };
+export const def = (key: string, period: number, still: number, fn: Scene) => { PERIOD[key] = period; STILL[key] = still; return [key, fn] as const; };
 
 export const GAME_SCENES: Record<string, Scene> = Object.fromEntries([
   // Pudge: хук летит в Crystal Maiden, но цепляет крипа между ними.
@@ -71,7 +71,7 @@ export const GAME_SCENES: Record<string, Scene> = Object.fromEntries([
   }),
 
   // Chronosphere проходит сквозь BKB.
-  def('BKB не спасает от этих ульт', 6000, .62, (g0, t) => {
+  def('BKB не спасает от этих ульт', 6000, .76, (g0, t) => {
     const g = G2(g0), T = g0.T, c = g0.c, cx = 132, cy = 74;
     g.ground({ river: 150 });
     const bkbOn = t > .08, dome = ez(seg(t, .3, .45)), inside = t > .42;

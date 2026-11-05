@@ -126,7 +126,7 @@ export function G2(g: Gfx) {
       c.shadowColor = 'rgba(0,0,0,.8)'; c.shadowBlur = 6;
       c.fillStyle = '#0b0e12'; c.fillRect(-s / 2 - 2, -s / 2 - 2, s + 4, s + 4);
       c.shadowBlur = 0;
-      const im = cdn(path);
+      const im = path ? cdn(path) : null;   // '' — только своя отрисовка, без запроса
       if (im) c.drawImage(im, -s / 2, -s / 2, s, s);
       else {
         const gr = c.createLinearGradient(0, -s / 2, 0, s / 2); gr.addColorStop(0, o.color || '#4a6a8a'); gr.addColorStop(1, '#141a20');
@@ -181,6 +181,120 @@ export function G2(g: Gfx) {
       c.strokeStyle = 'rgba(217,178,91,.7)'; c.lineWidth = 1; c.strokeRect(AW / 2 - w / 2 + .5, y - 8.5, w - 1, 17);
       c.restore();
       g.text(s, AW / 2, y, col, 10, 'center', a, true);
+    },
+    /** Кольцо (волна, радиус, обзор). */
+    ring(x: number, y: number, r: number, col: string, a = 1, w = 2, fill?: string, dash?: number[]) {
+      if (r <= 0 || a <= 0) return;
+      c.save(); c.globalAlpha = a; if (dash) c.setLineDash(dash);
+      c.beginPath(); c.arc(x, y, r, 0, 7); if (fill) { c.fillStyle = fill; c.fill(); }
+      c.strokeStyle = col; c.lineWidth = w; c.shadowColor = col; c.shadowBlur = 8; c.stroke(); c.restore();
+    },
+    /** Башня: основание, корпус, флаг команды, полоска здоровья. */
+    tower(x: number, y: number, ally: boolean, hp = 1, a = 1) {
+      c.save(); c.globalAlpha = a;
+      h.shadow(x, y + 6, 12);
+      c.fillStyle = '#2a2f36'; c.beginPath(); c.moveTo(x - 13, y + 12); c.lineTo(x + 13, y + 12); c.lineTo(x + 9, y + 4); c.lineTo(x - 9, y + 4); c.closePath(); c.fill();
+      const tg = c.createLinearGradient(x - 7, 0, x + 7, 0); tg.addColorStop(0, '#59616b'); tg.addColorStop(1, '#2f353d');
+      c.fillStyle = tg; c.fillRect(x - 7, y - 16, 14, 21);
+      c.fillStyle = ally ? '#6ad05a' : '#e2553f'; c.shadowColor = c.fillStyle; c.shadowBlur = 8;
+      c.beginPath(); c.moveTo(x - 9, y - 16); c.lineTo(x, y - 24); c.lineTo(x + 9, y - 16); c.closePath(); c.fill();
+      c.restore();
+      h.hpBar(x, y - 32, 30, hp, ally, a);
+    },
+    /** Вард: Observer (жёлтый) или Sentry (синий), с кругом обзора radius. */
+    ward(x: number, y: number, sentry: boolean, radius = 0, a = 1) {
+      const col = sentry ? '#5ab0f0' : '#f0d060';
+      if (radius > 0) h.ring(x, y, radius, col, a * .7, 1.2, sentry ? 'rgba(90,176,240,.10)' : 'rgba(240,208,96,.08)');
+      c.save(); c.globalAlpha = a; h.shadow(x, y, 4);
+      c.fillStyle = '#2a2018'; c.fillRect(x - 1, y - 2, 2, 8);
+      c.fillStyle = col; c.shadowColor = col; c.shadowBlur = 10; c.beginPath(); c.arc(x, y - 4, 3.5, 0, 7); c.fill(); c.restore();
+    },
+    /** Мина Techies: invisible — полупрозрачная. */
+    mine(x: number, y: number, visible: number) {
+      c.save(); c.globalAlpha = .15 + .85 * cl(visible);
+      c.fillStyle = '#3a3226'; c.beginPath(); c.arc(x, y, 5, 0, 7); c.fill();
+      c.fillStyle = '#ff4a35'; c.shadowColor = '#ff4a35'; c.shadowBlur = 8 * cl(visible); c.beginPath(); c.arc(x, y, 2, 0, 7); c.fill();
+      c.restore();
+      if (visible > .5) h.ring(x, y, 9, '#ff4a35', (visible - .5) * 1.6, 1);
+    },
+    /** Нейтральный крип (жёлтый), big — древний. */
+    neutral(x: number, y: number, o: { hp?: number; a?: number; big?: boolean } = {}) {
+      const a = o.a ?? 1, r = o.big ? 8 : 5.5;
+      c.save(); c.globalAlpha = a; h.shadow(x, y, r);
+      const b = c.createRadialGradient(x - 2, y - 2, 1, x, y, r + 1); b.addColorStop(0, o.big ? '#f0c8ff' : '#ffe9a8'); b.addColorStop(1, o.big ? '#6a3a9a' : '#9a7a20');
+      c.fillStyle = b; c.beginPath(); c.arc(x, y, r, 0, 7); c.fill(); c.strokeStyle = 'rgba(0,0,0,.7)'; c.lineWidth = 1; c.stroke(); c.restore();
+      if (o.hp !== undefined) h.hpBar(x, y - r - 6, r * 2.4, o.hp, false, a);
+    },
+    /** Канал телепорта/каста вокруг героя: progress 0..1. */
+    channel(x: number, y: number, k: number, col = '#7ab8ff', r = 20) {
+      c.save(); c.strokeStyle = 'rgba(0,0,0,.6)'; c.lineWidth = 4; c.beginPath(); c.arc(x, y, r, 0, 7); c.stroke();
+      c.strokeStyle = col; c.shadowColor = col; c.shadowBlur = 10; c.lineWidth = 3; c.beginPath(); c.arc(x, y, r, -Math.PI / 2, -Math.PI / 2 + cl(k) * Math.PI * 2); c.stroke(); c.restore();
+    },
+    /** Оглушение: звёзды над героем. */
+    stun(x: number, y: number, t: number) { for (let i = 0; i < 3; i++) { const a = t * 9 + i * 2.1; g.dot(x + Math.cos(a) * 10, y - 20 + Math.sin(a) * 3, 2.2, '#ffe07a'); } },
+    /** Корни вокруг точки (k — рост 0..1). */
+    roots(x: number, y: number, k: number) {
+      if (k <= 0) return;
+      c.save(); c.strokeStyle = '#7bc75f'; c.lineWidth = 2.5; c.lineCap = 'round'; c.shadowColor = '#3f8a2a'; c.shadowBlur = 6;
+      for (let i = 0; i < 8; i++) { const a = i / 8 * Math.PI * 2, r1 = 6, r2 = 6 + 14 * k; c.beginPath(); c.moveTo(x + Math.cos(a) * r1, y + Math.sin(a) * r1); c.quadraticCurveTo(x + Math.cos(a + .5) * r2 * .8, y + Math.sin(a + .5) * r2 * .8, x + Math.cos(a + .2) * r2, y + Math.sin(a + .2) * r2); c.stroke(); }
+      c.restore();
+    },
+    /** Облако дыма. */
+    smoke(x: number, y: number, r: number, a: number) {
+      if (a <= 0) return;
+      c.save(); c.globalAlpha = a;
+      for (let i = 0; i < 7; i++) { const ang = i / 7 * Math.PI * 2, d = r * .45; const gr = c.createRadialGradient(x + Math.cos(ang) * d, y + Math.sin(ang) * d, 1, x + Math.cos(ang) * d, y + Math.sin(ang) * d, r * .6); gr.addColorStop(0, 'rgba(170,160,200,.55)'); gr.addColorStop(1, 'rgba(120,110,160,0)'); c.fillStyle = gr; c.beginPath(); c.arc(x + Math.cos(ang) * d, y + Math.sin(ang) * d, r * .6, 0, 7); c.fill(); }
+      c.restore();
+    },
+    /** Молния сверху вниз к точке. */
+    bolt(x: number, y: number, a: number) {
+      if (a <= 0) return;
+      c.save(); c.globalAlpha = a; c.strokeStyle = '#dff1ff'; c.shadowColor = '#7ab8ff'; c.shadowBlur = 16; c.lineWidth = 2.2;
+      c.beginPath(); c.moveTo(x + 6, 0); let yy = 0, xx = x + 6; while (yy < y) { yy += 10; xx = x + (yy >= y ? 0 : ((yy * 37) % 13) - 6); c.lineTo(xx, Math.min(yy, y)); } c.stroke();
+      c.globalAlpha = a * .5; c.fillStyle = '#bfe3ff'; c.beginPath(); c.arc(x, y, 12, 0, 7); c.fill(); c.restore();
+    },
+    /** Клавиша как на клавиатуре. */
+    key(x: number, y: number, label: string, pressed: boolean, w = 24) {
+      c.save(); c.translate(0, pressed ? 2 : 0);
+      c.fillStyle = '#05070a'; c.fillRect(x - w / 2, y - 10 + (pressed ? 0 : 3), w, 22);
+      const kg = c.createLinearGradient(0, y - 12, 0, y + 10); kg.addColorStop(0, pressed ? '#ffe7a3' : '#3a434e'); kg.addColorStop(1, pressed ? '#c08a2c' : '#1d232a');
+      c.fillStyle = kg; c.fillRect(x - w / 2, y - 12, w, 20); c.strokeStyle = pressed ? '#ffe7a3' : '#59616b'; c.lineWidth = 1; c.strokeRect(x - w / 2 + .5, y - 11.5, w - 1, 19);
+      c.restore();
+      g.text(label, x, y - 2 + (pressed ? 2 : 0), pressed ? '#1a1205' : '#e8e2d0', 10, 'center', 1, true);
+    },
+    /** Курсор мыши (attack — красный). */
+    cursor(x: number, y: number, attack = false, a = 1) {
+      c.save(); c.globalAlpha = a; c.fillStyle = attack ? '#ff5a40' : '#f3ead2'; c.strokeStyle = '#000'; c.lineWidth = 1;
+      c.beginPath(); c.moveTo(x, y); c.lineTo(x + 9, y + 9); c.lineTo(x + 4, y + 9); c.lineTo(x + 6, y + 14); c.lineTo(x + 4, y + 15); c.lineTo(x + 2, y + 10); c.lineTo(x, y + 12); c.closePath(); c.fill(); c.stroke(); c.restore();
+    },
+    /** Строка чата команды. */
+    chat(text: string, y: number, a: number) {
+      if (a <= 0) return;
+      c.save(); c.globalAlpha = a; c.fillStyle = 'rgba(0,0,0,.6)'; c.font = '600 9.5px "Golos Text",system-ui,sans-serif';
+      const w = c.measureText(text).width + 12; c.fillRect(10, y - 8, w, 16); c.restore();
+      g.text(text, 16, y, '#9be27e', 9.5, 'left', a, true);
+    },
+    /** Таймер игры сверху. */
+    clock(text: string, hot: boolean) {
+      c.save(); c.fillStyle = 'rgba(8,10,13,.85)'; c.fillRect(AW / 2 - 26, 3, 52, 18); c.strokeStyle = hot ? '#ffe07a' : 'rgba(217,178,91,.6)'; c.strokeRect(AW / 2 - 25.5, 3.5, 51, 17); c.restore();
+      g.text(text, AW / 2, 12, hot ? '#ffe07a' : '#f3ead2', 11, 'center', 1, true);
+    },
+    /** Слот драфта: портрет героя или пустая рамка. */
+    slot(name: string | null, x: number, y: number, ally: boolean, a = 1) {
+      const w = 34, hh = 26;
+      c.save(); c.globalAlpha = a;
+      c.fillStyle = 'rgba(0,0,0,.5)'; c.fillRect(x - w / 2, y - hh / 2, w, hh);
+      c.strokeStyle = name ? (ally ? '#6ad05a' : '#e2553f') : 'rgba(255,255,255,.2)'; c.lineWidth = 1.2; if (!name) c.setLineDash([3, 3]);
+      c.strokeRect(x - w / 2 + .5, y - hh / 2 + .5, w - 1, hh - 1); c.setLineDash([]);
+      if (name) { const im = IMG[name]; if (im && im.complete && im.naturalWidth) c.drawImage(im, x - 10, y - 10, 20, 20); }
+      c.restore();
+    },
+    /** Aegis на земле. */
+    aegis(x: number, y: number, a: number, t: number) {
+      if (a <= 0) return;
+      c.save(); c.globalAlpha = a; c.shadowColor = '#ffd76e'; c.shadowBlur = 12 + Math.sin(t * 20) * 4;
+      c.fillStyle = '#ffd76e'; c.beginPath(); c.moveTo(x, y - 9); c.lineTo(x + 8, y - 5); c.lineTo(x + 6, y + 5); c.lineTo(x, y + 9); c.lineTo(x - 6, y + 5); c.lineTo(x - 8, y - 5); c.closePath(); c.fill();
+      c.fillStyle = '#8a6d33'; c.beginPath(); c.arc(x, y, 3, 0, 7); c.fill(); c.restore();
     },
     lp, COL,
   };

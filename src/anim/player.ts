@@ -1,11 +1,13 @@
 // Рисуем только видимые canvas; при prefers-reduced-motion — стоп-кадр.
 import { AH, APERIOD, AW, G } from './engine.ts';
-import { SCENES as OLD } from './scenes.ts';
 import { GAME_SCENES, PERIOD, STILL } from './scenes-game.ts';
+import { GAME2 } from './scenes-game2.ts';
+import { GAME3 } from './scenes-game3.ts';
+import { GAME4 } from './scenes-game4.ts';
 import { setAssetListener } from './game.ts';
 
-/** Сцены «как в игре» перекрывают схемы с тем же ключом. */
-const SCENES = { ...OLD, ...GAME_SCENES };
+/** Сцены «как в игре» для всех 30 фишек (ключ — русский заголовок фишки). */
+const SCENES = { ...GAME_SCENES, ...GAME2, ...GAME3, ...GAME4 };
 const periodOf = (k: string) => PERIOD[k] || APERIOD;
 const stillOf = (k: string) => STILL[k] ?? .8;
 const tAt = (k: string, now: number) => (RM ? stillOf(k) : (now % periodOf(k)) / periodOf(k));

@@ -109,9 +109,12 @@ test('анимации рисуются, фишки против пика пок
   await page.goto('/');
   await page.waitForSelector('html[data-ready]');
   await expect(page.locator('#vs-tips .vt')).toHaveCount(2);
-  const painted = await page.locator('#featured canvas').evaluate((c: HTMLCanvasElement) => {
-    const d = c.getContext('2d')!.getImageData(0, 0, c.width, c.height).data;
-    let n = 0; for (let i = 0; i < d.length; i += 4) if (d[i + 3]) n++; return n;
-  });
-  expect(painted).toBeGreaterThan(1000);
+  // Иконки с CDN Valve делают canvas «чужим» для getImageData, поэтому сравниваем два снимка: анимация идёт.
+  const cv = page.locator('#featured canvas');
+  await cv.scrollIntoViewIfNeeded();
+  const a = await cv.screenshot();
+  await page.waitForTimeout(600);
+  const b = await cv.screenshot();
+  expect(a.length).toBeGreaterThan(5000);
+  expect(a.equals(b)).toBe(false);
 });
