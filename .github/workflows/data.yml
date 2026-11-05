@@ -1,0 +1,64 @@
+# Ежедневная выгрузка статистики OpenDota.
+# Данные хранятся в ветке `data` (один коммит, перезаписывается), чтобы main не раздувался.
+# Если сборка падает, ветка `data` и сайт остаются на вчерашних данных.
+name: Data
+on:
+  schedule:
+    - cron: '17 3 * * *'   # 03:17 UTC ежедневно
+  workflow_dispatch:
+    inputs:
+      positions:
+        description: 'Обновить позиции (про-матчи за 180 дней) сейчас'
+        type: boolean
+        default: false
+
+concurrency: { group: data, cancel-in-progress: false }
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+
+      - name: Взять вчерашние данные из ветки data
+        run: |
+          if git fetch --depth=1 origin data; then
+            git archive FETCH_HEAD | tar -x -C public
+            echo "Данные из ветки data наложены на public/"
+          else
+            echo "Ветки data ещё нет — стартуем с public/data из main"
+          fi
+
+      - name: Собрать данные
+        env:
+          OPENDOTA_API_KEY: ${{ secrets.OPENDOTA_API_KEY }}
+        run: node scripts/build-data.ts ${{ inputs.positions && '--positions' || '' }}
+
+      - name: Опубликовать в ветку data
+        run: |
+          # Только генерируемые файлы. tips.json и прочее живут в main.
+          rm -rf /tmp/data-branch && mkdir -p /tmp/data-branch/data
+          cp public/data/stats.json public/data/positions.json /tmp/data-branch/data/
+          cp -r public/data/history /tmp/data-branch/data/
+          cp -r public/icons /tmp/data-branch/
+          cd /tmp/data-branch
+          git init -q -b data
+          git config user.name "kontrpik-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "data: $(date -u +%F)"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" data
+
+  deploy:
+    needs: build
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/deploy.yml

@@ -1,0 +1,9 @@
+{
+  "name": "kontrpik",
+  "productName": "Kontrpik",
+  "version": "1.0.0",
+  "description": "Контрпик для Dota 2",
+  "main": "main.js",
+  "author": "FINIK",
+  "license": "MIT"
+}

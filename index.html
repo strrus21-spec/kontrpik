@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="Подбор контрпика в Dota 2 по статистике матчей и сборник фишек. Counterpicks for Dota 2 based on match statistics.">
+<title>Контрпик Dota 2</title>
+<link rel="icon" type="image/png" href="./favicon.png">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1><span data-t="h1a" class="h1a">Dota 2 </span><span data-t="h1b">помощник</span></h1>
+      <p class="sub" data-t="sub">Подбор контрпика по статистике матчей и сборник фишек, которые помогают выигрывать.</p>
+    </div>
+  </header>
+  <nav class="nav" aria-label="Разделы" data-ta="navLabel"><a href="#counterpick"><span class="n">01</span><span data-t="nav1">Контрпик</span></a><a href="#tips-block"><span class="n">02</span><span data-t="nav2">Фишки</span></a><div class="lang" role="group" aria-label="Language"><button data-lang="ru">RU</button><button data-lang="en">EN</button></div></nav>
+  <section id="counterpick" class="wrap" style="max-width:none;margin:0">
+  <div class="block-title"><h2 class="big" data-t="cpTitle">Контрпик</h2><span class="sub" data-t="cpSub">Отметь врагов и союзников. Справа появятся герои, которые лучше всех играют против этого пика и сочетаются с твоей командой.</span></div>
+
+  <section class="board dota-draft" aria-label="Драфт" data-ta="draftLabel">
+    <div class="side ally team radiant">
+      <div class="side-head"><h2><span class="team-name" data-t="radiant">Силы Света</span><span class="team-sub" data-t="radiantSub">твоя команда</span></h2><button class="clear" data-clear="ally" data-t="clear">Очистить</button></div>
+      <div class="slots" id="slots-ally"></div>
+    </div>
+    <div class="draft-center">
+      <div class="vs-badge">VS</div>
+      <div class="side ban">
+        <div class="side-head"><h2 data-t="bans">Баны</h2><button class="clear" data-clear="ban" data-t="clear">Очистить</button></div>
+        <div class="slots" id="slots-ban"></div>
+      </div>
+    </div>
+    <div class="side enemy team dire">
+      <div class="side-head"><h2><span class="team-name" data-t="dire">Силы Тьмы</span><span class="team-sub"><span data-t="direSub">враги </span><span id="exampleTag" class="example" data-t="example" hidden>· пример пика</span></span></h2><button class="clear" data-clear="enemy" data-t="clear">Очистить</button></div>
+      <div class="slots" id="slots-enemy"></div>
+    </div>
+  </section>
+
+  <div class="main">
+    <section class="pool" aria-label="Герои" data-ta="heroesLabel">
+      <div class="tools">
+        <div class="mode" role="group" aria-label="Куда добавлять героя" data-ta="modeLabel">
+          <button id="m-enemy" class="m-enemy" aria-pressed="true" data-mode="enemy" data-t="mEnemy">Враг</button>
+          <button id="m-ally" class="m-ally" aria-pressed="false" data-mode="ally" data-t="mAlly">Союзник</button>
+          <button id="m-ban" class="m-ban" aria-pressed="false" data-mode="ban" data-t="mBan">Бан</button>
+        </div>
+        <input id="q" type="search" data-tp="q" placeholder="Поиск: пудж, фантомка, Invoker…" aria-label="Поиск героя" data-ta="searchLabel">
+      </div>
+      <div id="pool"></div>
+    </section>
+
+    <section class="results" aria-label="Рекомендации" data-ta="resultsLabel">
+      <div class="res-head">
+        <h2 data-t="best">Лучшие пики</h2>
+        <div class="tools">
+          <select id="src" aria-label="Статистика" data-ta="srcLabel"></select>
+          <select id="role" aria-label="Фильтр по роли" data-ta="roleLabel" hidden></select>
+        </div>
+      </div>
+      <div class="chips poschips" id="poschips" role="group" aria-label="Позиция" data-ta="posLabel"></div>
+      <div class="legend" id="legend"></div>
+      <div id="bans" class="bans" hidden></div>
+      <div id="out"></div>
+      <div id="vs-tips" class="vs-tips" hidden></div>
+      <p class="note" id="note"></p>
+    </section>
+  </div>
+  </section>
+
+  <section id="tips-block" class="wrap" style="max-width:none;margin:0" aria-label="Фишки" data-ta="tipsLabel">
+    <div class="block-title"><h2 class="big" data-t="tipsTitle">Фишки</h2><span class="sub" data-t="tipsSub">Короткие приёмы, которые знают не все. Метка 7.41 — про текущий патч.</span></div>
+    <div class="featured" id="featured"></div>
+    <div class="tips-head"><div class="progress"><span class="progress-track"><span class="progress-fill" id="prog"></span></span><span id="prog-text"></span></div></div>
+    <div class="tips-tools">
+      <div class="chips" id="tip-cats" role="group" aria-label="Тема" data-ta="catLabel"></div>
+      <div class="tips-row"><div class="chips" id="tip-lvls" role="group" aria-label="Уровень" data-ta="lvlLabel"></div><input id="tq" type="search" data-tp="tq" placeholder="Найти фишку…" aria-label="Поиск по фишкам" data-ta="tqLabel"><label><input type="checkbox" id="hide-known"> <span data-t="hideKnown">скрыть изученные</span></label><span id="tip-count"></span></div>
+    </div>
+    <div class="tips" id="tips"></div>
+    <p class="sources"><span data-t="src1">Изменения патча: </span><a href="https://www.dota2.com/patches/7.41" target="_blank" rel="noopener" data-t="src2">официальные заметки 7.41</a>, <a href="https://www.gosugamers.net/dota2/news/78166-dota-2-patch-7-41-removes-facets-and-adds-nine-new-items" target="_blank" rel="noopener">GosuGamers</a>, <a href="https://liquipedia.net/dota2/7.41e" target="_blank" rel="noopener">Liquipedia</a><span data-t="src3">. Статистика: </span><a href="https://www.opendota.com" target="_blank" rel="noopener">OpenDota</a>.</p>
+  </section>
+</div>
+<script type="module" src="/src/main.ts"></script>
+</body>
+</html>
