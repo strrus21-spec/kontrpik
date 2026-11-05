@@ -2,6 +2,7 @@
 import { t } from './i18n.ts';
 import { fetchPlayer, parseSteamId, personalBonus, poolNames, rankLabel, type MyHero, type Player } from './player.ts';
 import type { Hero } from './types.ts';
+import { odHeroes } from './odHeroes.ts';
 import { $, esc, sign } from './render/html.ts';
 
 const KEY = 'kontrpik-me';
@@ -33,27 +34,12 @@ export function mineLine(name: string): string {
   return s;
 }
 
-/** hero_id OpenDota → имя. Берём из данных; если в данных нет id — один раз спрашиваем /api/heroes. */
+/** hero_id OpenDota → имя. Берём из данных; если в данных нет id — справочник OpenDota. */
 function heroResolver(heroes: Hero[]) {
   const byId = new Map(heroes.filter(h => h.odId).map(h => [h.odId!, h.name]));
-  let loaded: Promise<void> | null = null;
   return async (id: number) => {
-    if (!byId.has(id) && !loaded) {
-      loaded = (async () => {
-        try {
-          const cached = JSON.parse(localStorage.getItem('kontrpik-heroids') || 'null') as [number, string][] | null;
-          let list = cached;
-          if (!list) {
-            const r = await fetch('https://api.opendota.com/api/heroes');
-            list = ((await r.json()) as { id: number; localized_name: string }[]).map(h => [h.id, h.localized_name]);
-            try { localStorage.setItem('kontrpik-heroids', JSON.stringify(list)); } catch { /* ignore */ }
-          }
-          for (const [i, n] of list) if (!byId.has(i)) byId.set(i, n);
-        } catch { /* без имён — герой просто не попадёт в пул */ }
-      })();
-    }
-    if (!byId.has(id) && loaded) await loaded;
-    return byId.get(id);
+    if (byId.has(id)) return byId.get(id);
+    try { return (await odHeroes()).get(id)?.name; } catch { return undefined; }
   };
 }
 
