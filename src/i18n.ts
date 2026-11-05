@@ -160,7 +160,7 @@ const ru = {
   copyLink: 'Скопировать ссылку', copied: 'Ссылка скопирована', copyFail: 'Скопируй ссылку вручную:',
   st: {
     title: 'Контрпик Dota 2', h1a: 'Dota 2 ', h1b: 'помощник', sub: 'Подбор контрпика по статистике матчей и сборник фишек, которые помогают выигрывать.',
-    nav1: 'Контрпик', nav2: 'Фишки', heroCta1: 'Подобрать контрпик', heroDown: 'К подбору',
+    nav1: 'Контрпик', nav2: 'Фишки', heroDown: 'К подбору',
     footNote: 'Фанатский проект, не связан с Valve. Dota 2 — товарный знак Valve Corporation.',
     mLoadBtn: 'Разобрать', homeLabel: 'На главную', install: 'Установить', compactOn: 'Компактный режим', compactOff: 'Полный режим', kbdHint: 'Клавиши: / — поиск, 1–5 — позиция, 0 — любая, E, A, B — враг, союзник, бан.', stH: 'Для стрима (OBS)', qzOpenBtn: 'Викторина', nav4: 'Разбор', matchTitle: 'Разбор матча', matchSub: 'Вставь номер матча или выбери из своих последних игр. Выводы — только из данных матча.', matchInput: 'Номер матча или ссылка Dotabuff, OpenDota', matchLabel: 'Разбор матча', nav3: 'Мета', metaTitle: 'Мета', metaSub: 'Сильнейшие герои сейчас: тир-лист по группе рангов и позиции, тренд за неделю и главное из патча.', metaQ: 'Найти героя…', metaLabel: 'Мета', metaSrcLabel: 'Группа рангов', cpTitle: 'Контрпик', cpSub: 'Отметь врагов и союзников. Справа появятся герои, которые лучше всех играют против этого пика и сочетаются с твоей командой.',
     radiant: 'Силы Света', radiantSub: 'твоя команда', dire: 'Силы Тьмы', direSub: 'враги ', example: '· пример пика', bans: 'Баны', clear: 'Очистить',
@@ -307,7 +307,7 @@ const en: Dict = {
   copyLink: 'Copy link', copied: 'Link copied', copyFail: 'Copy the link manually:',
   st: {
     title: 'Dota 2 Counterpick', h1a: 'Dota 2 ', h1b: 'helper', sub: 'Counterpicks based on match statistics and a collection of tips that help you win.',
-    nav1: 'Counterpick', nav2: 'Tips', heroCta1: 'Find a counterpick', heroDown: 'To the draft',
+    nav1: 'Counterpick', nav2: 'Tips', heroDown: 'To the draft',
     footNote: 'Fan project, not affiliated with Valve. Dota 2 is a trademark of Valve Corporation.',
     mLoadBtn: 'Analyze', homeLabel: 'Home', install: 'Install', compactOn: 'Compact mode', compactOff: 'Full mode', kbdHint: 'Keys: / search, 1–5 position, 0 any, E, A, B enemy, ally, ban.', stH: 'For streaming (OBS)', qzOpenBtn: 'Quiz', nav4: 'Match', matchTitle: 'Match analysis', matchSub: 'Paste a match ID or pick one of your recent games. Every point comes from the match data.', matchInput: 'Match ID or a Dotabuff, OpenDota link', matchLabel: 'Match analysis', nav3: 'Meta', metaTitle: 'Meta', metaSub: 'The strongest heroes right now: a tier list by rank group and position, the weekly trend and the patch highlights.', metaQ: 'Find a hero…', metaLabel: 'Meta', metaSrcLabel: 'Rank group', cpTitle: 'Counterpick', cpSub: 'Mark enemies and allies. On the right you will see the heroes that do best against this draft and fit your team.',
     radiant: 'The Radiant', radiantSub: 'your team', dire: 'The Dire', direSub: 'enemies ', example: '· sample draft', bans: 'Bans', clear: 'Clear',

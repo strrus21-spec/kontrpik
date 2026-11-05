@@ -653,3 +653,6 @@ body.compact #counterpick{padding-top:12px}
 /* фон под главным экраном не повторяет сцену: размыт и темнее; главный экран растворяется книзу */
 .bg-art{filter:blur(10px) brightness(.55) saturate(.9);transform:scale(1.06)}
 .landing{-webkit-mask-image:linear-gradient(180deg,#000 78%,transparent);mask-image:linear-gradient(180deg,#000 78%,transparent)}
+/* «Контрпик» уже есть во вкладке: заголовок над драфтом только для читалок экрана */
+#counterpick>.block-title h2.big{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+#counterpick>.block-title{margin-top:8px}
