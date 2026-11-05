@@ -87,3 +87,23 @@ for (const width of [400, 1440]) for (const lang of ['ru', 'en']) {
     await page.locator('#match').screenshot({ path: `test-results/shots/match-${lang}-${width}.png` });
   });
 }
+
+test('Разбор → F5 → другая вкладка: переходит и не возвращает обратно на разбор', async ({ page }) => {
+  await mockOD(page, 'queue');
+  await page.clock.install();
+  await page.goto('/match/8000000001');
+  await page.waitForSelector('html[data-ready]');
+  await expect(page.locator('#match')).toBeVisible();
+  // матч ещё обрабатывается — уходим на «Контрпик»
+  await page.locator('.nav a[href="#counterpick"]:not(.logo)').click();
+  await expect(page.locator('#counterpick')).toBeVisible();
+  await expect(page).not.toHaveURL(/\/match\//);
+  await page.clock.runFor(11000);   // разбор догрузился
+  await expect(page.locator('#counterpick')).toBeVisible();
+  await expect(page.locator('#match')).toBeHidden();
+  // обновление страницы оставляет на «Контрпике»
+  await page.reload(); await page.waitForSelector('html[data-ready]');
+  await expect(page.locator('#counterpick')).toBeVisible();
+  await page.locator('.nav a[href="#meta"]').click();
+  await expect(page.locator('#meta')).toBeVisible();
+});

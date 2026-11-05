@@ -1,5 +1,6 @@
 // Вкладки: каждый раздел — отдельная страница. Адрес вкладки — хеш (#meta), работает и на GitHub Pages, и в файле.
 import { bindAnims } from './anim/player.ts';
+import { replaceUrl } from './nav.ts';
 
 export const TABS = ['home', 'counterpick', 'meta', 'match', 'tips-block'] as const;
 export type Tab = typeof TABS[number];
@@ -18,6 +19,9 @@ export function showTab(tab: Tab, opts: { scroll?: boolean } = {}) {
     if (a.getAttribute('href') === '#' + tab) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
   });
   document.body.dataset.tab = tab;
+  // Ушли с разбора — убираем из адреса /match/{id}, иначе после обновления страница снова откроет разбор.
+  const base = import.meta.env.BASE_URL;
+  if (tab !== 'match' && location.pathname.startsWith(base + 'match/')) replaceUrl(null, base + '#' + tab);
   bindAnims();   // анимации только видимой вкладки
   if (opts.scroll !== false) window.scrollTo({ top: 0, behavior: 'auto' });   // новая вкладка — с начала страницы
 }
@@ -25,7 +29,9 @@ export function showTab(tab: Tab, opts: { scroll?: boolean } = {}) {
 /** Вкладка из адреса (#meta); без адреса — главная (экран-меню). */
 export function initialTab(): Tab {
   const h = location.hash.slice(1);
-  return isTab(h) ? h : 'home';
+  if (isTab(h)) return h;
+  // ссылка на разбор /match/{id} без вкладки в адресе — открываем разбор
+  return location.pathname.startsWith(import.meta.env.BASE_URL + 'match/') ? 'match' : 'home';
 }
 
 export function bindTabs() {

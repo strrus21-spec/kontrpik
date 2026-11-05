@@ -1,4 +1,4 @@
-import { showTab } from '../tabs.ts';
+import { currentTab, showTab } from '../tabs.ts';
 // Раздел «Разбор матча» (6.6). Адрес для «Поделиться»: /match/{id}?p={slot}.
 import { replaceUrl } from '../nav.ts';
 import { LANG, dateOne, t } from '../i18n.ts';
@@ -72,8 +72,8 @@ async function analyze(x: Ctx, id: number, slot: number | null, push = true) {
   const mine = me.player ? r.match.players.find(p => p.account_id === me.player!.id) : undefined;
   current = { match: r.match, slot: slot ?? mine?.player_slot ?? null };
   renderMatch(x);
-  if (push) updateUrl(); 
-  showTab('match');
+  // Пока шла загрузка, игрок мог уйти на другую вкладку — не перетаскиваем его обратно.
+  if (push && currentTab() === 'match') updateUrl();
 }
 
 function updateUrl() {
@@ -115,7 +115,8 @@ export function bindMatch(x: Ctx) {
 /** Прямая ссылка /match/{id}?p={slot}. */
 export function syncMatchFromPath(x: Ctx) {
   const id = matchFromPath(); if (!id) return;
-  showTab('match', { scroll: false });
+  const h = location.hash.slice(1);
+  if (!h || h === 'match') showTab('match', { scroll: false });
   const p = new URLSearchParams(location.search).get('p');
   ($('match-id') as HTMLInputElement).value = String(id);
   void analyze(x, id, p !== null && /^\d+$/.test(p) ? +p : null, false);
