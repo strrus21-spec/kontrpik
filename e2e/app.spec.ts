@@ -8,6 +8,10 @@ const errors = (page: Page) => {
 };
 const topNames = (page: Page) => page.locator('.podium .top-name strong').allTextContents();
 
+// Иконки способностей и предметов грузятся с сервера Valve; в тестах — подставная картинка 1×1.
+const PNG1 = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==', 'base64');
+test.beforeEach(async ({ page }) => { await page.route('https://cdn.cloudflare.steamstatic.com/**', r => r.fulfill({ body: PNG1, contentType: 'image/png' })); });
+
 for (const lang of ['ru', 'en'] as const) {
   for (const width of [1440, 400]) {
     test(`${lang} ${width}px: пример пика, контрольный топ-3, без горизонтальной прокрутки`, async ({ page }) => {

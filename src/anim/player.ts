@@ -1,6 +1,14 @@
 // Рисуем только видимые canvas; при prefers-reduced-motion — стоп-кадр.
 import { AH, APERIOD, AW, G } from './engine.ts';
-import { SCENES } from './scenes.ts';
+import { SCENES as OLD } from './scenes.ts';
+import { GAME_SCENES, PERIOD, STILL } from './scenes-game.ts';
+import { setAssetListener } from './game.ts';
+
+/** Сцены «как в игре» перекрывают схемы с тем же ключом. */
+const SCENES = { ...OLD, ...GAME_SCENES };
+const periodOf = (k: string) => PERIOD[k] || APERIOD;
+const stillOf = (k: string) => STILL[k] ?? .8;
+const tAt = (k: string, now: number) => (RM ? stillOf(k) : (now % periodOf(k)) / periodOf(k));
 import { esc } from '../render/html.ts';
 
 type Cv = HTMLCanvasElement & { __b?: 1; __vis?: boolean };
@@ -23,15 +31,17 @@ export function bindAnims() {
   canvases = [...document.querySelectorAll<Cv>('canvas[data-scene]')];
   for (const cv of canvases) {
     if (!cv.__b) { cv.__b = 1; cv.__vis = !io; io?.observe(cv); }
-    draw(cv, RM ? .8 : (performance.now() % APERIOD) / APERIOD);
+    draw(cv, tAt(cv.dataset.scene!, performance.now()));
   }
 }
 
 /** Перерисовать все кадры (например, после загрузки иконок или смены языка). */
-export const redrawAll = () => canvases.forEach(cv => cv.isConnected && draw(cv, RM ? .8 : (performance.now() % APERIOD) / APERIOD));
+export const redrawAll = () => canvases.forEach(cv => cv.isConnected && draw(cv, tAt(cv.dataset.scene!, performance.now())));
+// Загрузилась иконка с сервера Valve — перерисовать стоп-кадры.
+setAssetListener(() => { if (RM) redrawAll(); });
 
 function loop(now: number) {
-  if (!RM) for (const cv of canvases) if (cv.__vis && cv.isConnected) draw(cv, (now % APERIOD) / APERIOD);
+  if (!RM) for (const cv of canvases) if (cv.__vis && cv.isConnected) draw(cv, tAt(cv.dataset.scene!, now));
   requestAnimationFrame(loop);
 }
 export const startAnims = () => requestAnimationFrame(loop);
