@@ -28,10 +28,21 @@ export interface Match {
 export const isRadiant = (p: MPlayer) => p.isRadiant ?? p.player_slot < 128;
 export const isParsed = (m: Match) => m.version !== null && m.version !== undefined;
 
-/** Ядро команды — трое с наибольшим net worth; остальные — саппорты. */
+/**
+ * Ядро (pos 1–3) или саппорт (pos 4–5). Как в positions.json: по линии и золоту внутри линии —
+ * самый богатый на своей линии (безопасной, центральной или сложной) — ядро. Если линий нет
+ * (неразобранный матч), запасной вариант — трое самых богатых в команде.
+ */
 export function isCore(m: Match, p: MPlayer): boolean {
-  const team = m.players.filter(x => isRadiant(x) === isRadiant(p)).sort((a, b) => (b.net_worth ?? 0) - (a.net_worth ?? 0));
-  return team.indexOf(p) < 3;
+  const team = m.players.filter(x => isRadiant(x) === isRadiant(p));
+  const gold = (x: MPlayer) => x.gold_per_min ?? x.net_worth ?? 0;
+  if (team.every(x => typeof x.lane_role === 'number')) {
+    if (![1, 2, 3].includes(p.lane_role!)) return false;
+    const lane = team.filter(x => x.lane_role === p.lane_role).sort((a, b) => gold(b) - gold(a));
+    return lane[0] === p;
+  }
+  const byNw = [...team].sort((a, b) => (b.net_worth ?? 0) - (a.net_worth ?? 0));
+  return byNw.indexOf(p) < 3;
 }
 
 /** Ключевые предметы: внутреннее имя → название. Первый купленный из них — «ключевой предмет». */

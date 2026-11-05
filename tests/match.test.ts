@@ -80,3 +80,18 @@ describe('ожидание разбора', () => {
     expect(await loadParsed(1, { fetchFn: none })).toEqual({ ok: false, reason: 'notFound' });
   });
 });
+
+describe('роль по линии', () => {
+  it('офлейнер беднее саппортов — всё равно ядро; саппорт на линии с керри — нет', () => {
+    const m = match({ net_worth: 4000, gold_per_min: 300, lane_role: 3 });
+    const [off, a, b, c, d] = m.players;
+    Object.assign(a, { lane_role: 1, gold_per_min: 600, net_worth: 15000 });
+    Object.assign(b, { lane_role: 1, gold_per_min: 320, net_worth: 6000 });   // саппорт с керри
+    Object.assign(c, { lane_role: 2, gold_per_min: 550, net_worth: 12000 });
+    Object.assign(d, { lane_role: 3, gold_per_min: 280, net_worth: 5000 });    // саппорт с офлейнером
+    expect(isCore(m, off)).toBe(true);
+    expect(isCore(m, b)).toBe(false);
+    expect(isCore(m, d)).toBe(false);
+    expect(isCore(m, a)).toBe(true);
+  });
+});
