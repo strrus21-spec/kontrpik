@@ -21,7 +21,7 @@ for (const lang of ['ru', 'en']) {
     await expect(page.locator('#hero')).toBeVisible();
     await audit(page, 'карточка');
     await page.keyboard.press('Escape');
-    await page.locator('#quiz-open').click();
+    await page.locator('.nav a[href="#tips-block"]').click(); await page.locator('#quiz-open').click();
     await audit(page, 'викторина');
     await page.keyboard.press('Escape');
     await page.goto('/vote/');

@@ -58,7 +58,7 @@ test('Голосование из чата Twitch: !1/!2/!3, один голос
 test('Викторина: 10 вопросов, ответ подсвечивается, итог и рекорд', async ({ page }) => {
   await page.goto('/');
   await page.waitForSelector('html[data-ready]');
-  await page.locator('#quiz-open').click();
+  await page.locator('.nav a[href="#tips-block"]').click(); await page.locator('#quiz-open').click();
   const dlg = page.locator('#quiz');
   await expect(dlg).toBeVisible();
   for (let k = 1; k <= 10; k++) {
@@ -85,7 +85,7 @@ for (const width of [400, 1440]) for (const lang of ['ru', 'en']) {
     await page.locator('#stream summary').click();
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
     await page.locator('#stream').screenshot({ path: `test-results/shots/stream-${lang}-${width}.png` });
-    await page.locator('#quiz-open').click();
+    await page.locator('.nav a[href="#tips-block"]').click(); await page.locator('#quiz-open').click();
     const [sw, cw] = await page.locator('#quiz').evaluate(d => [d.scrollWidth, d.clientWidth]);
     expect(sw).toBeLessThanOrEqual(cw);
     await page.screenshot({ path: `test-results/shots/quiz-${lang}-${width}.png` });

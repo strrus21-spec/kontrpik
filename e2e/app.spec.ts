@@ -81,7 +81,7 @@ test('драфт, язык и изученные фишки сохраняютс
   await page.locator('[data-clear="enemy"]').click();
   await page.locator('#q').fill('Axe');
   await page.locator('#pool .hero', { hasText: /^Axe$/ }).click();
-  await page.locator('#tips [data-known="0"]').click();
+  await page.locator('.nav a[href="#tips-block"]').click(); await page.locator('#tips [data-known="0"]').click();
   await expect(page.locator('#prog-text')).toHaveText('Learned 1 of 30');
 
   const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('kontrpik-draft')!));
@@ -110,6 +110,7 @@ test('анимации рисуются, фишки против пика пок
   await page.waitForSelector('html[data-ready]');
   await expect(page.locator('#vs-tips .vt')).toHaveCount(2);
   // Иконки с CDN Valve делают canvas «чужим» для getImageData, поэтому сравниваем два снимка: анимация идёт.
+  await page.locator('.nav a[href="#tips-block"]').click(); 
   const cv = page.locator('#featured canvas');
   await cv.scrollIntoViewIfNeeded();
   const a = await cv.screenshot();
@@ -117,4 +118,25 @@ test('анимации рисуются, фишки против пика пок
   const b = await cv.screenshot();
   expect(a.length).toBeGreaterThan(5000);
   expect(a.equals(b)).toBe(false);
+});
+
+test('Вкладки: один раздел на экране, адрес #вкладки, «назад», запоминание', async ({ page }) => {
+  await page.goto('/');
+  await page.waitForSelector('html[data-ready]');
+  const visible = async () => (await Promise.all(['counterpick', 'meta', 'match', 'tips-block'].map(async id => [id, await page.locator('#' + id).isVisible()] as const))).filter(x => x[1]).map(x => x[0]);
+  expect(await visible()).toEqual(['counterpick']);
+  await expect(page.locator('.nav a[href="#counterpick"]')).toHaveAttribute('aria-current', 'page');
+  await page.locator('.nav a[href="#meta"]').click();
+  expect(await visible()).toEqual(['meta']);
+  await expect(page).toHaveURL(/#meta$/);
+  await page.locator('.nav a[href="#tips-block"]').click();
+  expect(await visible()).toEqual(['tips-block']);
+  await page.goBack();
+  expect(await visible()).toEqual(['meta']);
+  await page.reload(); await page.waitForSelector('html[data-ready]');
+  expect(await visible()).toEqual(['meta']);
+  // «Все фишки» под рекомендациями открывает вкладку фишек
+  await page.locator('.nav a[href="#counterpick"]').click();
+  await page.locator('#vs-tips .vt-more').click();
+  expect(await visible()).toEqual(['tips-block']);
 });

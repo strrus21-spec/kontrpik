@@ -65,7 +65,7 @@ test('Комната: неверный код и ключ управления',
 test('Таблица лидеров викторины', async ({ page }) => {
   await page.goto('/');
   await page.waitForSelector('html[data-ready]');
-  await page.locator('#quiz-open').click();
+  await page.locator('.nav a[href="#tips-block"]').click(); await page.locator('#quiz-open').click();
   const dlg = page.locator('#quiz');
   for (let k = 0; k < 10; k++) { await dlg.locator('.qz-opt').first().click(); await dlg.locator('[data-qz="next"]').click(); }
   await expect(dlg.locator('.lb h3')).toHaveText('Таблица лидеров');

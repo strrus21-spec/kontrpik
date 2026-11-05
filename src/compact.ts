@@ -1,3 +1,4 @@
+import { showTab } from './tabs.ts';
 // Компактный режим (телефон): только слоты врагов, поиск и топ-5 крупными кнопками.
 import { t } from './i18n.ts';
 import type { PickRow } from './scoring.ts';
@@ -34,6 +35,6 @@ export function bindCompact(onEnter: () => void) {
     try { localStorage.setItem(KEY, compact ? '1' : '0'); } catch { /* ignore */ }
     if (compact) onEnter();
     applyCompact();
-    $('counterpick').scrollIntoView({ block: 'start' });
+    showTab('counterpick');
   });
 }

@@ -566,3 +566,8 @@ body.compact #q{font-size:16px;padding:10px 12px}
 
 /* доступность: контраст активной кнопки «Враг» ≥ 4.5:1 (белый на чуть более тёмном красном) */
 .mode button[aria-pressed="true"].m-enemy{background:#bd4636}
+
+/* ===== вкладки ===== */
+.nav a{position:relative}
+.nav a[aria-current="page"]{color:#ffe7a3;text-shadow:0 0 10px rgba(217,178,91,.5)}
+.nav a[aria-current="page"]::after{content:"";position:absolute;left:10px;right:10px;bottom:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}

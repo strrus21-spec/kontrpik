@@ -26,6 +26,7 @@ import { bindStream, renderStream } from './render/stream.ts';
 import { bindQuiz, refreshQuiz } from './render/quiz.ts';
 import { applyCompact, bindCompact } from './compact.ts';
 import { bindKeys } from './keys.ts';
+import { bindTabs, initialTab, showTab } from './tabs.ts';
 
 setLang(initialLang());
 // Все формы работают через JS: до загрузки данных отправка не должна перезагружать страницу.
@@ -74,15 +75,17 @@ async function start() {
   bindQuiz(data);
   bindCompact(() => { x.state.mode = 'enemy'; saveState(x.state, data.heroes); renderDraft(x); });
   bindKeys({
-    search: () => { const q = $<HTMLInputElement>('q'); q.scrollIntoView({ block: 'center' }); q.focus(); q.select(); },
-    pos: p => { x.state.pos = p; saveState(x.state, data.heroes); renderPosChips(x); renderResults(x); },
-    mode: m => { x.state.mode = m; saveState(x.state, data.heroes); renderDraft(x); },
+    search: () => { showTab('counterpick', { scroll: false }); const q = $<HTMLInputElement>('q'); q.scrollIntoView({ block: 'center' }); q.focus(); q.select(); },
+    pos: p => { showTab('counterpick', { scroll: false }); x.state.pos = p; saveState(x.state, data.heroes); renderPosChips(x); renderResults(x); },
+    mode: m => { showTab('counterpick', { scroll: false }); x.state.mode = m; saveState(x.state, data.heroes); renderDraft(x); },
   });
   document.querySelector('.lang')!.addEventListener('click', e => {
     const b = (e.target as Element).closest<HTMLElement>('[data-lang]'); if (!b) return;
     e.stopPropagation(); setLang(b.dataset.lang as Lang); saveLang(LANG); renderAll();
   });
   renderAll();
+  bindTabs();
+  showTab(initialTab(), { scroll: false });
   syncHeroFromPath(x);
   syncMatchFromPath(x);
   document.documentElement.dataset.ready = '1';   // приложение готово (используют e2e-тесты)

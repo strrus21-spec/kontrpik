@@ -1,3 +1,4 @@
+import { showTab } from '../tabs.ts';
 // Раздел «Разбор матча» (6.6). Адрес для «Поделиться»: /match/{id}?p={slot}.
 import { replaceUrl } from '../nav.ts';
 import { LANG, dateOne, t } from '../i18n.ts';
@@ -72,7 +73,7 @@ async function analyze(x: Ctx, id: number, slot: number | null, push = true) {
   current = { match: r.match, slot: slot ?? mine?.player_slot ?? null };
   renderMatch(x);
   if (push) updateUrl(); 
-  $('match').scrollIntoView({ block: 'start' });
+  showTab('match');
 }
 
 function updateUrl() {
@@ -114,6 +115,7 @@ export function bindMatch(x: Ctx) {
 /** Прямая ссылка /match/{id}?p={slot}. */
 export function syncMatchFromPath(x: Ctx) {
   const id = matchFromPath(); if (!id) return;
+  showTab('match', { scroll: false });
   const p = new URLSearchParams(location.search).get('p');
   ($('match-id') as HTMLInputElement).value = String(id);
   void analyze(x, id, p !== null && /^\d+$/.test(p) ? +p : null, false);

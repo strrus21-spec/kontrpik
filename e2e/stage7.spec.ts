@@ -76,6 +76,8 @@ for (const lang of ['ru', 'en']) {
     await top.first().click();
     await expect(page.locator('#hero')).toBeVisible();
     await page.keyboard.press('Escape');
+    await expect(page.locator('#hero')).toBeHidden();
+    await expect(page).not.toHaveURL(/\/hero\//);   // адрес карточки убран до перезагрузки
     await page.reload();
     await page.waitForSelector('html[data-ready]');
     await expect(page.locator('.c-pick')).toHaveCount(5);
