@@ -124,19 +124,19 @@ test('Вкладки: один раздел на экране, адрес #вк�
   await page.goto('/');
   await page.waitForSelector('html[data-ready]');
   const visible = async () => (await Promise.all(['counterpick', 'meta', 'match', 'tips-block'].map(async id => [id, await page.locator('#' + id).isVisible()] as const))).filter(x => x[1]).map(x => x[0]);
-  expect(await visible()).toEqual(['counterpick']);
+  await expect.poll(visible).toEqual(['counterpick']);
   await expect(page.locator('.nav a[href="#counterpick"]')).toHaveAttribute('aria-current', 'page');
   await page.locator('.nav a[href="#meta"]').click();
-  expect(await visible()).toEqual(['meta']);
+  await expect.poll(visible).toEqual(['meta']);
   await expect(page).toHaveURL(/#meta$/);
   await page.locator('.nav a[href="#tips-block"]').click();
-  expect(await visible()).toEqual(['tips-block']);
+  await expect.poll(visible).toEqual(['tips-block']);
   await page.goBack();
-  expect(await visible()).toEqual(['meta']);
+  await expect.poll(visible).toEqual(['meta']);
   await page.reload(); await page.waitForSelector('html[data-ready]');
-  expect(await visible()).toEqual(['meta']);
+  await expect.poll(visible).toEqual(['meta']);
   // «Все фишки» под рекомендациями открывает вкладку фишек
   await page.locator('.nav a[href="#counterpick"]').click();
   await page.locator('#vs-tips .vt-more').click();
-  expect(await visible()).toEqual(['tips-block']);
+  await expect.poll(visible).toEqual(['tips-block']);
 });

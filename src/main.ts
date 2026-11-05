@@ -86,6 +86,8 @@ async function start() {
   renderAll();
   bindTabs();
   showTab(initialTab(), { scroll: false });
+  // ссылка с #вкладкой не должна проматывать мимо шапки
+  if (!location.pathname.includes('/match/') && !location.pathname.includes('/hero/')) window.scrollTo(0, 0);
   syncHeroFromPath(x);
   syncMatchFromPath(x);
   document.documentElement.dataset.ready = '1';   // приложение готово (используют e2e-тесты)

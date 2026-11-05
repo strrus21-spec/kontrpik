@@ -571,3 +571,13 @@ body.compact #q{font-size:16px;padding:10px 12px}
 .nav a{position:relative}
 .nav a[aria-current="page"]{color:#ffe7a3;text-shadow:0 0 10px rgba(217,178,91,.5)}
 .nav a[aria-current="page"]::after{content:"";position:absolute;left:10px;right:10px;bottom:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+
+/* ===== фон: Силы Света против Сил Тьмы (своя иллюстрация, src/assets/bg.svg) ===== */
+.bg-art{position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(13,16,20,.35),rgba(13,16,20,.55) 40%,rgba(13,16,20,.82)),url(./assets/bg.svg) center bottom/cover no-repeat}
+@media (max-width:700px){.bg-art{background-position:center 70%}}
+/* шапка — баннер с той же иллюстрацией */
+header{background:linear-gradient(180deg,rgba(13,16,20,.15),rgba(13,16,20,.55) 70%,rgba(13,16,20,.85)),url(./assets/bg.svg) center 62%/cover no-repeat!important;min-height:220px;display:flex;align-items:flex-end;justify-content:center}
+header .sub{text-shadow:0 1px 3px #000}
+@media (max-width:700px){header{min-height:180px;background-position:center 60%!important}}
+.bg-art{background:linear-gradient(180deg,rgba(13,16,20,.25),rgba(13,16,20,.45) 40%,rgba(13,16,20,.75)),url(./assets/bg.svg) center bottom/cover no-repeat}
