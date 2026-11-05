@@ -680,3 +680,22 @@ body[data-tab="home"]{margin:0}
 @media (max-width:700px){
   .landing{background:linear-gradient(180deg,rgba(13,16,20,.55),rgba(13,16,20,.1) 35%,rgba(13,16,20,0) 70%,rgba(13,16,20,.5)),url(./assets/bg-photo-m.jpg) center bottom/cover no-repeat}
 }
+
+/* ===== крупнее шрифты, логотип у левого края ===== */
+body{font-size:16px}
+.nav.topbar{padding-left:24px;padding-right:24px}
+.nav.topbar .logo-ic{width:48px;height:48px}
+.nav.topbar .tabs-nav a{font-size:20px;padding:6px 14px}
+.nav.topbar .lang button{font-size:16px;padding:6px 12px}
+.landing-sub{font-size:clamp(17px,2vw,23px)}
+.block-title .sub{font-size:16.5px}
+.hero{font-size:13.5px} .slot{font-size:14px} .team .slot .sname{font-size:12px}
+.why{font-size:15px} .why.small,.vs,.legend span,.note,.bans-note{font-size:14px}
+.pname{font-size:16px} .tier-table{font-size:14.5px} .tip p{font-size:15px} .buy-list,.lane-hints,.patch-list{font-size:15px}
+.chips button{font-size:14.5px!important} input[type=search],select,.me-form input{font-size:14.5px}
+@media (max-width:700px){
+  .nav.topbar{padding-left:12px;padding-right:12px}
+  .nav.topbar .logo-ic{width:40px;height:40px}
+  .nav.topbar .tabs-nav a{font-size:16px;padding:5px 8px}
+  .nav.topbar .lang button{font-size:14px;padding:5px 9px}
+}
