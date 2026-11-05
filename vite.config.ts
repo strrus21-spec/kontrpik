@@ -3,6 +3,10 @@ import { copyFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 // GitHub Pages отдаёт 404.html на неизвестные пути: копия index.html делает рабочими прямые ссылки /hero/pudge.
+// Полный адрес сайта для превью ссылок (og:image должен быть абсолютным). В деплое задаётся из GitHub Pages.
+const SITE_URL = (process.env.VITE_SITE_URL || 'https://strrus21-spec.github.io/kontrpik/').replace(/\/?$/, '/');
+const siteUrl = (): Plugin => ({ name: 'site-url', transformIndexHtml: html => html.replaceAll('%SITE_URL%', SITE_URL) });
+
 const spaFallback = (): Plugin => ({
   name: 'spa-404',
   apply: 'build',
@@ -12,7 +16,7 @@ const spaFallback = (): Plugin => ({
 export default defineConfig({
   // Абсолютный base нужен для адресов /hero/… . В деплое задаётся путь сайта (например /kontrpik/).
   base: process.env.VITE_BASE || '/',
-  plugins: process.env.STANDALONE ? [] : [spaFallback()],
+  plugins: process.env.STANDALONE ? [siteUrl()] : [siteUrl(), spaFallback()],
   build: { target: 'es2022', assetsInlineLimit: 0, rollupOptions: { input: process.env.STANDALONE ? { main: 'index.html' } : { main: 'index.html', overlay: 'overlay/index.html', vote: 'vote/index.html' } } },
   test: { include: ['tests/**/*.test.ts'] },
 });

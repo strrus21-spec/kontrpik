@@ -33,6 +33,7 @@ jobs:
       - run: npm run build
         env:
           VITE_BASE: ${{ steps.pages.outputs.base_path }}/
+          VITE_SITE_URL: ${{ steps.pages.outputs.base_url }}/
           # Адрес бэкенда стрима (worker/), например https://kontrpik-room.<аккаунт>.workers.dev.
           # Пусто — комнаты и таблица лидеров на сайте скрыты.
           VITE_ROOM_API: ${{ vars.ROOM_API_URL }}
