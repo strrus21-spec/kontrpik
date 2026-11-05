@@ -14,6 +14,7 @@ import { $, esc, fmt, sign } from './html.ts';
 import { heroLink } from './hero.ts';
 import { laneFor, laneHints } from '../lane.ts';
 import { setOverlayPicks } from './stream.ts';
+import { compact, setCompactTop } from '../compact.ts';
 
 export interface Ctx { data: AppData; state: DraftState }
 
@@ -59,7 +60,9 @@ export function renderPool(x: Ctx) {
       }).join('') +
       `</div></div>`;
   }
-  $('pool').innerHTML = html || `<p class="empty-state">${L.noHero}</p>`;
+  // Компактный режим: пул показываем только по поиску.
+  if (compact && !q) html = '';
+  $('pool').innerHTML = html || (compact && !q ? '' : `<p class="empty-state">${L.noHero}</p>`);
 }
 
 function renderMeta(x: Ctx) {
@@ -124,7 +127,7 @@ export function renderResults(x: Ctx) {
   if (!s.enemy.length && !s.ally.length) {
     out.innerHTML = `<p class="empty-state">${L.noPick}</p>`;
     if (topPick) { topPick = null; renderSlots(x); }
-    setOverlayPicks(x, []);
+    setOverlayPicks(x, []); setCompactTop([]);
     renderLane(x);
     return;
   }
@@ -137,7 +140,7 @@ export function renderResults(x: Ctx) {
     if (!rows.length) {
       out.innerHTML = `<p class="empty-state">${mine.size ? L.meNoFit : L.meEmpty}</p>`;
       if (topPick) { topPick = null; renderSlots(x); }
-      setOverlayPicks(x, []);
+      setOverlayPicks(x, []); setCompactTop([]);
       renderLane(x);
       return;
     }
@@ -161,7 +164,7 @@ export function renderResults(x: Ctx) {
   };
   const verdict = (v: number) => L.verdict[verdictIndex(v)];
   const top = rows.slice(0, 3), rest = rows.slice(3, 15);
-  setOverlayPicks(x, rows);
+  setOverlayPicks(x, rows); setCompactTop(rows);
   const prevTop = topPick; topPick = top[0] ? top[0].h : null;
   if (prevTop !== topPick) renderSlots(x);
   renderLane(x);

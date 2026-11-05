@@ -6,7 +6,11 @@
 <meta name="color-scheme" content="dark">
 <meta name="description" content="Подбор контрпика в Dota 2 по статистике матчей и сборник фишек. Counterpicks for Dota 2 based on match statistics.">
 <title>Контрпик Dota 2</title>
+<link rel="icon" type="image/svg+xml" href="/icon.svg">
 <link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0d1014">
 </head>
 <body>
 <div class="wrap">
@@ -16,10 +20,12 @@
       <p class="sub" data-t="sub">Подбор контрпика по статистике матчей и сборник фишек, которые помогают выигрывать.</p>
     </div>
   </header>
-  <nav class="nav" aria-label="Разделы" data-ta="navLabel"><a href="#counterpick"><span class="n">01</span><span data-t="nav1">Контрпик</span></a><a href="#meta"><span class="n">02</span><span data-t="nav3">Мета</span></a><a href="#match"><span class="n">03</span><span data-t="nav4">Разбор</span></a><a href="#tips-block"><span class="n">04</span><span data-t="nav2">Фишки</span></a><div class="lang" role="group" aria-label="Language"><button data-lang="ru">RU</button><button data-lang="en">EN</button></div></nav>
+  <nav class="nav" aria-label="Разделы" data-ta="navLabel"><a href="#counterpick"><span class="n">01</span><span data-t="nav1">Контрпик</span></a><a href="#meta"><span class="n">02</span><span data-t="nav3">Мета</span></a><a href="#match"><span class="n">03</span><span data-t="nav4">Разбор</span></a><a href="#tips-block"><span class="n">04</span><span data-t="nav2">Фишки</span></a><button class="install" id="install" hidden data-t="install">Установить</button><div class="lang" role="group" aria-label="Language"><button data-lang="ru">RU</button><button data-lang="en">EN</button></div></nav>
   <section id="counterpick" class="wrap" style="max-width:none;margin:0">
   <div class="block-title"><h2 class="big" data-t="cpTitle">Контрпик</h2><span class="sub" data-t="cpSub">Отметь врагов и союзников. Справа появятся герои, которые лучше всех играют против этого пика и сочетаются с твоей командой.</span></div>
 
+  <div class="compact-bar"><button class="share" id="compact-toggle" aria-pressed="false" data-t="compactOn">Компактный режим</button></div>
+  <div id="compact-top" class="compact-top" hidden></div>
   <section class="board dota-draft" aria-label="Драфт" data-ta="draftLabel">
     <div class="side ally team radiant">
       <div class="side-head"><h2><span class="team-name" data-t="radiant">Силы Света</span><span class="team-sub" data-t="radiantSub">твоя команда</span></h2><button class="clear" data-clear="ally" data-t="clear">Очистить</button></div>
@@ -49,6 +55,7 @@
         </div>
         <input id="q" type="search" data-tp="q" placeholder="Поиск: пудж, фантомка, Invoker…" aria-label="Поиск героя" data-ta="searchLabel">
       </div>
+      <p class="note kbd-hint" data-t="kbdHint">Клавиши: / — поиск, 1–5 — позиция, 0 — любая, E, A, B — враг, союзник, бан.</p>
       <div id="pool"></div>
     </section>
 
