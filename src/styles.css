@@ -595,3 +595,7 @@ header .sub{text-shadow:0 1px 3px #000}
   .logo-ic{width:34px;height:34px}
 }
 @media (prefers-reduced-motion:reduce){.nav .logo{transition:none}}
+/* читаемость поверх закатного фона */
+.bg-art{background:linear-gradient(180deg,rgba(13,16,20,.5),rgba(13,16,20,.62) 40%,rgba(13,16,20,.85)),url(./assets/bg.svg) center bottom/cover no-repeat}
+header{background:linear-gradient(180deg,rgba(13,16,20,.35),rgba(13,16,20,.62) 60%,rgba(13,16,20,.88)),url(./assets/bg.svg) center 62%/cover no-repeat!important}
+.block-title .sub,header .sub{text-shadow:0 1px 3px #000,0 0 12px rgba(0,0,0,.8)}
