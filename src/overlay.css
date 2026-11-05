@@ -1,0 +1,27 @@
+/* Оверлей: читается поверх игры на 1920×1080. Фон прозрачный. */
+:root{--gold:#d9b25b;--gold-dim:#8a6d33;--fg:#f3ead2;--rad:#5ec44a;--dire:#e04a35;--ov-scale:1;color-scheme:dark}
+html,body{margin:0;background:transparent!important;overflow:hidden}
+.ov{position:fixed;top:24px;left:24px;transform:scale(var(--ov-scale));transform-origin:top left;font-family:"Golos Text",system-ui,sans-serif;color:var(--fg)}
+.ov[data-pos="tr"]{left:auto;right:24px;transform-origin:top right}
+.ov[data-pos="bl"]{top:auto;bottom:24px;transform-origin:bottom left}
+.ov[data-pos="br"]{top:auto;left:auto;bottom:24px;right:24px;transform-origin:bottom right}
+.ov-card{width:440px;display:flex;flex-direction:column;gap:12px;padding:16px 18px;background:linear-gradient(180deg,rgba(18,23,29,.92),rgba(8,10,13,.94));
+  border:2px solid var(--gold-dim);border-radius:4px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.7),0 8px 30px rgba(0,0,0,.6)}
+.ov-sec{display:flex;flex-direction:column;gap:8px}
+.ov-h{font-family:"Cormorant SC",Georgia,serif;font-weight:700;font-size:24px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);text-shadow:0 2px 0 #000}
+.ov-h.dire{color:#ff7a62}
+.ov-enemy{display:flex;gap:8px}
+.ov-enemy img{width:64px;height:64px;border:2px solid rgba(224,74,53,.85);border-radius:3px;background:#0c0f12;box-shadow:0 0 10px -2px rgba(224,74,53,.9)}
+.ov-top{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.ov-top li{display:grid;grid-template-columns:52px minmax(0,1fr) auto;column-gap:12px;align-items:center;padding:6px 10px 6px 6px;background:rgba(255,255,255,.04);border-left:4px solid var(--m);border-radius:2px}
+.ov-top li.m1{--m:#e8b84a}.ov-top li.m2{--m:#b8c4d0}.ov-top li.m3{--m:#cd7f4a}
+.ov-top img{width:52px;height:52px;border-radius:3px;box-shadow:0 0 0 2px var(--m)}
+.ov-name{font-weight:600;font-size:26px;line-height:1.1;text-shadow:0 2px 0 #000;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ov-top b{font-family:"JetBrains Mono",monospace;font-weight:500;font-size:26px}
+.ov-top b.up{color:var(--rad)} .ov-top b.dn{color:#ff7a62}
+.ov-vote{grid-column:2 / 4;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;margin-top:4px}
+.ov-bar{height:10px;background:rgba(255,255,255,.12);border-radius:5px;overflow:hidden}
+.ov-bar span{display:block;height:100%;background:linear-gradient(90deg,#9a7ae0,#c9b4ff);transition:width .4s}
+.ov-pc{font-family:"JetBrains Mono",monospace;font-size:20px;color:#d8cbff}
+.ov-hint{font-size:20px;font-weight:600;color:#d8cbff;text-shadow:0 2px 0 #000}
+@media (prefers-reduced-motion:reduce){.ov-bar span{transition:none}}

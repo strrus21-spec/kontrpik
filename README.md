@@ -19,6 +19,7 @@ npm run data       # выгрузка свежей статистики OpenDota
 - `src/hero.ts`, `src/render/hero.ts` — карточка героя (адрес `/hero/{slug}`; в пуле — правый клик или долгое нажатие). `src/lane.ts` — «Моя линия».
 - `src/meta.ts`, `src/render/meta.ts` — тир-лист, тренды по `public/data/history/`. `public/data/patch.json` — «Что изменилось в патче» (правится вручную при выходе патча).
 - `src/match.ts`, `src/render/match.ts` — разбор матча (адрес `/match/{id}?p={slot}`). `src/odHeroes.ts` — справочник героев OpenDota.
+- `overlay/index.html`, `src/overlay.ts` — оверлей для OBS (`/overlay/`, параметры `?pos=tr|bl|br&scale=1.5`). `src/stream.ts`, `src/render/stream.ts` — панель «Для стрима»: чат Twitch (анонимно, без токена), голосование `!1/!2/!3`. `src/quiz.ts`, `src/render/quiz.ts` — викторина.
 - `src/search.ts` — русские прозвища героев. `src/anim/` — анимированные схемы фишек. `src/render/` — разметка.
 - `public/data/` — `stats.json`, `positions.json`, `tips.json`, `history/` (ежедневные снимки). `public/icons/{slug}.png` — иконки.
 - `scripts/build-data.ts` + `scripts/lib/` — сборка данных (запросы из `scripts/opendota-queries.md`).

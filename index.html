@@ -73,6 +73,7 @@
       <p class="note" id="note"></p>
     </section>
   </div>
+  <details class="results stream" id="stream"><summary data-t="stH">Для стрима (OBS)</summary><div id="stream-body"></div></details>
   </section>
 
   <section id="meta" class="wrap" style="max-width:none;margin:0" aria-label="Мета" data-ta="metaLabel">
@@ -101,7 +102,7 @@
   <section id="tips-block" class="wrap" style="max-width:none;margin:0" aria-label="Фишки" data-ta="tipsLabel">
     <div class="block-title"><h2 class="big" data-t="tipsTitle">Фишки</h2><span class="sub" data-t="tipsSub">Короткие приёмы, которые знают не все. Метка 7.41 — про текущий патч.</span></div>
     <div class="featured" id="featured"></div>
-    <div class="tips-head"><div class="progress"><span class="progress-track"><span class="progress-fill" id="prog"></span></span><span id="prog-text"></span></div></div>
+    <div class="tips-head"><button class="share" id="quiz-open" data-t="qzOpenBtn">Викторина</button><div class="progress"><span class="progress-track"><span class="progress-fill" id="prog"></span></span><span id="prog-text"></span></div></div>
     <div class="tips-tools">
       <div class="chips" id="tip-cats" role="group" aria-label="Тема" data-ta="catLabel"></div>
       <div class="tips-row"><div class="chips" id="tip-lvls" role="group" aria-label="Уровень" data-ta="lvlLabel"></div><input id="tq" type="search" data-tp="tq" placeholder="Найти фишку…" aria-label="Поиск по фишкам" data-ta="tqLabel"><label><input type="checkbox" id="hide-known"> <span data-t="hideKnown">скрыть изученные</span></label><span id="tip-count"></span></div>
@@ -110,6 +111,7 @@
     <p class="sources"><span data-t="src1">Изменения патча: </span><a href="https://www.dota2.com/patches/7.41" target="_blank" rel="noopener" data-t="src2">официальные заметки 7.41</a>, <a href="https://www.gosugamers.net/dota2/news/78166-dota-2-patch-7-41-removes-facets-and-adds-nine-new-items" target="_blank" rel="noopener">GosuGamers</a>, <a href="https://liquipedia.net/dota2/7.41e" target="_blank" rel="noopener">Liquipedia</a><span data-t="src3">. Статистика: </span><a href="https://www.opendota.com" target="_blank" rel="noopener">OpenDota</a>.</p>
   </section>
 </div>
+<dialog id="quiz" class="hero-dlg quiz-dlg" aria-labelledby="quiz-title"><div id="quiz-body"></div></dialog>
 <dialog id="hero" class="hero-dlg" aria-labelledby="hero-title"><div id="hero-body"></div></dialog>
 <script type="module" src="/src/main.ts"></script>
 </body>

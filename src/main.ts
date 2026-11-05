@@ -21,6 +21,8 @@ import { $ } from './render/html.ts';
 import { bindHero, refreshHero, syncHeroFromPath } from './render/hero.ts';
 import { bindMeta, renderMeta } from './render/meta.ts';
 import { bindMatch, renderMatch, syncMatchFromPath } from './render/match.ts';
+import { bindStream, renderStream } from './render/stream.ts';
+import { bindQuiz, refreshQuiz } from './render/quiz.ts';
 
 setLang(initialLang());
 
@@ -56,13 +58,15 @@ async function start() {
   for (const im of Object.values(IMG)) im.addEventListener('load', () => { if (!pending) pending = requestAnimationFrame(() => { pending = 0; redrawAll(); }); }, { once: true });
 
   const renderAll = () => {
-    applyStatic(); renderSelects(x); renderPosChips(x); renderTipFilters(); renderFeatured(); renderMe(); renderDraft(x); renderMeta(x); renderMatch(x); renderTips(); refreshHero(x);
+    applyStatic(); renderSelects(x); renderPosChips(x); renderTipFilters(); renderFeatured(); renderMe(); renderDraft(x); renderMeta(x); renderMatch(x); renderStream(); renderTips(); refreshHero(x); refreshQuiz();
   };
   bindDraft(x); bindTips(data.tips);
   bindMe(data.heroes, () => { renderMe(); renderDraft(x); });
   bindHero(x, () => renderDraft(x));
   bindMeta(x);
   bindMatch(x);
+  bindStream();
+  bindQuiz(data);
   document.querySelector('.lang')!.addEventListener('click', e => {
     const b = (e.target as Element).closest<HTMLElement>('[data-lang]'); if (!b) return;
     e.stopPropagation(); setLang(b.dataset.lang as Lang); saveLang(LANG); renderAll();

@@ -374,7 +374,7 @@ h1 .h1a{background-image:none!important;-webkit-text-fill-color:#f3ead2;color:#f
   background:linear-gradient(180deg,rgba(22,28,35,.98),rgba(12,15,19,.99));border:1px solid var(--gold-dim);border-radius:4px;
   box-shadow:inset 0 0 0 1px rgba(0,0,0,.6),0 20px 60px -10px #000;overflow:auto;overscroll-behavior:contain}
 .hero-dlg::backdrop{background:rgba(5,7,9,.72);backdrop-filter:blur(2px)}
-#hero-body{padding:16px;display:flex;flex-direction:column;gap:14px}
+#hero-body,#quiz-body{padding:16px;display:flex;flex-direction:column;gap:14px}
 .hd-head{display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:12px;align-items:center}
 .hd-ic{width:56px;height:56px;border-radius:4px;box-shadow:0 0 0 2px var(--gold)}
 .hd-name h2{margin:0;font-family:var(--serif)!important;font-size:clamp(24px,4vw,32px)!important;letter-spacing:.05em!important;color:#f3ead2!important;text-transform:none}
@@ -479,3 +479,33 @@ h1 .h1a{background-image:none!important;-webkit-text-fill-color:#f3ead2;color:#f
 .m-adv{margin:3px 0 0;font-size:13.5px;color:#cfc8ba}
 .m-foot{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
 .m-foot .share-msg{flex-basis:auto;text-align:left}
+
+/* ===== этап 6: стрим и викторина ===== */
+.stream{display:block}
+.stream summary{cursor:pointer;font-family:var(--serif);font-weight:700;font-size:16px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+.stream[open] summary{margin-bottom:10px}
+#stream-body{display:flex;flex-direction:column;gap:10px}
+.st-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.st-row .share-url{flex:1 1 240px;width:auto;margin:0}
+.st-chat{font-size:14px;color:var(--muted)} .st-chat.on{color:var(--rad-glow)}
+.st-vote{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;font-size:14px}
+.st-vote li{display:grid;grid-template-columns:28px minmax(0,140px) minmax(0,1fr) 44px;gap:8px;align-items:center}
+.st-vote b{font-family:var(--mono);color:var(--violet)}
+.st-bar{height:8px;background:#262a31;border-radius:4px;overflow:hidden}
+.st-bar span{display:block;height:100%;background:var(--violet)}
+.st-pc{font-family:var(--mono);text-align:right}
+.tips-head{justify-content:flex-start}
+.qz-head .place{color:var(--gold)}
+.qz-head h2{font-size:clamp(20px,3.4vw,26px)!important;text-transform:none}
+.qz-opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+@media (max-width:560px){.qz-opts{grid-template-columns:1fr}}
+.qz-opt{display:flex;align-items:center;gap:8px;text-align:left;background:#1d2026;border:1px solid var(--line);border-radius:3px;padding:10px 12px;font-size:14px;color:var(--fg)}
+.qz-opt:hover:not([disabled]){border-color:var(--gold)}
+.qz-opt b{margin-left:auto;font-family:var(--mono);font-weight:500}
+.qz-opt b.up{color:var(--rad-glow)} .qz-opt b.dn{color:#ff7a62}
+.qz-opt.right{border-color:var(--rad-glow);background:color-mix(in srgb,var(--rad-glow) 14%,#1d2026)}
+.qz-opt.wrong{border-color:var(--dire-glow);background:color-mix(in srgb,var(--dire-glow) 14%,#1d2026)}
+.qz-opt.dim{opacity:.55}
+.qz-opt[disabled]{cursor:default}
+.qz-res{margin:0;font-weight:600;font-size:16px} .qz-res.ok{color:var(--rad-glow)} .qz-res.no{color:#ff7a62}
+.qz-score{margin:0;font-family:var(--serif);font-weight:700;font-size:44px;color:var(--gold);text-align:center}
