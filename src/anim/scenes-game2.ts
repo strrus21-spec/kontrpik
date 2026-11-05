@@ -56,7 +56,7 @@ export const GAME2 = Object.fromEntries([
     g.hpBar(190, 100, 110, lp(0, .55, k), true, cl(k * 3)); g0.text(T('обычно', 'normal'), 100, 103, '#8d949c', 8.5, 'left', cl(k * 3), false);
     c.save(); c.globalAlpha = cl(k * 3); c.fillStyle = '#05070a'; c.fillRect(134, 115, 112, 5); c.fillStyle = '#b07aff'; c.fillRect(135, 116, 110 * lp(0, .85, k), 3); c.restore();
     g0.text('Scythe', 100, 119, '#b07aff', 8.5, 'left', cl(k * 3), true);
-    g.icon('items/gold', 262, 120, { pop: seg(t, .78, .86), fallback: 'BUY', color: '#a08a2a', label: T('выкуп', 'buyback') });
+    g.icon('', 262, 120, { pop: seg(t, .78, .86), fallback: '$', color: '#c8962a', label: T('выкуп', 'buyback') });
     if (t < .35) g.toast(T('Necrophos добивает ультой', 'Necrophos finishes with his ult'), seg(t, .02, .35));
     else if (t < .76) g.toast(T('Возрождение после Scythe дольше', 'Respawn after Scythe is longer'), seg(t, .35, .76), '#d8b4ff');
     else g.toast(T('Держи золото на выкуп', 'Keep gold for buyback'), seg(t, .76, 1.05), '#ffe7a3');
