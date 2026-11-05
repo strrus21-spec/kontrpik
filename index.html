@@ -16,7 +16,7 @@
       <p class="sub" data-t="sub">Подбор контрпика по статистике матчей и сборник фишек, которые помогают выигрывать.</p>
     </div>
   </header>
-  <nav class="nav" aria-label="Разделы" data-ta="navLabel"><a href="#counterpick"><span class="n">01</span><span data-t="nav1">Контрпик</span></a><a href="#tips-block"><span class="n">02</span><span data-t="nav2">Фишки</span></a><div class="lang" role="group" aria-label="Language"><button data-lang="ru">RU</button><button data-lang="en">EN</button></div></nav>
+  <nav class="nav" aria-label="Разделы" data-ta="navLabel"><a href="#counterpick"><span class="n">01</span><span data-t="nav1">Контрпик</span></a><a href="#meta"><span class="n">02</span><span data-t="nav3">Мета</span></a><a href="#tips-block"><span class="n">03</span><span data-t="nav2">Фишки</span></a><div class="lang" role="group" aria-label="Language"><button data-lang="ru">RU</button><button data-lang="en">EN</button></div></nav>
   <section id="counterpick" class="wrap" style="max-width:none;margin:0">
   <div class="block-title"><h2 class="big" data-t="cpTitle">Контрпик</h2><span class="sub" data-t="cpSub">Отметь врагов и союзников. Справа появятся герои, которые лучше всех играют против этого пика и сочетаются с твоей командой.</span></div>
 
@@ -73,6 +73,19 @@
       <p class="note" id="note"></p>
     </section>
   </div>
+  </section>
+
+  <section id="meta" class="wrap" style="max-width:none;margin:0" aria-label="Мета" data-ta="metaLabel">
+    <div class="block-title"><h2 class="big" data-t="metaTitle">Мета</h2><span class="sub" data-t="metaSub">Сильнейшие герои сейчас: тир-лист по группе рангов и позиции, тренд за неделю и главное из патча.</span></div>
+    <div class="meta-grid">
+      <div class="results meta-main">
+        <div class="tools"><select id="meta-src" aria-label="Группа рангов" data-ta="metaSrcLabel"></select><input id="meta-q" type="search" data-tp="metaQ" placeholder="Найти героя…" aria-label="Найти героя…"></div>
+        <div class="chips poschips" id="meta-pos" role="group" aria-label="Позиция" data-ta="posLabel"></div>
+        <div id="meta-table"></div>
+        <p class="note" id="meta-note"></p>
+      </div>
+      <aside class="results patch-box" id="patch" hidden></aside>
+    </div>
   </section>
 
   <section id="tips-block" class="wrap" style="max-width:none;margin:0" aria-label="Фишки" data-ta="tipsLabel">

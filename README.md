@@ -17,6 +17,7 @@ npm run data       # выгрузка свежей статистики OpenDota
 - `src/i18n.ts` — словари RU/EN. `src/state.ts` — localStorage (драфт хранится по именам героев).
 - `src/player.ts`, `src/me.ts` — «Мои герои» (Steam ID, профиль OpenDota, бонус за личный винрейт). `src/items.ts` — «Что купить» (угрозы → предметы). `src/share.ts` — ссылка на драфт.
 - `src/hero.ts`, `src/render/hero.ts` — карточка героя (адрес `/hero/{slug}`; в пуле — правый клик или долгое нажатие). `src/lane.ts` — «Моя линия».
+- `src/meta.ts`, `src/render/meta.ts` — тир-лист, тренды по `public/data/history/`. `public/data/patch.json` — «Что изменилось в патче» (правится вручную при выходе патча).
 - `src/search.ts` — русские прозвища героев. `src/anim/` — анимированные схемы фишек. `src/render/` — разметка.
 - `public/data/` — `stats.json`, `positions.json`, `tips.json`, `history/` (ежедневные снимки). `public/icons/{slug}.png` — иконки.
 - `scripts/build-data.ts` + `scripts/lib/` — сборка данных (запросы из `scripts/opendota-queries.md`).

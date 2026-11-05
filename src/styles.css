@@ -411,3 +411,42 @@ h1 .h1a{background-image:none!important;-webkit-text-fill-color:#f3ead2;color:#f
 .lane-easy .lane-level{color:var(--rad-glow)} .lane-mid .lane-level{color:var(--gold)} .lane-hard .lane-level{color:#ff7a62}
 .lane-sum{font-family:var(--mono);font-size:12px;color:var(--muted)}
 .lane-hints{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px;font-size:13.5px;color:#cfc8ba}
+
+/* ===== этап 4: мета ===== */
+.nav a[href="#meta"] .n{color:var(--gold)}
+.meta-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,340px);gap:18px;align-items:start}
+@media (max-width:880px){.meta-grid{grid-template-columns:1fr}}
+.meta-main{display:flex;flex-direction:column;gap:12px}
+.meta-main .tools input[type=search]{flex:1 1 160px}
+.tier-table{width:100%;border-collapse:collapse;font-size:13.5px}
+.tier-table th{text-align:left;padding:0 6px 6px;border-bottom:1px solid var(--gold-dim)}
+.tier-table th button{background:none;border:0;padding:2px 0;font-family:var(--display);font-weight:500;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.tier-table th[aria-sort="ascending"] button,.tier-table th[aria-sort="descending"] button{color:var(--gold)}
+.tier-table td{padding:5px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+.tier-table .num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tier-table th.num button{width:100%;text-align:right}
+.tier-table{table-layout:fixed}
+.tier-table .w-tier{width:44px} .tier-table .w-num{width:76px} .tier-table .w-games{width:96px}
+.tier-table td.c-hero>div{display:flex;align-items:center;gap:7px;min-width:0}
+.tier-table td.c-hero .hlink{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.tier-table tbody tr:hover{background:rgba(217,178,91,.05)}
+.tier{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:2px;font-family:var(--serif);font-weight:700;font-size:17px;color:#111316}
+.tier-S{background:linear-gradient(180deg,#ffe7a3,#c08a2c);box-shadow:0 0 10px -2px rgba(217,178,91,.8)}
+.tier-A{background:linear-gradient(180deg,#9be27e,#3f8a2a)}
+.tier-B{background:linear-gradient(180deg,#8cc6f0,#3a78a8)}
+.tier-C{background:linear-gradient(180deg,#9aa2ab,#5c636b)}
+.tr-up{color:var(--rad-glow)} .tr-dn{color:#ff7a62} .tr-none{color:var(--muted)}
+.more-btn{align-self:flex-start;background:none;border:1px solid var(--gold-dim);border-radius:2px;padding:6px 14px;font-family:var(--serif);font-weight:700;letter-spacing:.06em;font-size:14px;color:#bfb49a}
+.more-btn:hover{color:#ffe7a3;border-color:var(--gold)}
+.patch-box{display:flex;flex-direction:column;gap:10px}
+.patch-list{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:14px;color:#cfc8ba}
+@media (max-width:480px){
+  .tier-table .c-games{display:none}.tier-table{font-size:12.5px}.tier-table td,.tier-table th{padding-inline:3px}
+  .tier-table .w-tier{width:32px} .tier-table .w-num{width:54px}
+  .tier-table th button{font-size:10.5px;letter-spacing:.04em;white-space:normal;line-height:1.15}
+  .tier-table td.c-hero .ic{display:none}
+  .tier{width:24px;height:24px;font-size:15px}
+  .nav a{padding:6px 7px;font-size:15px;letter-spacing:.05em}
+  .lang{margin-left:4px}.lang button{padding:5px 7px}
+}
+.tier-table th.c-games{font-family:var(--display);font-weight:500;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:right}
