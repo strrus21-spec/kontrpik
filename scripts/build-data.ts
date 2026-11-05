@@ -6,13 +6,14 @@ const args = process.argv.slice(2);
 const out = args.includes('--out') ? args[args.indexOf('--out') + 1] : 'public';
 const t0 = Date.now();
 try {
-  const { stats, positionsUpdated } = await build({
+  const { stats, positionsUpdated, itemsUpdated } = await build({
     api: openDotaApi(),
     root: out,
     positions: args.includes('--positions') ? true : undefined,
+    items: args.includes('--items') ? true : undefined,
     log: m => console.log(`[${((Date.now() - t0) / 1000).toFixed(0)}s] ${m}`),
   });
-  console.log(`OK: ${stats.counts.all} матчей; позиции ${positionsUpdated ? 'обновлены' : 'без изменений'}; ${((Date.now() - t0) / 60000).toFixed(1)} мин`);
+  console.log(`OK: ${stats.counts.all} матчей; позиции ${positionsUpdated ? 'обновлены' : 'без изменений'}; сборки ${itemsUpdated ? 'обновлены' : 'без изменений'}; ${((Date.now() - t0) / 60000).toFixed(1)} мин`);
 } catch (e) {
   console.error('Сборка данных не удалась:', (e as Error).message);
   process.exit(1);

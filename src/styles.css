@@ -722,3 +722,16 @@ body{font-size:16px}
   .nav.topbar .tabs-nav a[aria-current="page"]::after{left:9px;right:9px}
   .install{font-size:13px;padding:5px 10px}
 }
+
+/* ===== сборки предметов ===== */
+.it{position:relative;display:inline-flex;align-items:center;justify-content:center;flex:none;border:1px solid #000;box-shadow:0 0 0 1px var(--gold-dim);border-radius:2px;background:#0b0e12;overflow:hidden}
+.it-md{width:48px;height:35px} .it-sm{width:33px;height:24px}
+.it img{width:100%;height:100%;object-fit:cover;display:block}
+.it .it-n{display:none;font-size:9px;line-height:1.05;text-align:center;padding:1px;color:#e8e2d0}
+.it.noimg img{display:none} .it.noimg .it-n{display:block}
+.hd-build{display:flex;flex-direction:column;gap:8px}
+.b-row{display:grid;grid-template-columns:110px minmax(0,1fr);gap:10px;align-items:center}
+.b-items{display:flex;flex-wrap:wrap;gap:5px}
+.b-ph{font-family:var(--display);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.b-line{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+@media (max-width:480px){.b-row{grid-template-columns:1fr;gap:4px}}

@@ -12,6 +12,7 @@ import { animCanvas, bindAnims } from '../anim/player.ts';
 import { tipTitle, tipText } from './tips.ts';
 import { $, esc, fmt, sign } from './html.ts';
 import { heroLink } from './hero.ts';
+import { buildLine } from './build.ts';
 import { laneFor, laneHints } from '../lane.ts';
 import { setOverlayPicks } from './stream.ts';
 import { compact, setCompactTop } from '../compact.ts';
@@ -174,6 +175,7 @@ export function renderResults(x: Ctx) {
       <div class="score big ${r.score >= 0 ? 'pos' : 'neg'}">${sign(r.score)}<small>${verdict(r.score)}</small></div></div>
       <p class="why">${why(r)}</p>${mineP(r, 'mine')}
       ${bars(r.cs, L.vsEnemies)}${bars(r.ss, L.withAllies)}
+      ${buildLine(x.data.items, r.h.name)}
       ${take(r)}</article>`).join('')}</div>
     ${rest.length ? `<h3 class="more">${L.more}</h3><ol class="picks" start="4">${rest.map((r, i) => `<li class="pick"><span class="rank">${i + 4}</span>
       <div class="pname">${ic(r.h)}${heroLink(r.h)} <span class="roles">${posBadges(x, r.h)}</span></div>

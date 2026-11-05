@@ -88,3 +88,15 @@ for (const width of [400, 1440]) for (const lang of ['ru', 'en']) {
     await page.screenshot({ path: `test-results/shots/hero-${lang}-${width}.png` });
   });
 }
+
+test('Сборки предметов: в карточке героя 4 фазы, под рекомендацией — ключевые предметы', async ({ page }) => {
+  await page.route('https://cdn.cloudflare.steamstatic.com/**', r => r.fulfill({ body: Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==', 'base64'), contentType: 'image/png' }));
+  await page.goto('/#counterpick');
+  await page.waitForSelector('html[data-ready]');
+  await expect(page.locator('.podium .top').first().locator('.b-line .it')).toHaveCount(3);
+  await page.goto('/hero/pudge');
+  await page.waitForSelector('html[data-ready]');
+  await expect(page.locator('.hd-build h3')).toHaveText('Что собирают');
+  await expect(page.locator('.hd-build .b-row')).toHaveCount(4);
+  await expect(page.locator('.hd-build .it').first()).toHaveAttribute('title', /\S/);
+});

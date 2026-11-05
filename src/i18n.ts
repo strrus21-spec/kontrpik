@@ -156,6 +156,9 @@ const ru = {
   vtGone: 'Комната не найдена. Проверь код.', vtTotal: (n: number) => `${n} ${plural(n, ['голос', 'голоса', 'голосов'])} всего (чат и страница)`,
   lbH: 'Таблица лидеров', lbName: 'Твоё имя', lbSave: 'Записать результат', lbSaved: 'Результат записан.', lbRate: 'Слишком часто. Попробуй через 10 минут.',
   lbErr: 'Сервер не отвечает. Попробуй позже.', lbBadName: 'Имя — от 2 до 20 символов.', lbEmpty: 'Пока никого. Будь первым.',
+  // сборки предметов
+  buildH: 'Что собирают', buildCore: 'Ключевое:', buildNote: 'По про-матчам OpenDota: самые частые покупки в каждой фазе игры.',
+  buildPh: { start: 'Старт', early: 'Ранняя игра', mid: 'Середина', late: 'Поздняя игра' } as Record<string, string>,
   // ссылка
   copyLink: 'Скопировать ссылку', copied: 'Ссылка скопирована', copyFail: 'Скопируй ссылку вручную:',
   st: {
@@ -303,6 +306,8 @@ const en: Dict = {
   vtGone: 'Room not found. Check the code.', vtTotal: n => `${n} ${n === 1 ? 'vote' : 'votes'} in total (chat and page)`,
   lbH: 'Leaderboard', lbName: 'Your name', lbSave: 'Save result', lbSaved: 'Result saved.', lbRate: 'Too often. Try again in 10 minutes.',
   lbErr: 'The server is not responding. Try later.', lbBadName: 'The name must be 2–20 characters.', lbEmpty: 'Nobody yet. Be the first.',
+  buildH: 'Item build', buildCore: 'Core:', buildNote: 'From pro matches on OpenDota: the most common purchases in each phase.',
+  buildPh: { start: 'Start', early: 'Early game', mid: 'Mid game', late: 'Late game' },
   copyLink: 'Copy link', copied: 'Link copied', copyFail: 'Copy the link manually:',
   st: {
     title: 'Dota 2 Counterpick', h1a: 'Dota 2 ', h1b: 'helper', sub: 'Counterpicks based on match statistics and a collection of tips that help you win.',

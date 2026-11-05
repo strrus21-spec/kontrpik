@@ -8,6 +8,7 @@ import { saveState, where } from '../state.ts';
 import type { Hero } from '../types.ts';
 import { animCanvas, bindAnims } from '../anim/player.ts';
 import { tipText, tipTitle } from './tips.ts';
+import { buildBlock } from './build.ts';
 import { $, esc, sign } from './html.ts';
 import type { Ctx } from './draft.ts';
 
@@ -62,6 +63,7 @@ export function renderHero(x: Ctx) {
       ${buy.length ? `<section><h3>${L.heroBuy}</h3><ul class="buy-list">${buy.map(a => `<li><strong>${esc(a.item)}</strong> — ${a.reasons.map(r => esc(L.threatSpecial[h.name + ':' + r.tag] || L.threat[r.tag])).join('; ')}</li>`).join('')}</ul></section>` : ''}
     </div>
     <p class="note">${L.heroSrc(L.src[s.src])}</p>
+    ${buildBlock(x.data.items, h.name)}
     ${tips.length ? `<section class="hd-tips"><h3>${L.heroTips}</h3>${tips.map(tp => `<div class="vt">${animCanvas(tp.t, 'anim vt-anim')}<strong>${esc(tipTitle(tp))}</strong><p>${esc(tipText(tp))}</p></div>`).join('')}</section>` : ''}`;
   bindAnims();
 }

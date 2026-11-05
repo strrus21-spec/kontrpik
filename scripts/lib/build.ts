@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import { slug } from '../../src/slug.ts';
 import type { Stats } from '../../src/types.ts';
 import { addMatch, createAccs, positionsFromRows, quantile, type MatchRow, type PosRow } from './aggregate.ts';
+import { heroBuild, type ItemConst, type ItemsFile, type Popularity } from './items.ts';
 
 export interface HeroStat { id: number; localized_name: string; primary_attr: Stats['heroes'][number][1]; roles: string[]; icon: string }
 export interface Api {
@@ -18,8 +19,10 @@ export interface BuildOptions {
   root: string;
   log?: (msg: string) => void;
   now?: Date;
-  /** Обновить позиции (про-матчи за 180 дней). По умолчанию — если файлу больше 7 дней. */
+  /** Обновить позиции (про-матчи за 180 дней). По умолчанию — только если файла нет. */
   positions?: boolean;
+  /** Обновить сборки предметов (про-матчи). По умолчанию — только если файла нет. */
+  items?: boolean;
   chunks?: number;
   chunkSize?: number;
   /** Отступ от последнего match_id: у свежих матчей составы ещё пустые. */
@@ -42,7 +45,7 @@ SELECT hero_id, lr, k, n, count(*) c FROM r GROUP BY hero_id, lr, k, n`;
 const writeAtomic = (file: string, text: string) => { writeFileSync(file + '.tmp', text); renameSync(file + '.tmp', file); };
 const readJSON = <T>(file: string): T | null => { try { return JSON.parse(readFileSync(file, 'utf8')); } catch { return null; } };
 
-export async function build(o: BuildOptions): Promise<{ stats: Stats; positionsUpdated: boolean }> {
+export async function build(o: BuildOptions): Promise<{ stats: Stats; positionsUpdated: boolean; itemsUpdated: boolean }> {
   const { api, root } = o;
   const log = o.log || (() => {});
   const now = o.now || new Date();
@@ -115,7 +118,8 @@ export async function build(o: BuildOptions): Promise<{ stats: Stats; positionsU
   const posFile = join(dataDir, 'positions.json');
   const posOld = existsSync(posFile) ? statSync(posFile).mtimeMs : 0;
   let positionsUpdated = false;
-  if (o.positions ?? (now.getTime() - posOld > 7 * 864e5)) {
+  // В CI время файла = время выкладки, поэтому по умолчанию — только если файла нет; раз в неделю workflow передаёт --positions.
+  if (o.positions ?? (posOld === 0)) {
     log('Позиции (про-матчи за 180 дней)…');
     try {
       const rows = (await sql<PosRow>(POS_SQL)).rows || [];
@@ -123,6 +127,29 @@ export async function build(o: BuildOptions): Promise<{ stats: Stats; positionsU
       if (Object.keys(pos).length >= 100) { writeAtomic(posFile, JSON.stringify(pos)); positionsUpdated = true; }
       else log(`  позиции: мало героев (${Object.keys(pos).length}), оставляю старые`);
     } catch (e) { log(`  позиции не обновлены: ${(e as Error).message}`); }
+  }
+
+  // Сборки предметов — раз в неделю; при сбое остаются старые.
+  const itemsFile = join(dataDir, 'items.json');
+  const itemsOld = existsSync(itemsFile) ? statSync(itemsFile).mtimeMs : 0;
+  let itemsUpdated = false;
+  if (o.items ?? (itemsOld === 0)) {
+    log('Сборки предметов (про-матчи)…');
+    try {
+      const consts = await api.getJSON<Record<string, ItemConst>>('/constants/items');
+      const byId = new Map(Object.entries(consts).filter(([, v]) => typeof v.id === 'number').map(([k, v]) => [v.id!, k]));
+      const heroesOut: ItemsFile['heroes'] = {};
+      for (const h of hs) {
+        try { heroesOut[h.localized_name] = heroBuild(await api.getJSON<Popularity>(`/heroes/${h.id}/itemPopularity`), byId, consts); }
+        catch (e) { log(`  предметы ${h.localized_name}: ${(e as Error).message}`); }
+        await api.sleep(1100);
+      }
+      const used = new Set(Object.values(heroesOut).flatMap(b => [...b.start, ...b.early, ...b.mid, ...b.late]));
+      const items: ItemsFile['items'] = {};
+      for (const k of used) { const c = consts[k]; if (c) items[k] = { n: c.dname || k, c: c.cost ?? 0, i: (c.img || '').replace(/\?.*$/, '') }; }
+      if (Object.keys(heroesOut).length >= N * 0.8) { writeAtomic(itemsFile, JSON.stringify({ updated: Math.floor(now.getTime() / 1000), items, heroes: heroesOut } satisfies ItemsFile)); itemsUpdated = true; }
+      else log(`  сборки: мало героев (${Object.keys(heroesOut).length}), оставляю старые`);
+    } catch (e) { log(`  сборки не обновлены: ${(e as Error).message}`); }
   }
 
   // Снимок для трендов (раздел 6.5): только solo по группам.
@@ -140,7 +167,7 @@ export async function build(o: BuildOptions): Promise<{ stats: Stats; positionsU
 
   writeAtomic(join(dataDir, 'stats.json'), JSON.stringify(stats));
   log(`Готово: ${counts.all} матчей, ${N} героев`);
-  return { stats, positionsUpdated };
+  return { stats, positionsUpdated, itemsUpdated };
 }
 
 /** Боевой клиент OpenDota: лимит ~60 запросов в минуту, на 429 ждём и повторяем. */

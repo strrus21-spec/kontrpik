@@ -52,3 +52,10 @@ SELECT hero_id, lr, k, n, count(*) c FROM r GROUP BY hero_id, lr, k, n;
 - `POST /api/request/{match_id}` — поставить матч в очередь на разбор, затем опрашивать `GET /api/request/{jobId}`.
 
 Логика агрегации (контр, синергия, solo) реализована в `prototype/desktop/main.js`, функция обработчика `refresh`.
+
+## Сборки предметов (про-матчи)
+Проверено 5 ноября 2026.
+- `GET /api/constants/items` — справочник предметов: `id`, `dname`, `cost`, `img`, `components` (у собранных предметов).
+- `GET /api/heroes/{id}/itemPopularity` — по про-матчам: `start_game_items`, `early_game_items`, `mid_game_items`, `late_game_items` → `{item_id: число покупок}`.
+
+127 запросов × 1,1 с ≈ 2,5 мин, поэтому сборки обновляются раз в неделю (`--items`). Отбор — `scripts/lib/items.ts`: на старте всё, дальше только собранные предметы (и Blink, Aghanim's Shard), без расходников и повторов.

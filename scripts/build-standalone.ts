@@ -35,7 +35,7 @@ html = html.replace(/href="\.\/icon\.svg"/, `href="${dataUri('icon.svg', 'image/
 // Данные: иконки героев → data URI
 const stats = JSON.parse(read('data/stats.json').toString('utf8'));
 for (const h of stats.heroes) h[3] = dataUri(h[3], 'image/png');
-const data = { stats, positions: JSON.parse(read('data/positions.json').toString()), tips: JSON.parse(read('data/tips.json').toString()), patch: JSON.parse(read('data/patch.json').toString()) };
+const data = { stats, positions: JSON.parse(read('data/positions.json').toString()), tips: JSON.parse(read('data/tips.json').toString()), patch: JSON.parse(read('data/patch.json').toString()), items: (() => { try { return JSON.parse(read('data/items.json').toString()); } catch { return undefined; } })() };
 const json = JSON.stringify(data).replace(/</g, '\\u003c');
 
 html = html.replace('</head>', `<script>window.__KP_DATA__=${json};</script>\n</head>`)

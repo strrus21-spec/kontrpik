@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
     inputs:
       positions:
-        description: 'Обновить позиции (про-матчи за 180 дней) сейчас'
+        description: 'Обновить позиции и сборки предметов (про-матчи) сейчас'
         type: boolean
         default: false
 
@@ -38,13 +38,18 @@ jobs:
       - name: Собрать данные
         env:
           OPENDOTA_API_KEY: ${{ secrets.OPENDOTA_API_KEY }}
-        run: node scripts/build-data.ts ${{ inputs.positions && '--positions' || '' }}
+        # Позиции и сборки предметов — раз в неделю (по понедельникам) или по кнопке.
+        run: |
+          FLAGS=""
+          if [ "$(date -u +%u)" = "1" ] || [ "${{ inputs.positions }}" = "true" ]; then FLAGS="--positions --items"; fi
+          node scripts/build-data.ts $FLAGS
 
       - name: Опубликовать в ветку data
         run: |
           # Только генерируемые файлы. tips.json и прочее живут в main.
           rm -rf /tmp/data-branch && mkdir -p /tmp/data-branch/data
           cp public/data/stats.json public/data/positions.json /tmp/data-branch/data/
+          if [ -f public/data/items.json ]; then cp public/data/items.json /tmp/data-branch/data/; fi
           cp -r public/data/history /tmp/data-branch/data/
           cp -r public/icons /tmp/data-branch/
           cd /tmp/data-branch

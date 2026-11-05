@@ -75,7 +75,7 @@ describe('build-data', () => {
     const root = mkdtempSync(join(tmpdir(), 'kp-'));
     const api = fakeApi();
     const now = new Date('2026-11-05T03:00:00Z');
-    const { stats, positionsUpdated } = await build({ api, root, now, chunks: 3, minMatches: 100 });
+    const { stats, positionsUpdated } = await build({ api, root, now, chunks: 3, minMatches: 100, items: false });
     expect(stats.n).toBe(110);
     expect(stats.counts.all).toBe(603);
     expect(stats.counts.low + stats.counts.mid + stats.counts.high).toBe(603);
@@ -101,12 +101,12 @@ describe('build-data', () => {
     const root = mkdtempSync(join(tmpdir(), 'kp-'));
     mkdirSync(join(root, 'data'), { recursive: true });
     writeFileSync(join(root, 'data/stats.json'), '{"old":true}');
-    await expect(build({ api: fakeApi({ fail: true }), root, chunks: 3, minMatches: 100 })).rejects.toThrow(/слишком мало матчей/);
+    await expect(build({ api: fakeApi({ fail: true }), root, chunks: 3, minMatches: 100, items: false })).rejects.toThrow(/слишком мало матчей/);
     expect(readFileSync(join(root, 'data/stats.json'), 'utf8')).toBe('{"old":true}');
     expect(existsSync(join(root, 'data/history'))).toBe(false);
   });
 
-  it('позиции не трогает, если файл свежий; старые снимки удаляет', async () => {
+  it('позиции не трогает, если файл уже есть (обновление — по флагу); старые снимки удаляет', async () => {
     const root = mkdtempSync(join(tmpdir(), 'kp-'));
     mkdirSync(join(root, 'data/history'), { recursive: true });
     writeFileSync(join(root, 'data/positions.json'), '{"keep":1}');
@@ -114,7 +114,7 @@ describe('build-data', () => {
     writeFileSync(join(root, 'data/history/2026-11-01.json'), '{}');
     const now = new Date('2026-11-05T03:00:00Z');
     utimesSync(join(root, 'data/positions.json'), now, new Date(now.getTime() - 864e5));
-    const { positionsUpdated } = await build({ api: fakeApi(), root, now, chunks: 3, minMatches: 100 });
+    const { positionsUpdated } = await build({ api: fakeApi(), root, now, chunks: 3, minMatches: 100, items: false });
     expect(positionsUpdated).toBe(false);
     expect(readFileSync(join(root, 'data/positions.json'), 'utf8')).toBe('{"keep":1}');
     expect(JSON.parse(readFileSync(join(root, 'data/history/index.json'), 'utf8'))).toEqual(['2026-11-01', '2026-11-05']);
