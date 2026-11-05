@@ -2,27 +2,35 @@ import { expect, test } from '@playwright/test';
 
 test.beforeEach(async ({ page }) => { await page.addInitScript(() => localStorage.setItem('kontrpik-lang', 'ru')); });
 
+test.describe('PWA', () => {
+  test.use({ serviceWorkers: 'allow' });
 test('PWA: манифест и иконки, офлайн на последних загруженных данных', async ({ page, context }) => {
   await page.goto('/');
+  await page.waitForSelector('html[data-ready]');
   const man = await (await page.request.get('/manifest.webmanifest')).json();
   expect(man.display).toBe('standalone');
   expect(man.icons.map((i: { sizes: string }) => i.sizes)).toEqual(['192x192', '512x512', '512x512']);
   for (const i of man.icons) expect((await page.request.get('/' + i.src)).ok()).toBe(true);
   await page.evaluate(() => navigator.serviceWorker.ready);
   await page.reload();                                   // теперь страницу контролирует SW, ресурсы в кэше
+  await page.waitForSelector('html[data-ready]');
   await expect(page.locator('.podium .top')).toHaveCount(3);
   expect(await page.evaluate(() => !!navigator.serviceWorker.controller)).toBe(true);
   await context.setOffline(true);
   await page.reload();
+  await page.waitForSelector('html[data-ready]');
   await expect(page.locator('.podium .top-name strong')).toHaveText(['Earth Spirit', 'Puck', 'Lifestealer']);
   await page.goto('/hero/pudge');                         // любые адреса приложения — из кэша
+  await page.waitForSelector('html[data-ready]');
   await expect(page.locator('#hero-title')).toHaveText('Pudge');
   await context.setOffline(false);
+});
 });
 
 test('Горячие клавиши: / поиск, 1–5 и 0 позиция, E/A/B режим (и в русской раскладке)', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/');
+  await page.waitForSelector('html[data-ready]');
   await expect(page.locator('.kbd-hint')).toBeVisible();
   await page.locator('body').click({ position: { x: 5, y: 5 } });
   await page.keyboard.press('Digit1');
@@ -49,6 +57,7 @@ for (const lang of ['ru', 'en']) {
     await page.setViewportSize({ width: 400, height: 860 });
     await page.addInitScript(l => localStorage.setItem('kontrpik-lang', l), lang);
     await page.goto('/');
+    await page.waitForSelector('html[data-ready]');
     await page.locator('#compact-toggle').click();
     await expect(page.locator('.team.radiant')).toBeHidden();
     await expect(page.locator('.results').first()).toBeHidden();
@@ -68,6 +77,7 @@ for (const lang of ['ru', 'en']) {
     await expect(page.locator('#hero')).toBeVisible();
     await page.keyboard.press('Escape');
     await page.reload();
+    await page.waitForSelector('html[data-ready]');
     await expect(page.locator('.c-pick')).toHaveCount(5);
     await page.locator('#compact-toggle').click();
     await expect(page.locator('.team.radiant')).toBeVisible();

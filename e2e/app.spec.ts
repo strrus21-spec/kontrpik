@@ -15,6 +15,7 @@ for (const lang of ['ru', 'en'] as const) {
       await page.setViewportSize({ width, height: 900 });
       await page.addInitScript(l => localStorage.setItem('kontrpik-lang', l), lang);
       await page.goto('/');
+      await page.waitForSelector('html[data-ready]');
       await expect(page.locator('.podium .top')).toHaveCount(3);
       expect(await topNames(page)).toEqual(['Earth Spirit', 'Puck', 'Lifestealer']);
       await expect(page.locator('#exampleTag')).toBeVisible();
@@ -33,6 +34,7 @@ for (const lang of ['ru', 'en'] as const) {
 test('позиция, источник, бан, союзник, «Беру его»', async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('kontrpik-lang', 'ru'));
   await page.goto('/');
+  await page.waitForSelector('html[data-ready]');
   await page.locator('#poschips [data-pos="1"]').click();
   expect(await topNames(page)).toEqual(['Lifestealer', 'Ursa', 'Tiny']);
   await page.locator('#poschips [data-pos="5"]').click();
@@ -52,6 +54,7 @@ test('позиция, источник, бан, союзник, «Беру ег�
 
 test('пул: режимы и поиск по прозвищу', async ({ page }) => {
   await page.goto('/');
+  await page.waitForSelector('html[data-ready]');
   await page.locator('[data-clear="enemy"]').click();
   await expect(page.locator('#exampleTag')).toBeHidden();
   await page.locator('#q').fill('квопа');
@@ -68,6 +71,7 @@ test('пул: режимы и поиск по прозвищу', async ({ page }
 
 test('драфт, язык и изученные фишки сохраняются после перезагрузки; драфт хранится по именам', async ({ page }) => {
   await page.goto('/');
+  await page.waitForSelector('html[data-ready]');
   await page.locator('.lang [data-lang="en"]').click();
   await expect(page.locator('h1')).toContainText('helper');
   await page.locator('[data-clear="enemy"]').click();
@@ -80,6 +84,7 @@ test('драфт, язык и изученные фишки сохраняютс
   expect(stored.enemy).toEqual(['Axe']);
 
   await page.reload();
+  await page.waitForSelector('html[data-ready]');
   await expect(page.locator('h1')).toContainText('helper');
   await expect(page.locator('#slots-enemy .slot:not(.empty) .sname')).toHaveText(['Axe']);
   await expect(page.locator('#prog-text')).toHaveText('Learned 1 of 30');
@@ -90,6 +95,7 @@ test('драфт из прототипа (индексы) переносится
     if (!localStorage.getItem('kontrpik-draft')) localStorage.setItem('counterpick2', JSON.stringify({ enemy: [0, 5], ally: [], ban: [], mode: 'ally', src: 'high', pos: 2 }));
   });
   await page.goto('/');
+  await page.waitForSelector('html[data-ready]');
   await expect(page.locator('#slots-enemy .slot:not(.empty) .sname')).toHaveText(['Abaddon', 'Axe']);
   await expect(page.locator('#src')).toHaveValue('high');
   await expect(page.locator('#m-ally')).toHaveAttribute('aria-pressed', 'true');
@@ -97,6 +103,7 @@ test('драфт из прототипа (индексы) переносится
 
 test('анимации рисуются, фишки против пика показаны', async ({ page }) => {
   await page.goto('/');
+  await page.waitForSelector('html[data-ready]');
   await expect(page.locator('#vs-tips .vt')).toHaveCount(2);
   const painted = await page.locator('#featured canvas').evaluate((c: HTMLCanvasElement) => {
     const d = c.getContext('2d')!.getImageData(0, 0, c.width, c.height).data;

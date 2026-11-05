@@ -27,6 +27,8 @@ import { applyCompact, bindCompact } from './compact.ts';
 import { bindKeys } from './keys.ts';
 
 setLang(initialLang());
+// Все формы работают через JS: до загрузки данных отправка не должна перезагружать страницу.
+document.addEventListener('submit', e => e.preventDefault());
 
 /** Статичные строки: data-t → текст, data-tp → placeholder, data-ta → aria-label. */
 function applyStatic() {
@@ -82,6 +84,7 @@ async function start() {
   renderAll();
   syncHeroFromPath(x);
   syncMatchFromPath(x);
+  document.documentElement.dataset.ready = '1';   // приложение готово (используют e2e-тесты)
   startAnims();
 }
 start();

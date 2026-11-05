@@ -4,6 +4,7 @@ test.beforeEach(async ({ page }) => { await page.addInitScript(() => localStorag
 
 test('Карточка героя: из слота, содержимое, адрес /hero/…, закрытие и «назад»', async ({ page }) => {
   await page.goto('/');
+  await page.waitForSelector('html[data-ready]');
   await page.locator('#slots-enemy .hlink', { hasText: 'Pudge' }).click();
   const dlg = page.locator('#hero');
   await expect(dlg).toBeVisible();
@@ -29,6 +30,7 @@ test('Карточка героя: из слота, содержимое, адр
 
 test('Карточка из пула (правый клик), кнопки «Отметить врагом» и «Беру его»', async ({ page }) => {
   await page.goto('/');
+  await page.waitForSelector('html[data-ready]');
   await page.fill('#q', 'Lion');
   await page.locator('#pool .hero', { hasText: /^Lion$/ }).click({ button: 'right' });
   await expect(page.locator('#hero-title')).toHaveText('Lion');
@@ -43,16 +45,19 @@ test('Карточка из пула (правый клик), кнопки «О�
 
 test('Прямая ссылка на героя и неизвестный герой', async ({ page }) => {
   await page.goto('/hero/natures-prophet');
+  await page.waitForSelector('html[data-ready]');
   await expect(page.locator('#hero-title')).toHaveText("Nature's Prophet");
   await page.locator('[data-hero-close]').click();
   await expect(page).toHaveURL(/\/$/);
   await page.goto('/hero/nobody');
+  await page.waitForSelector('html[data-ready]');
   await expect(page.locator('#hero')).toBeHidden();
   await expect(page).toHaveURL(/\/$/);
 });
 
 test('Моя линия: появляется при выбранной позиции, соперники и оценка', async ({ page }) => {
   await page.goto('/');
+  await page.waitForSelector('html[data-ready]');
   await expect(page.locator('#lane')).toBeHidden();
   await page.locator('#poschips [data-pos="1"]').click();
   const lane = page.locator('#lane');
@@ -74,6 +79,7 @@ for (const width of [400, 1440]) for (const lang of ['ru', 'en']) {
     await page.setViewportSize({ width, height: 900 });
     await page.addInitScript(l => localStorage.setItem('kontrpik-lang', l), lang);
     await page.goto('/hero/phantom-assassin');
+    await page.waitForSelector('html[data-ready]');
     await expect(page.locator('#hero-title')).toHaveText('Phantom Assassin');
     const [sw, cw] = await page.locator('#hero').evaluate(d => [d.scrollWidth, d.clientWidth]);
     expect(sw).toBeLessThanOrEqual(cw);

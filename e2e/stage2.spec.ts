@@ -15,6 +15,7 @@ test('Мои герои: открытый профиль → пул, личны�
   await mockOpenDota(page);
   await page.addInitScript(() => localStorage.setItem('kontrpik-lang', 'ru'));
   await page.goto('/');
+  await page.waitForSelector('html[data-ready]');
   await page.fill('#me-id', 'https://www.dotabuff.com/players/86745912');
   const t0 = Date.now();
   await page.click('.me-go');
@@ -27,6 +28,7 @@ test('Мои герои: открытый профиль → пул, личны�
   await expect(page.locator('.podium .mine').first()).toHaveText('у тебя 25 игр, винрейт 64% · +3.0 за личный винрейт');
 
   await page.reload();
+  await page.waitForSelector('html[data-ready]');
   await expect(page.locator('.me-who strong')).toHaveText('FINIK');
   await page.locator('#me-only').uncheck();
   expect(await topNames(page)).toEqual(['Lifestealer', 'Ursa', 'Tiny']);    // как в контрольном примере
@@ -36,6 +38,7 @@ test('Мои герои: закрытый профиль и короткая с�
   await mockOpenDota(page, 'closed');
   await page.addInitScript(() => localStorage.setItem('kontrpik-lang', 'ru'));
   await page.goto('/');
+  await page.waitForSelector('html[data-ready]');
   await page.fill('#me-id', '86745912'); await page.click('.me-go');
   await expect(page.locator('.me-err')).toHaveText(/^Профиль закрыт\. Включи в Dota: Настройки → Общедоступная история матчей/);
   await page.fill('#me-id', 'https://steamcommunity.com/id/finik'); await page.click('.me-go');
@@ -45,6 +48,7 @@ test('Мои герои: закрытый профиль и короткая с�
 test('Звёздочки вручную: режим ★ Мои', async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('kontrpik-lang', 'en'));
   await page.goto('/');
+  await page.waitForSelector('html[data-ready]');
   await page.locator('#me-only').check();
   await expect(page.locator('#out .empty-state')).toHaveText('Your pool is empty. Enter your Steam ID or star some heroes.');
   await page.locator('#m-star').click();
@@ -58,6 +62,7 @@ test('Звёздочки вручную: режим ★ Мои', async ({ page }
 test('Что купить: MKB против PA и BKB против магии, у причины есть враг', async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('kontrpik-lang', 'ru'));
   await page.goto('/');
+  await page.waitForSelector('html[data-ready]');
   const items = page.locator('#buy .buy-list li');
   await expect(items).toHaveCount(4);
   await expect(items.filter({ hasText: 'Monkey King Bar' })).toHaveText('Monkey King Bar — у Phantom Assassin уклонение');
@@ -71,6 +76,7 @@ test('Ссылка на драфт: копируется и открывает �
   await context.grantPermissions(['clipboard-read', 'clipboard-write']);
   await page.addInitScript(() => localStorage.setItem('kontrpik-lang', 'ru'));
   await page.goto('/');
+  await page.waitForSelector('html[data-ready]');
   await page.locator('#m-ally').click();
   await page.fill('#q', 'lion'); await page.locator('#pool .hero', { hasText: /^Lion$/ }).click();
   await page.locator('#src').selectOption('high');
@@ -84,6 +90,7 @@ test('Ссылка на драфт: копируется и открывает �
   const other = await context.browser()!.newContext();
   const p2 = await other.newPage();
   await p2.goto(url);
+  await p2.waitForSelector('html[data-ready]');
   await expect(p2.locator('#slots-enemy .slot:not(.empty) .sname')).toHaveText(['Phantom Assassin', 'Pudge', 'Invoker', 'Axe', 'Crystal Maiden']);
   await expect(p2.locator('#slots-ally .slot:not(.empty):not(.you) .sname')).toHaveText(['Lion']);
   await expect(p2.locator('#src')).toHaveValue('high');

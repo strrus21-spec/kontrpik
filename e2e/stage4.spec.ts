@@ -17,6 +17,7 @@ test.beforeEach(async ({ page }) => { await page.addInitScript(() => localStorag
 
 test('Тир-лист: тиры, 30 строк и «показать всех», сортировка, поиск, позиция', async ({ page }) => {
   await page.goto('/#meta');
+  await page.waitForSelector('html[data-ready]');
   const rows = page.locator('.tier-table tbody tr');
   await expect(rows).toHaveCount(30);
   await expect(rows.first().locator('.tier')).toHaveText('S');
@@ -35,22 +36,26 @@ test('Тир-лист: тиры, 30 строк и «показать всех»,
   await expect(page.locator('.tier-table .hlink', { hasText: 'Anti-Mage' })).toHaveCount(0);
   await page.locator('#meta-src').selectOption('pro');
   await page.reload();
+  await page.waitForSelector('html[data-ready]');
   await expect(page.locator('#meta-src')).toHaveValue('pro');
   await expect(page.locator('#meta-pos [data-mpos="5"]')).toHaveAttribute('aria-pressed', 'true');
 });
 
 test('Без истории — понятная пометка; с историей — ▲ и дата', async ({ page }) => {
   await page.goto('/#meta');
+  await page.waitForSelector('html[data-ready]');
   await expect(page.locator('#meta-note')).toContainText('появится, когда накопится 7 дней');
   await expect(page.locator('.tier-table .tr-none').first()).toHaveText('—');
   await mockHistory(page);
   await page.reload();
+  await page.waitForSelector('html[data-ready]');
   await expect(page.locator('#meta-note')).toContainText('изменение винрейта с 29 октября 2026');
   await expect(page.locator('.tier-table .tr-up').first()).toBeVisible();
 });
 
 test('Патч: 6 пунктов и ссылка на официальные заметки, в обоих языках', async ({ page }) => {
   await page.goto('/#meta');
+  await page.waitForSelector('html[data-ready]');
   await expect(page.locator('#patch h2')).toHaveText('Что изменилось в патче 7.41');
   await expect(page.locator('#patch li')).toHaveCount(6);
   await expect(page.locator('#patch a')).toHaveAttribute('href', 'https://www.dota2.com/patches/7.41');
@@ -61,6 +66,7 @@ test('Патч: 6 пунктов и ссылка на официальные з�
 
 test('Клик по герою в тир-листе открывает карточку', async ({ page }) => {
   await page.goto('/#meta');
+  await page.waitForSelector('html[data-ready]');
   const first = page.locator('.tier-table .hlink').first();
   const name = await first.textContent();
   await first.click();
@@ -73,6 +79,7 @@ for (const width of [400, 1440]) for (const lang of ['ru', 'en']) {
     await page.addInitScript(l => localStorage.setItem('kontrpik-lang', l), lang);
     await mockHistory(page);
     await page.goto('/#meta');
+    await page.waitForSelector('html[data-ready]');
     await expect(page.locator('.tier-table .tr-up').first()).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
     await page.locator('#meta').screenshot({ path: `test-results/shots/meta-${lang}-${width}.png` });

@@ -7,6 +7,7 @@ test('Разобранный матч по ссылке Dotabuff: выбор и�
   await context.grantPermissions(['clipboard-read', 'clipboard-write']);
   await mockOD(page);
   await page.goto('/#match');
+  await page.waitForSelector('html[data-ready]');
   await page.fill('#match-id', 'https://www.dotabuff.com/matches/8000000002');
   await page.locator('#match-form .me-go').click();
   await expect(page.locator('#match-out')).toContainText('Чей разбор показать?');
@@ -30,6 +31,7 @@ test('Разобранный матч по ссылке Dotabuff: выбор и�
   const p2 = await context.newPage();
   await mockOD(p2);
   await p2.goto(url);
+  await p2.waitForSelector('html[data-ready]');
   await expect(p2.locator('.m-title strong')).toHaveText('Разбор за Juggernaut');
 });
 
@@ -37,6 +39,7 @@ test('Неразобранный матч: очередь, прогресс, з�
   await mockOD(page, 'queue');
   await page.clock.install();
   await page.goto('/#match');
+  await page.waitForSelector('html[data-ready]');
   await page.fill('#match-id', '8000000001');
   await page.locator('#match-form .me-go').click();
   await expect(page.locator('#match-status')).toHaveText('Загружаю матч…');
@@ -50,6 +53,7 @@ test('Неразобранный матч: очередь, прогресс, з�
 test('Мои последние игры (из профиля) и мой герой выбирается сам', async ({ page }) => {
   await mockOD(page);
   await page.goto('/#match');
+  await page.waitForSelector('html[data-ready]');
   await page.locator('#match-recent').click();
   await expect(page.locator('#match-status')).toContainText('загрузи профиль');
   await page.fill('#me-id', '86745912'); await page.click('.me-go');
@@ -64,6 +68,7 @@ test('Мои последние игры (из профиля) и мой гер�
 test('Ошибки: неверный номер и несуществующий матч', async ({ page }) => {
   await mockOD(page);
   await page.goto('/#match');
+  await page.waitForSelector('html[data-ready]');
   await page.fill('#match-id', 'abc'); await page.locator('#match-form .me-go').click();
   await expect(page.locator('#match-status')).toContainText('Не понимаю номер матча');
   await page.fill('#match-id', 'https://www.opendota.com/matches/404000'); await page.locator('#match-form .me-go').click();
@@ -76,6 +81,7 @@ for (const width of [400, 1440]) for (const lang of ['ru', 'en']) {
     await page.addInitScript(l => localStorage.setItem('kontrpik-lang', l), lang);
     await mockOD(page);
     await page.goto('/match/8000000002?p=0');
+    await page.waitForSelector('html[data-ready]');
     await expect(page.locator('.m-ins li').first()).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
     await page.locator('#match').screenshot({ path: `test-results/shots/match-${lang}-${width}.png` });
