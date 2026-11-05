@@ -24,7 +24,7 @@ describe('выводы', () => {
       purchase_log: [{ time: 300, key: 'tango' }, { time: 1750, key: 'black_king_bar' }],
       benchmarks: { gold_per_min: { raw: 420.4, pct: 0.3 }, last_hits_per_min: { raw: 5, pct: 0.25 } },
       gold_reasons: { '1': -3100 } }, {
-      teamfights: [{ players: Array.from({ length: 10 }, (_, i) => ({ deaths: i === 0 ? 2 : 0 })) }],
+      teamfights: [{ start: 600, end: 640, deaths: 2, players: Array.from({ length: 10 }, (_, i) => ({ deaths: i === 0 ? 2 : 0 })) }],
     });
     m.players[5].kills_log = [{ time: 200, key: 'npc_dota_hero_pudge' }, { time: 900, key: 'npc_dota_hero_pudge' }];
     m.players[6].kills_log = [{ time: 400, key: 'npc_dota_hero_pudge' }, { time: 300, key: 'npc_dota_hero_axe' }];

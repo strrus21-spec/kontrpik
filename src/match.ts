@@ -18,12 +18,29 @@ export interface MPlayer {
   obs_placed?: number | null; sen_placed?: number | null; observer_kills?: number | null;
   gold_reasons?: Record<string, number> | null; lane_role?: number | null;
   benchmarks?: Record<string, Bench> | null; personaname?: string | null;
+  // расширенный разбор (есть в разобранных матчах)
+  xp_per_min?: number; denies?: number; hero_damage?: number; tower_damage?: number; hero_healing?: number; level?: number;
+  item_0?: number; item_1?: number; item_2?: number; item_3?: number; item_4?: number; item_5?: number; item_neutral?: number;
+  gold_t?: number[] | null; xp_t?: number[] | null; dn_t?: number[] | null; networth_t?: number[] | null;
+  lane?: number | null; position_est?: number | null; lane_efficiency_pct?: number | null; is_roaming?: boolean | null;
+  deaths_log?: { time: number; key: string; gold_lost?: number; gold_fed?: number; time_dead?: number }[] | null;
+  buyback_log?: { time: number }[] | null;
+  obs_log?: { time: number; x: number; y: number }[] | null; sen_log?: { time: number; x: number; y: number }[] | null;
+  lane_pos?: Record<string, Record<string, number>> | null;
+  damage_targets?: Record<string, Record<string, number>> | null; damage_taken?: Record<string, number> | null;
+  stuns?: number | null; teamfight_participation?: number | null; camps_stacked?: number | null;
 }
 export interface Match {
   match_id: number; version?: number | null; duration: number; radiant_win: boolean; start_time: number;
   radiant_score?: number; dire_score?: number; players: MPlayer[];
-  teamfights?: { players: { deaths: number }[] }[] | null;
+  teamfights?: Teamfight[] | null;
+  radiant_gold_adv?: number[] | null; radiant_xp_adv?: number[] | null;
+  objectives?: { time: number; type: string; key?: string; team?: number; slot?: number; player_slot?: number }[] | null;
+  picks_bans?: { is_pick: boolean; hero_id: number; team: number; order: number }[] | null;
+  first_blood_time?: number;
 }
+export interface TfPlayer { deaths: number; damage?: number; healing?: number; gold_delta?: number; xp_delta?: number; buybacks?: number; killed?: Record<string, number>; item_uses?: Record<string, number>; ability_uses?: Record<string, number>; deaths_pos?: Record<string, Record<string, number>> }
+export interface Teamfight { start: number; end: number; deaths: number; players: TfPlayer[] }
 
 export const isRadiant = (p: MPlayer) => p.isRadiant ?? p.player_slot < 128;
 export const isParsed = (m: Match) => m.version !== null && m.version !== undefined;

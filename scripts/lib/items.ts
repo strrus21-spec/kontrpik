@@ -2,7 +2,7 @@
 export type Phase = 'start' | 'early' | 'mid' | 'late';
 export interface ItemConst { id?: number; dname?: string; cost?: number | null; qual?: string; img?: string; components?: string[] | null }
 export interface HeroBuild { start: string[]; early: string[]; mid: string[]; late: string[] }
-export interface ItemsFile { updated: number; items: Record<string, { n: string; c: number; i: string }>; heroes: Record<string, HeroBuild> }
+export interface ItemsFile { updated: number; items: Record<string, { n: string; c: number; i: string; a?: number }>; ids?: Record<string, string>; heroes: Record<string, HeroBuild> }
 
 export type Popularity = Record<'start_game_items' | 'early_game_items' | 'mid_game_items' | 'late_game_items', Record<string, number>>;
 

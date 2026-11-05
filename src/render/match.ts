@@ -7,6 +7,8 @@ import { odHeroes, type OdHero } from '../odHeroes.ts';
 import { me } from '../me.ts';
 import type { Hero } from '../types.ts';
 import { $, esc } from './html.ts';
+import { damageBlock, deathsBlock, fightsBlock, historyBlock, itemsBlock, laneBlock, posBlock, shareCard, statsBlock, summaryBlock, teamsBlock, tipsBlock, type MxCtx } from './matchx.ts';
+import { loadHistory, summarize, type HistSummary } from '../history.ts';
 import type { Ctx } from './draft.ts';
 
 const BASE = import.meta.env.BASE_URL;
@@ -14,6 +16,7 @@ let current: { match: Match; slot: number | null } | null = null;
 let recent: RecentMatch[] | null = null;
 let od: Map<number, OdHero> | null = null;
 let runId = 0;
+let hist: HistSummary | null = null;
 
 const mmss = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
 export const matchFromPath = (path = location.pathname) => { const m = path.slice(BASE.length - 1).match(/^\/match\/(\d{6,12})\/?$/); return m ? Number(m[1]) : null; };
@@ -23,6 +26,10 @@ function heroOf(x: Ctx, heroId: number): Hero | undefined {
   if (byOd) return byOd;
   const name = od?.get(heroId)?.name;
   return name ? x.data.heroes.find(h => h.name === name) : undefined;
+}
+function heroByNpc(x: Ctx, npc: string): Hero | undefined {
+  for (const h of od?.values() || []) if (h.npc === npc) return x.data.heroes.find(y => y.name === h.name);
+  return undefined;
 }
 const icon = (h: Hero | undefined, size = 22) => h ? `<img class="ic" src="${esc(h.img)}" alt="" width="${size}" height="${size}">` : '';
 
@@ -35,10 +42,11 @@ export function renderMatch(x: Ctx) {
   const rb = $<HTMLButtonElement>('match-recent');
   rb.textContent = L.mRecent;
   const list = $('match-recent-list');
-  list.innerHTML = recent ? `<h3 class="m-h">${L.mRecentH}</h3><div class="m-recent">${recent.map(r => {
+  const mx: MxCtx = { heroOf: id => heroOf(x, id), heroByNpc: npc => heroByNpc(x, npc), items: x.data.items };
+  list.innerHTML = (hist ? historyBlock(hist, mx) : '') + (recent ? `<h3 class="m-h">${L.mRecentH}</h3><div class="m-recent">${recent.map(r => {
     const h = heroOf(x, r.hero_id);
     return `<button class="m-rec ${won(r) ? 'w' : 'l'}" data-mid="${r.match_id}" data-slot="${r.player_slot}">${icon(h)}<span>${esc(h?.name || '?')}</span><b>${r.kills}/${r.deaths}/${r.assists}</b><small>${won(r) ? L.mWin : L.mLoss} · ${dateOne(LANG, r.start_time)}</small></button>`;
-  }).join('')}</div>` : '';
+  }).join('')}</div>` : '');
   const out = $('match-out');
   if (!current) { out.innerHTML = ''; return; }
   const m = current.match;
@@ -56,8 +64,10 @@ export function renderMatch(x: Ctx) {
   out.innerHTML = `<div class="m-head ${win ? 'w' : 'l'}">${icon(h, 44).replace('class="ic"', 'class="ic-big"')}
       <div class="m-title"><span class="place">${win ? L.mWin : L.mLoss} · ${mmss(m.duration)} · ${dateOne(LANG, m.start_time)}</span>
       <strong>${L.mFor(esc(h?.name || '?'))}</strong><span class="roles">${p.kills}/${p.deaths}/${p.assists}${p.personaname ? ' · ' + esc(p.personaname) : ''}</span></div></div>
-    <ol class="m-ins">${ins.map(i => `<li class="t-${i.tone}"><p class="m-fact">${esc((L.ins[i.kind] as (v: unknown) => string)(i.v))}</p>${L.adv[i.kind][i.tone] ? `<p class="m-adv">${esc(L.adv[i.kind][i.tone])}</p>` : ''}</li>`).join('')}</ol>
-    <div class="m-foot"><button class="share" data-mshare>${L.mShare}</button><button class="clear" data-mother>${L.mOther}</button>
+    ${tipsBlock(m, p, mx, `<ol class="m-ins m-base">${ins.map(i => `<li class="t-${i.tone}"><p class="m-fact">${esc((L.ins[i.kind] as (v: unknown) => string)(i.v))}</p>${L.adv[i.kind][i.tone] ? `<p class="m-adv">${esc(L.adv[i.kind][i.tone])}</p>` : ''}</li>`).join('')}</ol>`)}
+    ${summaryBlock(m, p, mx)}${statsBlock(m, p)}${laneBlock(m, p, mx)}${posBlock(m, p, mx)}${itemsBlock(p, mx)}
+    ${deathsBlock(m, p, mx)}${fightsBlock(m, p, mx)}${damageBlock(p, mx)}${teamsBlock(m, p, mx)}
+    <div class="m-foot"><button class="share" data-mshare>${L.mShare}</button><button class="share" data-mcard>${L.mx.shareImg}</button><button class="clear" data-mother>${L.mOther}</button>
       <a class="vt-more" href="https://www.opendota.com/matches/${m.match_id}" target="_blank" rel="noopener">${L.mOnOD}</a><span id="m-share-msg" class="share-msg" role="status"></span></div>`;
 }
 
@@ -94,15 +104,26 @@ export function bindMatch(x: Ctx) {
     if (!me.player) { status(t().mNeedMe, true); return; }
     status(t().mLoading);
     try { od = await odHeroes(); } catch { /* иконки по odId из данных */ }
-    recent = await recentMatches(me.player.id);
+    const [rm, hs] = await Promise.all([recentMatches(me.player.id), loadHistory(me.player.id)]);
+    recent = rm; hist = hs ? summarize(hs) : null;
     status(recent ? null : t().mNet, !recent);
     renderMatch(x);
   });
   $('match').addEventListener('click', async e => {
-    const b = (e.target as Element).closest<HTMLElement>('[data-mid],[data-pslot],[data-mshare],[data-mother]'); if (!b) return;
+    const b = (e.target as Element).closest<HTMLElement>('[data-mid],[data-pslot],[data-mshare],[data-mother],[data-mcard]'); if (!b) return;
     e.stopPropagation();
     if (b.dataset.mid) { ($('match-id') as HTMLInputElement).value = b.dataset.mid; void analyze(x, +b.dataset.mid, +b.dataset.slot!); }
     else if (b.dataset.pslot && current) { current.slot = +b.dataset.pslot; renderMatch(x); updateUrl(); }
+    else if (b.dataset.mcard !== undefined && current) {
+      const m = current.match, p = m.players.find(pl => pl.player_slot === current!.slot); if (!p) return;
+      const blob = await shareCard(m, p, { heroOf: id => heroOf(x, id), heroByNpc: n => heroByNpc(x, n), items: x.data.items }, m.radiant_win === isRadiant(p));
+      if (!blob) return;
+      const file = new File([blob], `match-${m.match_id}.png`, { type: 'image/png' });
+      const nav = navigator as Navigator & { canShare?: (d: unknown) => boolean };
+      if (nav.canShare?.({ files: [file] })) { try { await navigator.share({ files: [file] }); return; } catch { /* отмена */ } }
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = file.name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+      $('m-share-msg').textContent = t().mx.shareImgDone;
+    }
     else if (b.dataset.mother !== undefined && current) { current.slot = null; renderMatch(x); updateUrl(); }
     else if (b.dataset.mshare !== undefined && current) {
       updateUrl();

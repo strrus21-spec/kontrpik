@@ -146,8 +146,12 @@ export async function build(o: BuildOptions): Promise<{ stats: Stats; positionsU
       }
       const used = new Set(Object.values(heroesOut).flatMap(b => [...b.start, ...b.early, ...b.mid, ...b.late]));
       const items: ItemsFile['items'] = {};
-      for (const k of used) { const c = consts[k]; if (c) items[k] = { n: c.dname || k, c: c.cost ?? 0, i: (c.img || '').replace(/\?.*$/, '') }; }
-      if (Object.keys(heroesOut).length >= N * 0.8) { writeAtomic(itemsFile, JSON.stringify({ updated: Math.floor(now.getTime() / 1000), items, heroes: heroesOut } satisfies ItemsFile)); itemsUpdated = true; }
+      // все предметы — для разбора матча (покупки и итоговые слоты), не только из сборок
+      for (const [k, c] of Object.entries(consts)) if (!k.startsWith('recipe_') && c.dname && c.img) items[k] = { n: c.dname, c: c.cost ?? 0, i: c.img.replace(/\?.*$/, ''), ...(c.components?.length ? { a: 1 } : {}) };
+      void used;
+      const ids: Record<string, string> = {};
+      for (const [k, c] of Object.entries(consts)) if (typeof c.id === 'number' && items[k]) ids[String(c.id)] = k;
+      if (Object.keys(heroesOut).length >= N * 0.8) { writeAtomic(itemsFile, JSON.stringify({ updated: Math.floor(now.getTime() / 1000), items, ids, heroes: heroesOut } satisfies ItemsFile)); itemsUpdated = true; }
       else log(`  сборки: мало героев (${Object.keys(heroesOut).length}), оставляю старые`);
     } catch (e) { log(`  сборки не обновлены: ${(e as Error).message}`); }
   }

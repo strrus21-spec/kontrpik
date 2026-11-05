@@ -5,7 +5,7 @@ export const heroesFrom = (s: Stats, baseUrl = ''): Hero[] =>
 
 /** Сборки предметов про-игроков (scripts/lib/items.ts). */
 export interface HeroBuild { start: string[]; early: string[]; mid: string[]; late: string[] }
-export interface ItemsData { updated: number; items: Record<string, { n: string; c: number; i: string }>; heroes: Record<string, HeroBuild> }
+export interface ItemsData { updated: number; items: Record<string, { n: string; c: number; i: string; a?: number }>; ids?: Record<string, string>; heroes: Record<string, HeroBuild> }
 export interface AppData { stats: Stats; positions: Positions; tips: Tip[]; heroes: Hero[]; items: ItemsData | null }
 
 /** Данные, вшитые в страницу (отдельный файл kontrpik.html — scripts/build-standalone.ts). */

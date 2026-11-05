@@ -15,13 +15,13 @@ test('Разобранный матч по ссылке Dotabuff: выбор и�
   await page.locator('[data-pslot="0"]').click();
   await expect(page.locator('.m-title strong')).toHaveText('Разбор за Juggernaut');
   await expect(page.locator('.m-head')).toContainText('Поражение');
-  const items = page.locator('.m-ins li');
+  const items = page.locator('.m-base li');
   expect(await items.count()).toBeGreaterThanOrEqual(3);
   expect(await items.count()).toBeLessThanOrEqual(6);
   await expect(items.first()).toHaveClass(/t-bad/);
-  await expect(page.locator('.m-ins')).toContainText('К 10-й минуте 27 добиваний');
-  await expect(page.locator('.m-ins')).toContainText('8 смертей, из них 1 до 10-й минуты; 6 — вне командных драк.');
-  await expect(page.locator('.m-ins')).toContainText('2 600 золота потеряно на смертях');
+  await expect(page.locator('.m-base')).toContainText('К 10-й минуте 27 добиваний');
+  await expect(page.locator('.m-base')).toContainText('8 смертей, из них 1 до 10-й минуты; 6 — вне командных драк.');
+  await expect(page.locator('.m-base')).toContainText('2 600 золота потеряно на смертях');
   await expect(page).toHaveURL(/\/match\/8000000002\?p=0$/);
   await page.locator('[data-mshare]').click();
   const url = await page.evaluate(() => navigator.clipboard.readText());
