@@ -722,15 +722,3 @@ body{font-size:16px}
   .nav.topbar .tabs-nav a[aria-current="page"]::after{left:9px;right:9px}
   .install{font-size:13px;padding:5px 10px}
 }
-/* баннеры вкладок: кадр ниже, чтобы были видны оба воина */
-#counterpick>.block-title,#meta>.block-title,#match>.block-title,#tips-block>.block-title{
-  padding:150px 16px 64px;background-position:center,center 74%!important;background-size:auto,cover!important}
-@media (max-width:700px){
-  #counterpick>.block-title,#meta>.block-title,#match>.block-title,#tips-block>.block-title{padding:150px 16px 48px;background-position:center,center 78%!important}
-}
-#counterpick>.block-title,#meta>.block-title,#match>.block-title,#tips-block>.block-title{
-  background:linear-gradient(180deg,rgba(13,16,20,.5),rgba(13,16,20,.12) 35%,rgba(13,16,20,.35) 70%,var(--stone)),url(./assets/bg-photo.jpg) center 64%/cover no-repeat!important}
-#counterpick>.block-title .sub,#meta>.block-title .sub,#match>.block-title .sub,#tips-block>.block-title .sub{color:#efe6d2}
-@media (max-width:700px){
-  #counterpick>.block-title,#meta>.block-title,#match>.block-title,#tips-block>.block-title{background-position:center,center 70%!important}
-}
