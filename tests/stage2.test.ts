@@ -97,6 +97,8 @@ describe('что купить', () => {
     const solo = s.pub.all.solo;
     const top = [...Array(s.n).keys()].sort((a, b) => solo[2 * b] - solo[2 * a]).slice(0, 40).map(i => s.heroes[i][0]);
     expect(top.filter(n => !THREATS[n])).toEqual([]);
+    // и для всех остальных героев (у новых — пустой список до согласования)
+    expect(s.heroes.map(h => h[0]).filter(n => !(n in THREATS))).toEqual([]);
     const names = new Set(s.heroes.map(h => h[0]));
     expect(Object.keys(THREATS).filter(n => !names.has(n))).toEqual([]);
     expect(Object.keys(COUNTERS)).toHaveLength(14);
