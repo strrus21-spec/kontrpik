@@ -86,6 +86,18 @@ async function start() {
   });
   renderAll();
   bindTabs();
+  // Главный экран: «Подобрать контрпик» и стрелка вниз — к драфту.
+  document.addEventListener('click', e => {
+    const b = (e.target as Element).closest<HTMLElement>('[data-goto="draft"]'); if (!b) return;
+    e.preventDefault();
+    showTab('counterpick', { scroll: false });
+    const top = $('draft').getBoundingClientRect().top + scrollY - ($('topbar').offsetHeight + 8);
+    window.scrollTo({ top, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  });
+  // Меню прозрачное над главным экраном и тёмное при прокрутке.
+  const topbar = $('topbar');
+  const onScroll = () => topbar.classList.toggle('solid', scrollY > 40);
+  window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
   // Логотип: на главную — вкладка «Контрпик» и самый верх страницы.
   $('home').addEventListener('click', e => {
     e.preventDefault();

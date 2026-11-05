@@ -20,11 +20,7 @@ export function showTab(tab: Tab, opts: { scroll?: boolean } = {}) {
   });
   try { localStorage.setItem(KEY, tab); } catch { /* ignore */ }
   bindAnims();   // анимации только видимой вкладки
-  if (opts.scroll !== false) {
-    const nav = document.querySelector('.nav') as HTMLElement | null;
-    // если пролистали ниже меню — вернуться к началу раздела
-    if (nav && nav.getBoundingClientRect().top < 0) window.scrollTo({ top: nav.offsetTop, behavior: 'auto' });
-  }
+  if (opts.scroll !== false) window.scrollTo({ top: 0, behavior: 'auto' });   // новая вкладка — с начала страницы
 }
 
 /** Вкладка из адреса (#meta) или последняя открытая. */
