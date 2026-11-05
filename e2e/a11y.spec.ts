@@ -12,7 +12,7 @@ const audit = async (page: Page, where: string) => {
 for (const lang of ['ru', 'en']) {
   test(`axe: главная, карточка героя, викторина, голосование (${lang})`, async ({ page }) => {
     await page.addInitScript(l => localStorage.setItem('kontrpik-lang', l), lang);
-    await page.goto('/');
+    await page.goto('/#counterpick');
     await page.waitForSelector('html[data-ready]');
     await page.locator('#poschips [data-pos="1"]').click();
     await page.locator('#stream summary').click();
@@ -30,7 +30,7 @@ for (const lang of ['ru', 'en']) {
 }
 
 test('у каждого элемента, куда попадает Tab, виден фокус', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/#counterpick');
   await page.waitForSelector('html[data-ready]');
   const bad: string[] = [];
   for (let i = 0; i < 120; i++) {

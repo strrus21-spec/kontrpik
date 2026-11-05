@@ -7,7 +7,7 @@ test.beforeEach(async ({ page, context }) => {
 
 test('Оверлей: прозрачный фон, пик и топ-3 приходят с основной страницы и меняются вживую', async ({ context }) => {
   const main = await context.newPage();
-  await main.goto('/');
+  await main.goto('/#counterpick');
   await main.waitForSelector('html[data-ready]');
   await expect(main.locator('.podium .top')).toHaveCount(3);
   const ov = await context.newPage();
@@ -32,7 +32,7 @@ test('Голосование из чата Twitch: !1/!2/!3, один голос
     ws.onMessage(m => { sent.push(String(m)); });
     send = m => ws.send(m);
   });
-  await main.goto('/');
+  await main.goto('/#counterpick');
   await main.waitForSelector('html[data-ready]');
   await main.locator('#stream summary').click();
   await main.fill('#st-channel', 'https://www.twitch.tv/FINIK');
@@ -56,7 +56,7 @@ test('Голосование из чата Twitch: !1/!2/!3, один голос
 });
 
 test('Викторина: 10 вопросов, ответ подсвечивается, итог и рекорд', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/#counterpick');
   await page.waitForSelector('html[data-ready]');
   await page.locator('.nav a[href="#tips-block"]').click(); await page.locator('#quiz-open').click();
   const dlg = page.locator('#quiz');
@@ -80,7 +80,7 @@ for (const width of [400, 1440]) for (const lang of ['ru', 'en']) {
   test(`стрим и викторина без горизонтальной прокрутки: ${lang} ${width}`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.addInitScript(l => localStorage.setItem('kontrpik-lang', l), lang);
-    await page.goto('/');
+    await page.goto('/#counterpick');
     await page.waitForSelector('html[data-ready]');
     await page.locator('#stream summary').click();
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);

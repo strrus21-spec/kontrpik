@@ -40,7 +40,7 @@ function applyStatic() {
   document.querySelectorAll<HTMLElement>('[data-t]').forEach(el => { if (S[el.dataset.t!] != null) el.textContent = S[el.dataset.t!]; });
   document.querySelectorAll<HTMLInputElement>('[data-tp]').forEach(el => { el.placeholder = S[el.dataset.tp!]; });
   document.querySelectorAll<HTMLElement>('[data-ta]').forEach(el => { el.setAttribute('aria-label', S[el.dataset.ta!]); });
-  $('home').title = S.homeLabel;
+  $('home-link').title = S.homeLabel;
   document.querySelectorAll<HTMLElement>('[data-lang]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.lang === LANG)));
 }
 applyStatic();
@@ -56,7 +56,7 @@ async function start() {
   if (hasDraftQuery(location.search)) {
     applyDraftQuery(x.state, location.search, data.heroes);
     saveState(x.state, data.heroes);
-    replaceUrl(null, location.pathname + location.hash);
+    replaceUrl(null, location.pathname + '#counterpick');
   }
   loadMe();
   preloadIcons(data.heroes);
@@ -86,24 +86,15 @@ async function start() {
   });
   renderAll();
   bindTabs();
-  // Главный экран: «Подобрать контрпик» и стрелка вниз — к драфту.
-  document.addEventListener('click', e => {
-    const b = (e.target as Element).closest<HTMLElement>('[data-goto="draft"]'); if (!b) return;
-    e.preventDefault();
-    showTab('counterpick', { scroll: false });
-    const top = $('draft').getBoundingClientRect().top + scrollY - ($('topbar').offsetHeight + 8);
-    window.scrollTo({ top, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
-  });
   // Меню прозрачное над главным экраном и тёмное при прокрутке.
   const topbar = $('topbar');
   const onScroll = () => topbar.classList.toggle('solid', scrollY > 40);
   window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
-  // Логотип: на главную — вкладка «Контрпик» и самый верх страницы.
-  $('home').addEventListener('click', e => {
+  // Логотип: на главную — экран-меню.
+  $('home-link').addEventListener('click', e => {
     e.preventDefault();
-    if (location.hash !== '#counterpick') history.pushState(null, '', '#counterpick');
-    showTab('counterpick', { scroll: false });
-    window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    if (location.hash !== '#home') { try { history.pushState(null, '', '#home'); } catch { /* file:// */ } }
+    showTab('home');
   });
   showTab(initialTab(), { scroll: false });
   // ссылка с #вкладкой не должна проматывать мимо шапки

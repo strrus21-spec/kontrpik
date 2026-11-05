@@ -5,7 +5,7 @@ test.beforeEach(async ({ page }) => { await page.addInitScript(() => localStorag
 test.describe('PWA', () => {
   test.use({ serviceWorkers: 'allow' });
 test('PWA: манифест и иконки, офлайн на последних загруженных данных', async ({ page, context }) => {
-  await page.goto('/');
+  await page.goto('/#counterpick');
   await page.waitForSelector('html[data-ready]');
   const man = await (await page.request.get('/manifest.webmanifest')).json();
   expect(man.display).toBe('standalone');
@@ -29,7 +29,7 @@ test('PWA: манифест и иконки, офлайн на последни�
 
 test('Горячие клавиши: / поиск, 1–5 и 0 позиция, E/A/B режим (и в русской раскладке)', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto('/');
+  await page.goto('/#counterpick');
   await page.waitForSelector('html[data-ready]');
   await expect(page.locator('.kbd-hint')).toBeVisible();
   await page.locator('body').click({ position: { x: 5, y: 5 } });
@@ -56,7 +56,7 @@ for (const lang of ['ru', 'en']) {
   test(`Компактный режим на телефоне (${lang}): слоты врагов, поиск, топ-5 крупно; сохраняется`, async ({ page }) => {
     await page.setViewportSize({ width: 400, height: 860 });
     await page.addInitScript(l => localStorage.setItem('kontrpik-lang', l), lang);
-    await page.goto('/');
+    await page.goto('/#counterpick');
     await page.waitForSelector('html[data-ready]');
     await page.locator('#compact-toggle').click();
     await expect(page.locator('.team.radiant')).toBeHidden();

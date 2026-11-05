@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 test.beforeEach(async ({ page }) => { await page.addInitScript(() => localStorage.setItem('kontrpik-lang', 'ru')); });
 
 test('Карточка героя: из слота, содержимое, адрес /hero/…, закрытие и «назад»', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/#counterpick');
   await page.waitForSelector('html[data-ready]');
   await page.locator('#slots-enemy .hlink', { hasText: 'Pudge' }).click();
   const dlg = page.locator('#hero');
@@ -25,11 +25,11 @@ test('Карточка героя: из слота, содержимое, адр
   await page.keyboard.press('Escape');
   await expect(dlg).toBeHidden();
   await page.keyboard.press('Escape');
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL(/\/(#counterpick)?$/);
 });
 
 test('Карточка из пула (правый клик), кнопки «Отметить врагом» и «Беру его»', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/#counterpick');
   await page.waitForSelector('html[data-ready]');
   await page.fill('#q', 'Lion');
   await page.locator('#pool .hero', { hasText: /^Lion$/ }).click({ button: 'right' });
@@ -48,15 +48,15 @@ test('Прямая ссылка на героя и неизвестный гер
   await page.waitForSelector('html[data-ready]');
   await expect(page.locator('#hero-title')).toHaveText("Nature's Prophet");
   await page.locator('[data-hero-close]').click();
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL(/\/(#counterpick)?$/);
   await page.goto('/hero/nobody');
   await page.waitForSelector('html[data-ready]');
   await expect(page.locator('#hero')).toBeHidden();
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL(/\/(#counterpick)?$/);
 });
 
 test('Моя линия: появляется при выбранной позиции, соперники и оценка', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/#counterpick');
   await page.waitForSelector('html[data-ready]');
   await expect(page.locator('#lane')).toBeHidden();
   await page.locator('#poschips [data-pos="1"]').click();

@@ -1,12 +1,11 @@
 // Вкладки: каждый раздел — отдельная страница. Адрес вкладки — хеш (#meta), работает и на GitHub Pages, и в файле.
 import { bindAnims } from './anim/player.ts';
 
-export const TABS = ['counterpick', 'meta', 'match', 'tips-block'] as const;
+export const TABS = ['home', 'counterpick', 'meta', 'match', 'tips-block'] as const;
 export type Tab = typeof TABS[number];
-const KEY = 'kontrpik-tab';
 const isTab = (s: string): s is Tab => (TABS as readonly string[]).includes(s);
 
-let current: Tab = 'counterpick';
+let current: Tab = 'home';
 export const currentTab = () => current;
 
 export function showTab(tab: Tab, opts: { scroll?: boolean } = {}) {
@@ -18,17 +17,15 @@ export function showTab(tab: Tab, opts: { scroll?: boolean } = {}) {
   document.querySelectorAll<HTMLAnchorElement>('.nav a[href^="#"]:not(.logo)').forEach(a => {
     if (a.getAttribute('href') === '#' + tab) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
   });
-  try { localStorage.setItem(KEY, tab); } catch { /* ignore */ }
+  document.body.dataset.tab = tab;
   bindAnims();   // анимации только видимой вкладки
   if (opts.scroll !== false) window.scrollTo({ top: 0, behavior: 'auto' });   // новая вкладка — с начала страницы
 }
 
-/** Вкладка из адреса (#meta) или последняя открытая. */
+/** Вкладка из адреса (#meta); без адреса — главная (экран-меню). */
 export function initialTab(): Tab {
   const h = location.hash.slice(1);
-  if (isTab(h)) return h;
-  try { const v = localStorage.getItem(KEY) || ''; if (isTab(v)) return v; } catch { /* ignore */ }
-  return 'counterpick';
+  return isTab(h) ? h : 'home';
 }
 
 export function bindTabs() {

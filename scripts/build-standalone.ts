@@ -17,6 +17,7 @@ html = html.replace(/<link rel="stylesheet"[^>]*href="\.\/(assets\/[^"]+\.css)"[
   css = css.replace(/,\s*url\(\.\/[^)]+\.woff\)\s*format\("woff"\)/g, '');
   css = css.replace(/url\(\.\/([^)]+\.woff2)\)/g, (_m, f: string) => `url(${dataUri('assets/' + f, 'font/woff2')})`);
   css = css.replace(/url\(\.\/([^)]+\.svg)\)/g, (_m, f: string) => `url(${dataUri('assets/' + f, 'image/svg+xml')})`);
+  css = css.replace(/url\(\.\/([^)]+\.jpe?g)\)/g, (_m, f: string) => `url(${dataUri('assets/' + f, 'image/jpeg')})`);
   return `<style>${css}</style>`;
 });
 // JS: модуль целиком в страницу

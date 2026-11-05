@@ -6,7 +6,7 @@ test.beforeEach(async ({ context }) => { await context.addInitScript(() => local
 test('Комната: оверлей и голосование зрителей с другого устройства, голоса чата и страницы вместе', async ({ page, browser }) => {
   let send: ((m: string) => void) | null = null;
   await page.routeWebSocket('wss://irc-ws.chat.twitch.tv:443', ws => { ws.onMessage(() => {}); send = m => ws.send(m); });
-  await page.goto('/');
+  await page.goto('/#counterpick');
   await page.waitForSelector('html[data-ready]');
   await page.locator('#stream summary').click();
   await page.locator('[data-st="room"]').click();
@@ -63,7 +63,7 @@ test('Комната: неверный код и ключ управления',
 });
 
 test('Таблица лидеров викторины', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/#counterpick');
   await page.waitForSelector('html[data-ready]');
   await page.locator('.nav a[href="#tips-block"]').click(); await page.locator('#quiz-open').click();
   const dlg = page.locator('#quiz');
@@ -88,7 +88,7 @@ for (const width of [400, 1440]) for (const lang of ['ru', 'en']) {
     await page.goto('/vote/?room=' + code);
     await expect(page.locator('.empty-state')).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
-    await page.goto('/');
+    await page.goto('/#counterpick');
     await page.waitForSelector('html[data-ready]');
     await page.locator('#stream summary').click();
     await page.locator('[data-st="room"]').click();

@@ -14,7 +14,7 @@ async function mockOpenDota(page: Page, mode: 'open' | 'closed' = 'open') {
 test('Мои герои: открытый профиль → пул, личные винрейты, бонус; сохраняется', async ({ page }) => {
   await mockOpenDota(page);
   await page.addInitScript(() => localStorage.setItem('kontrpik-lang', 'ru'));
-  await page.goto('/');
+  await page.goto('/#counterpick');
   await page.waitForSelector('html[data-ready]');
   await page.fill('#me-id', 'https://www.dotabuff.com/players/86745912');
   const t0 = Date.now();
@@ -37,7 +37,7 @@ test('Мои герои: открытый профиль → пул, личны�
 test('Мои герои: закрытый профиль и короткая ссылка Steam → понятные сообщения', async ({ page }) => {
   await mockOpenDota(page, 'closed');
   await page.addInitScript(() => localStorage.setItem('kontrpik-lang', 'ru'));
-  await page.goto('/');
+  await page.goto('/#counterpick');
   await page.waitForSelector('html[data-ready]');
   await page.fill('#me-id', '86745912'); await page.click('.me-go');
   await expect(page.locator('.me-err')).toHaveText(/^Профиль закрыт\. Включи в Dota: Настройки → Общедоступная история матчей/);
@@ -47,7 +47,7 @@ test('Мои герои: закрытый профиль и короткая с�
 
 test('Звёздочки вручную: режим ★ Мои', async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('kontrpik-lang', 'en'));
-  await page.goto('/');
+  await page.goto('/#counterpick');
   await page.waitForSelector('html[data-ready]');
   await page.locator('#me-only').check();
   await expect(page.locator('#out .empty-state')).toHaveText('Your pool is empty. Enter your Steam ID or star some heroes.');
@@ -61,7 +61,7 @@ test('Звёздочки вручную: режим ★ Мои', async ({ page }
 
 test('Что купить: MKB против PA и BKB против магии, у причины есть враг', async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('kontrpik-lang', 'ru'));
-  await page.goto('/');
+  await page.goto('/#counterpick');
   await page.waitForSelector('html[data-ready]');
   const items = page.locator('#buy .buy-list li');
   await expect(items).toHaveCount(4);
@@ -75,7 +75,7 @@ test('Что купить: MKB против PA и BKB против магии, �
 test('Ссылка на драфт: копируется и открывает тот же пик', async ({ page, context }) => {
   await context.grantPermissions(['clipboard-read', 'clipboard-write']);
   await page.addInitScript(() => localStorage.setItem('kontrpik-lang', 'ru'));
-  await page.goto('/');
+  await page.goto('/#counterpick');
   await page.waitForSelector('html[data-ready]');
   await page.locator('#m-ally').click();
   await page.fill('#q', 'lion'); await page.locator('#pool .hero', { hasText: /^Lion$/ }).click();

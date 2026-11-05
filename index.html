@@ -14,7 +14,7 @@
 </head>
 <body>
 <div class="bg-art" aria-hidden="true"></div>
-  <nav class="nav topbar" id="topbar" aria-label="Разделы" data-ta="navLabel"><a class="logo" id="home" href="#counterpick" aria-label="На главную" data-ta="homeLabel" title="На главную"><svg class="logo-ic" width="40" height="40" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><defs><linearGradient id="glg" gradientUnits="userSpaceOnUse" x1="0" y1="2" x2="0" y2="62"><stop offset="0" stop-color="#fff1c4"/><stop offset=".35" stop-color="#e8b84a"/><stop offset=".7" stop-color="#b07d26"/><stop offset="1" stop-color="#6e4a12"/></linearGradient>
+  <nav class="nav topbar" id="topbar" aria-label="Разделы" data-ta="navLabel"><a class="logo" id="home-link" href="#home" aria-label="На главную" data-ta="homeLabel" title="На главную"><svg class="logo-ic" width="40" height="40" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><defs><linearGradient id="glg" gradientUnits="userSpaceOnUse" x1="0" y1="2" x2="0" y2="62"><stop offset="0" stop-color="#fff1c4"/><stop offset=".35" stop-color="#e8b84a"/><stop offset=".7" stop-color="#b07d26"/><stop offset="1" stop-color="#6e4a12"/></linearGradient>
 <linearGradient id="radlg" x1="0" y1="1" x2=".7" y2=".3"><stop offset="0" stop-color="#7fd65a"/><stop offset=".55" stop-color="#2f7a24"/><stop offset="1" stop-color="#173f13"/></linearGradient>
 <linearGradient id="direlg" x1="1" y1="0" x2=".3" y2=".7"><stop offset="0" stop-color="#ff7a4a"/><stop offset=".5" stop-color="#9a2a16"/><stop offset="1" stop-color="#3e0f0a"/></linearGradient>
 <linearGradient id="rivlg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9fe3ff"/><stop offset=".5" stop-color="#3a9ad0"/><stop offset="1" stop-color="#1f5a8a"/></linearGradient>
@@ -35,14 +35,16 @@
 <rect x="0" y="0" width="64" height="64" fill="url(#shadelg)"/>
 </g><rect x="6" y="6" width="52" height="52" rx="8" fill="none" stroke="url(#glg)" stroke-width="3.2"/><rect x="8" y="8" width="48" height="48" rx="6.5" fill="none" stroke="#000" stroke-opacity=".5" stroke-width="1"/></svg></a><div class="tabs-nav"><a href="#counterpick"><span class="n">01</span><span data-t="nav1">Контрпик</span></a><a href="#meta"><span class="n">02</span><span data-t="nav3">Мета</span></a><a href="#match"><span class="n">03</span><span data-t="nav4">Разбор</span></a><a href="#tips-block"><span class="n">04</span><span data-t="nav2">Фишки</span></a><button class="install" id="install" hidden data-t="install">Установить</button></div><div class="lang" role="group" aria-label="Language"><button data-lang="ru">RU</button><button data-lang="en">EN</button></div></nav>
 <div class="wrap">
-  <section id="counterpick" class="wrap" style="max-width:none;margin:0">
+  <section id="home" class="wrap home" style="max-width:none;margin:0" aria-label="Главная" data-ta="homeLabel">
   <div class="landing" id="landing">
     <div class="landing-in">
       <h1><span data-t="h1a" class="h1a">Dota 2 </span><span data-t="h1b">помощник</span></h1>
       <p class="sub landing-sub" data-t="sub">Подбор контрпика по статистике матчей и сборник фишек, которые помогают выигрывать.</p>
     </div>
-    <button class="landing-down" data-goto="draft" aria-label="К подбору" data-ta="heroDown"><span aria-hidden="true">⌄</span></button>
   </div>
+  </section>
+
+  <section id="counterpick" class="wrap" style="max-width:none;margin:0">
   <div class="block-title" id="draft"><h2 class="big" data-t="cpTitle">Контрпик</h2><span class="sub" data-t="cpSub">Отметь врагов и союзников. Справа появятся герои, которые лучше всех играют против этого пика и сочетаются с твоей командой.</span></div>
 
   <div class="compact-bar"><button class="share" id="compact-toggle" aria-pressed="false" data-t="compactOn">Компактный режим</button></div>
@@ -140,6 +142,7 @@
 </div>
 <footer class="footer"><div class="footer-in">
   <p class="sources"><span data-t="src1">Изменения патча: </span><a href="https://www.dota2.com/patches/7.41" target="_blank" rel="noopener" data-t="src2">официальные заметки 7.41</a>, <a href="https://www.gosugamers.net/dota2/news/78166-dota-2-patch-7-41-removes-facets-and-adds-nine-new-items" target="_blank" rel="noopener">GosuGamers</a>, <a href="https://liquipedia.net/dota2/7.41e" target="_blank" rel="noopener">Liquipedia</a><span data-t="src3">. Статистика: </span><a href="https://www.opendota.com" target="_blank" rel="noopener">OpenDota</a>.</p>
+  <p class="footer-note" data-t="artCredit">Фон: арт Eran Fowler (eranfolio.com) и Valve.</p>
   <p class="footer-note" data-t="footNote">Фанатский проект, не связан с Valve. Dota 2 — товарный знак Valve Corporation.</p>
 </div></footer>
 <dialog id="quiz" class="hero-dlg quiz-dlg" aria-labelledby="quiz-title"><div id="quiz-body"></div></dialog>

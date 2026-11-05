@@ -18,7 +18,7 @@ for (const lang of ['ru', 'en'] as const) {
       const errs = errors(page);
       await page.setViewportSize({ width, height: 900 });
       await page.addInitScript(l => localStorage.setItem('kontrpik-lang', l), lang);
-      await page.goto('/');
+      await page.goto('/#counterpick');
       await page.waitForSelector('html[data-ready]');
       await expect(page.locator('.podium .top')).toHaveCount(3);
       expect(await topNames(page)).toEqual(['Earth Spirit', 'Puck', 'Lifestealer']);
@@ -37,7 +37,7 @@ for (const lang of ['ru', 'en'] as const) {
 
 test('позиция, источник, бан, союзник, «Беру его»', async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('kontrpik-lang', 'ru'));
-  await page.goto('/');
+  await page.goto('/#counterpick');
   await page.waitForSelector('html[data-ready]');
   await page.locator('#poschips [data-pos="1"]').click();
   expect(await topNames(page)).toEqual(['Lifestealer', 'Ursa', 'Tiny']);
@@ -57,7 +57,7 @@ test('позиция, источник, бан, союзник, «Беру ег�
 });
 
 test('пул: режимы и поиск по прозвищу', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/#counterpick');
   await page.waitForSelector('html[data-ready]');
   await page.locator('[data-clear="enemy"]').click();
   await expect(page.locator('#exampleTag')).toBeHidden();
@@ -74,7 +74,7 @@ test('пул: режимы и поиск по прозвищу', async ({ page }
 });
 
 test('драфт, язык и изученные фишки сохраняются после перезагрузки; драфт хранится по именам', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/#counterpick');
   await page.waitForSelector('html[data-ready]');
   await page.locator('.lang [data-lang="en"]').click();
   await expect(page.locator('h1')).toContainText('helper');
@@ -98,7 +98,7 @@ test('драфт из прототипа (индексы) переносится
   await page.addInitScript(() => {
     if (!localStorage.getItem('kontrpik-draft')) localStorage.setItem('counterpick2', JSON.stringify({ enemy: [0, 5], ally: [], ban: [], mode: 'ally', src: 'high', pos: 2 }));
   });
-  await page.goto('/');
+  await page.goto('/#counterpick');
   await page.waitForSelector('html[data-ready]');
   await expect(page.locator('#slots-enemy .slot:not(.empty) .sname')).toHaveText(['Abaddon', 'Axe']);
   await expect(page.locator('#src')).toHaveValue('high');
@@ -106,7 +106,7 @@ test('драфт из прототипа (индексы) переносится
 });
 
 test('анимации рисуются, фишки против пика показаны', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/#counterpick');
   await page.waitForSelector('html[data-ready]');
   await expect(page.locator('#vs-tips .vt')).toHaveCount(2);
   // Иконки с CDN Valve делают canvas «чужим» для getImageData, поэтому сравниваем два снимка: анимация идёт.
@@ -121,7 +121,7 @@ test('анимации рисуются, фишки против пика пок
 });
 
 test('Вкладки: один раздел на экране, адрес #вкладки, «назад», запоминание', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/#counterpick');
   await page.waitForSelector('html[data-ready]');
   const visible = async () => (await Promise.all(['counterpick', 'meta', 'match', 'tips-block'].map(async id => [id, await page.locator('#' + id).isVisible()] as const))).filter(x => x[1]).map(x => x[0]);
   await expect.poll(visible).toEqual(['counterpick']);
@@ -142,21 +142,43 @@ test('Вкладки: один раздел на экране, адрес #вк�
 });
 
 for (const width of [1440, 400]) {
-  test(`Логотип «На главную» (${width}px): с любой вкладки и из глубины страницы — «Контрпик», самый верх`, async ({ page }) => {
+  test(`Логотип «На главную» (${width}px): с любой вкладки и из глубины страницы — главная, самый верх`, async ({ page }) => {
     await page.setViewportSize({ width, height: 800 });
     await page.addInitScript(() => localStorage.setItem('kontrpik-lang', 'ru'));
     await page.goto('/#meta');
     await page.waitForSelector('html[data-ready]');
     await page.mouse.wheel(0, 1500);
     await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(200);
-    const logo = page.locator('#home');
+    const logo = page.locator('#home-link');
     await expect(logo).toBeVisible();
     await expect(logo).toHaveAttribute('aria-label', 'На главную');
     await logo.click();
-    await expect(page.locator('#counterpick')).toBeVisible();
+    await expect(page.locator('#home')).toBeVisible();
     await expect(page.locator('#meta')).toBeHidden();
-    await expect(page).toHaveURL(/#counterpick$/);
+    await expect(page).toHaveURL(/#home$/);
     await expect.poll(() => page.evaluate(() => scrollY)).toBe(0);
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
   });
 }
+
+test('Главная — экран-меню: только главный экран, без драфта; логотип возвращает на неё', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.addInitScript(() => localStorage.setItem('kontrpik-lang', 'ru'));
+  await page.goto('/');
+  await page.waitForSelector('html[data-ready]');
+  await expect(page.locator('#home .landing h1')).toBeVisible();
+  for (const id of ['counterpick', 'meta', 'match', 'tips-block']) await expect(page.locator('#' + id)).toBeHidden();
+  await expect(page.locator('.footer')).toBeHidden();
+  expect(await page.evaluate(() => document.documentElement.scrollHeight)).toBeLessThanOrEqual(901);
+  await page.locator('.nav a[href="#meta"]').click();
+  await expect(page.locator('#meta')).toBeVisible();
+  await expect(page.locator('#home')).toBeHidden();
+  await page.locator('#home-link').click();
+  await expect(page.locator('#home')).toBeVisible();
+  await expect(page).toHaveURL(/#home$/);
+  // ссылка на драфт открывает сразу вкладку «Контрпик»
+  await page.goto('/?e=pudge,axe');
+  await page.waitForSelector('html[data-ready]');
+  await expect(page.locator('#counterpick')).toBeVisible();
+  await expect(page.locator('#slots-enemy .slot:not(.empty) .sname')).toHaveText(['Pudge', 'Axe']);
+});
