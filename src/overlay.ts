@@ -5,6 +5,7 @@ import '@fontsource/golos-text/600.css';
 import '@fontsource/jetbrains-mono/500.css';
 import './overlay.css';
 import { CHANNEL, STORE, percents, type OverlayState } from './stream.ts';
+import { codeFromQuery, connectRoom, roomEnabled } from './room.ts';
 
 const el = document.getElementById('ov')!;
 const esc = (s: unknown) => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
@@ -29,12 +30,18 @@ function render(s: OverlayState | null) {
 }
 
 let state: OverlayState | null = null;
+const roomCode = roomEnabled ? codeFromQuery() : null;
+if (roomCode) {
+  // Режим комнаты: состояние приходит с сервера — оверлей может быть на любом устройстве.
+  connectRoom(roomCode, 'overlay', null, m => { if (m.type === 'state') { state = m.state as OverlayState; render(state); } });
+} else {
 try { state = JSON.parse(localStorage.getItem(STORE) || 'null'); } catch { /* ignore */ }
 render(state);
-if ('BroadcastChannel' in window) {
+}
+if (!roomCode && 'BroadcastChannel' in window) {
   const bc = new BroadcastChannel(CHANNEL);
   bc.onmessage = e => { if (e.data && typeof e.data === 'object') { state = e.data; render(state); } };
   bc.postMessage('hello');
 }
 // запасной путь: изменения localStorage из другой вкладки того же браузера
-window.addEventListener('storage', e => { if (e.key === STORE && e.newValue) { try { state = JSON.parse(e.newValue); render(state); } catch { /* ignore */ } } });
+if (!roomCode) window.addEventListener('storage', e => { if (e.key === STORE && e.newValue) { try { state = JSON.parse(e.newValue); render(state); } catch { /* ignore */ } } });

@@ -1,0 +1,17 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "kontrpik-room",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-01",
+  "durable_objects": {
+    "bindings": [
+      { "name": "ROOM", "class_name": "Room" },
+      { "name": "BOARD", "class_name": "Board" }
+    ]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Room", "Board"] }],
+  "vars": {
+    // Сайт(ы), которым разрешены запросы, через запятую. Например: "https://finik.github.io"
+    "ALLOWED_ORIGINS": ""
+  }
+}

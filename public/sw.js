@@ -1,7 +1,7 @@
 // Service worker: офлайн на последних загруженных данных.
 // Оболочка и данные — «сеть, потом кэш»; файлы со хешем, иконки, шрифты — «кэш, потом сеть».
 // Запросы к OpenDota и Twitch не кэшируются.
-const CACHE = 'kontrpik-v1';
+const CACHE = 'kontrpik-v2';
 const BASE = new URL(self.registration.scope).pathname;
 const SHELL = [BASE, BASE + 'manifest.webmanifest', BASE + 'data/stats.json', BASE + 'data/positions.json', BASE + 'data/tips.json', BASE + 'data/patch.json'];
 
@@ -41,7 +41,7 @@ self.addEventListener('fetch', e => {
   const path = url.pathname;
   // Все страницы приложения (/, /hero/…, /match/…) — одна оболочка.
   if (req.mode === 'navigate') {
-    const key = path.startsWith(BASE + 'overlay/') ? BASE + 'overlay/' : BASE;
+    const key = path.startsWith(BASE + 'overlay/') ? BASE + 'overlay/' : path.startsWith(BASE + 'vote/') ? BASE + 'vote/' : BASE;
     e.respondWith(networkFirst(req, key));
     return;
   }

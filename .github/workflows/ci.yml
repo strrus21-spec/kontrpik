@@ -13,10 +13,14 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 22, cache: npm }
       - run: npm ci
+      - run: npm ci
+        working-directory: worker
       - run: npm run build          # tsc + vite build
-      - run: npm test               # Vitest: алгоритм счёта на фикстуре, состояние, сборка данных
+      - run: npx tsc --noEmit       # типы бэкенда стрима
+        working-directory: worker
+      - run: npm test               # Vitest: алгоритм счёта на фикстуре, состояние, сборка данных, протокол комнаты
       - run: npx playwright install --with-deps chromium
-      - run: npm run e2e            # Playwright: 1440 и 400 px, RU и EN
+      - run: npm run e2e            # Playwright: 1440 и 400 px, RU и EN; поднимает локальный worker
       - if: always()
         uses: actions/upload-artifact@v4
         with:

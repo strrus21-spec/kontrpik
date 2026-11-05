@@ -20,6 +20,7 @@ npm run data       # выгрузка свежей статистики OpenDota
 - `src/meta.ts`, `src/render/meta.ts` — тир-лист, тренды по `public/data/history/`. `public/data/patch.json` — «Что изменилось в патче» (правится вручную при выходе патча).
 - `src/match.ts`, `src/render/match.ts` — разбор матча (адрес `/match/{id}?p={slot}`). `src/odHeroes.ts` — справочник героев OpenDota.
 - `overlay/index.html`, `src/overlay.ts` — оверлей для OBS (`/overlay/`, параметры `?pos=tr|bl|br&scale=1.5`). `src/stream.ts`, `src/render/stream.ts` — панель «Для стрима»: чат Twitch (анонимно, без токена), голосование `!1/!2/!3`. `src/quiz.ts`, `src/render/quiz.ts` — викторина.
+- `worker/` — бэкенд стрима (Cloudflare Worker + Durable Objects): комнаты для оверлея и голосования с другого устройства, таблица лидеров викторины. Протокол — `src/room-protocol.ts`, клиент — `src/room.ts`, страница зрителей — `vote/index.html` (`/vote/?room=КОД`).
 - `public/manifest.webmanifest`, `public/sw.js` — PWA: установка и офлайн на последних загруженных данных. `src/compact.ts` — компактный режим для телефона. `src/keys.ts` — горячие клавиши.
 - `src/search.ts` — русские прозвища героев. `src/anim/` — анимированные схемы фишек. `src/render/` — разметка.
 - `public/data/` — `stats.json`, `positions.json`, `tips.json`, `history/` (ежедневные снимки). `public/icons/{slug}.png` — иконки.
@@ -32,6 +33,8 @@ npm run data       # выгрузка свежей статистики OpenDota
 - `Data` (ежедневно 03:17 UTC): собирает статистику и кладёт её в ветку `data` (один коммит, перезаписывается — main не раздувается). Позиции обновляются раз в неделю или по кнопке. При сбое ничего не перезаписывается.
 - `Deploy`: сборка + данные из ветки `data` → GitHub Pages. Запускается после `Data` и при пуше в main.
 - `CI`: сборка, Vitest, Playwright на каждый пуш и PR.
+- `Worker`: деплой бэкенда стрима в Cloudflare (секреты `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`; переменная `SITE_ORIGIN` — адрес сайта для CORS).
+- Переменная репозитория `ROOM_API_URL` — адрес задеплоенного worker; без неё комнаты и таблица лидеров на сайте скрыты.
 - Необязательный секрет `OPENDOTA_API_KEY` снимает лимит 60 запросов в минуту.
 
 Сборка для подкаталога: `VITE_BASE=/kontrpik/ npm run build` (в деплое задаётся автоматически). `404.html` — копия `index.html` для прямых ссылок на героев.

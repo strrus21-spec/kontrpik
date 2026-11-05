@@ -8,9 +8,10 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "e2e": "playwright test",
+    "e2e": "VITE_ROOM_API=http://127.0.0.1:8787 vite build && playwright test",
     "data": "node scripts/build-data.ts",
-    "extract-icons": "node scripts/extract-icons.ts"
+    "extract-icons": "node scripts/extract-icons.ts",
+    "worker": "cd worker && npm run dev"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",

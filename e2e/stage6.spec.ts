@@ -71,7 +71,7 @@ test('Викторина: 10 вопросов, ответ подсвечивае
   }
   await expect(dlg.locator('h2')).toHaveText('Результат');
   await expect(dlg.locator('.qz-score')).toHaveText(/^\d+ из 10$/);
-  await expect(dlg.locator('.bans-note')).toContainText('Твой рекорд');
+  await expect(dlg.locator('.bans-note').first()).toContainText('Твой рекорд');
   await dlg.locator('[data-qz="close"]').click();
   await expect(dlg).toBeHidden();
 });

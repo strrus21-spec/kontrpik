@@ -145,6 +145,17 @@ const ru = {
   qzBest: (b: number) => `Твой рекорд: ${b} из 10.`, qzAgain: 'Ещё раз', qzAdv: (a: string, h: string) => `${a} против ${h}`,
   // этап 7
   cTop: 'Топ-5 против этого пика', cEmpty: 'Найди врагов поиском и нажми на них.', installDone: 'Приложение установлено',
+  // этап 6: бэкенд — комната и лидеры
+  rmH: 'Другое устройство', rmCreate: 'Создать комнату', rmCreating: 'Создаю комнату…', rmFail: 'Сервер комнат не отвечает. Попробуй позже.',
+  rmCode: 'Код комнаты', rmHow: 'Оверлей по ссылке ниже работает в любом браузере и на любом устройстве. Зрители голосуют на странице голосования.',
+  rmOverlay: 'Оверлей комнаты', rmVote: 'Страница голосования для зрителей', rmClose: 'Закрыть комнату', rmGone: 'Комната устарела. Создай новую.',
+  rmOnline: 'на связи', rmOffline: 'нет связи',
+  vtH: 'Голосование', vtCode: 'Код комнаты', vtJoin: 'Войти', vtBadCode: 'Код — 6 латинских букв и цифр, например EZB5P2.',
+  vtWait: 'Сейчас голосования нет. Страница обновится сама.', vtPick: 'Кого взять стримеру?', vtDone: (h: string) => `Голос принят: ${h}. Можно передумать.`,
+  vtClosed: 'Голосование уже закончилось.', vtLimit: 'С этой сети уже проголосовали несколько человек.', vtErr: 'Не получилось отправить голос. Попробуй ещё раз.',
+  vtGone: 'Комната не найдена. Проверь код.', vtTotal: (n: number) => `${n} ${plural(n, ['голос', 'голоса', 'голосов'])} всего (чат и страница)`,
+  lbH: 'Таблица лидеров', lbName: 'Твоё имя', lbSave: 'Записать результат', lbSaved: 'Результат записан.', lbRate: 'Слишком часто. Попробуй через 10 минут.',
+  lbErr: 'Сервер не отвечает. Попробуй позже.', lbBadName: 'Имя — от 2 до 20 символов.', lbEmpty: 'Пока никого. Будь первым.',
   // ссылка
   copyLink: 'Скопировать ссылку', copied: 'Ссылка скопирована', copyFail: 'Скопируй ссылку вручную:',
   st: {
@@ -281,6 +292,16 @@ const en: Dict = {
   qzRight: 'Correct!', qzWrong: 'Wrong.', qzNext: 'Next', qzFinish: 'Result', qzScore: (k, n) => `${k} of ${n}`,
   qzBest: b => `Your best: ${b} of 10.`, qzAgain: 'Play again', qzAdv: (a, h) => `${a} against ${h}`,
   cTop: 'Top 5 against this draft', cEmpty: 'Find the enemies with search and tap them.', installDone: 'App installed',
+  rmH: 'Another device', rmCreate: 'Create a room', rmCreating: 'Creating the room…', rmFail: 'The room server is not responding. Try later.',
+  rmCode: 'Room code', rmHow: 'The overlay link below works in any browser on any device. Viewers vote on the voting page.',
+  rmOverlay: 'Room overlay', rmVote: 'Voting page for viewers', rmClose: 'Close room', rmGone: 'The room has expired. Create a new one.',
+  rmOnline: 'online', rmOffline: 'offline',
+  vtH: 'Vote', vtCode: 'Room code', vtJoin: 'Join', vtBadCode: 'The code is 6 letters and digits, for example EZB5P2.',
+  vtWait: 'No vote right now. The page updates by itself.', vtPick: 'Who should the streamer pick?', vtDone: h => `Vote counted: ${h}. You can change it.`,
+  vtClosed: 'The vote is already over.', vtLimit: 'Several people on this network have already voted.', vtErr: 'Could not send the vote. Try again.',
+  vtGone: 'Room not found. Check the code.', vtTotal: n => `${n} ${n === 1 ? 'vote' : 'votes'} in total (chat and page)`,
+  lbH: 'Leaderboard', lbName: 'Your name', lbSave: 'Save result', lbSaved: 'Result saved.', lbRate: 'Too often. Try again in 10 minutes.',
+  lbErr: 'The server is not responding. Try later.', lbBadName: 'The name must be 2–20 characters.', lbEmpty: 'Nobody yet. Be the first.',
   copyLink: 'Copy link', copied: 'Link copied', copyFail: 'Copy the link manually:',
   st: {
     title: 'Dota 2 Counterpick', h1a: 'Dota 2 ', h1b: 'helper', sub: 'Counterpicks based on match statistics and a collection of tips that help you win.',
