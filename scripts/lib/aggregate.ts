@@ -3,9 +3,10 @@ import type { PubKey } from '../../src/types.ts';
 
 export const BUCKETS: Record<PubKey, (t: number) => boolean> = {
   all: () => true,
-  low: t => t < 40,
-  mid: t => t >= 40 && t < 60,
-  high: t => t >= 60,
+  // avg_rank_tier: десятки — медаль (1 Рекрут … 4 Герой, 5 Легенда, 6 Властелин, 7 Божество, 8 Титан)
+  low: t => t < 50,             // Рекрут–Герой
+  mid: t => t >= 50 && t < 70,  // Легенда–Властелин
+  high: t => t >= 70,           // Божество–Титан
 };
 
 export interface Acc { vs: number[]; with: number[]; solo: number[] }

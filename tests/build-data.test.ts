@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { existsSync, mkdtempSync, readFileSync, writeFileSync, mkdirSync, utimesSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { addMatch, createAccs, positionsFromRows, posIndex } from '../scripts/lib/aggregate.ts';
+import { BUCKETS, addMatch, createAccs, positionsFromRows, posIndex } from '../scripts/lib/aggregate.ts';
 import { build, type Api, type HeroStat } from '../scripts/lib/build.ts';
 import { rankPicks } from '../src/scoring.ts';
 import { heroesFrom } from '../src/data.ts';
@@ -11,7 +11,7 @@ describe('агрегация матчей', () => {
   it('один матч: solo, vs, with и группы рангов', () => {
     const n = 10, ix = new Map(Array.from({ length: n }, (_, i) => [100 + i, i]));
     const acc = createAccs(n), counts = { all: 0, low: 0, mid: 0, high: 0 };
-    const ok = addMatch(acc, counts, { r: true, t: 45, a: [100, 101, 102, 103, 104], d: [105, 106, 107, 108, 109], s: 1 }, ix, n);
+    const ok = addMatch(acc, counts, { r: true, t: 55, a: [100, 101, 102, 103, 104], d: [105, 106, 107, 108, 109], s: 1 }, ix, n);
     expect(ok).toBe(true);
     expect(counts).toEqual({ all: 1, low: 0, mid: 1, high: 0 });
     const M = acc.all;
@@ -22,6 +22,12 @@ describe('агрегация матчей', () => {
     expect([M.with[2 * (0 * n + 1)], M.with[2 * (0 * n + 1) + 1]]).toEqual([1, 1]);
     expect(M.with[2 * (0 * n + 0)]).toBe(0);                // сам с собой не считается
     expect(acc.low.solo[0]).toBe(0);
+  });
+  it('группы рангов совпадают с подписями: Рекрут–Герой, Легенда–Властелин, Божество–Титан', () => {
+    const group = (t: number) => (['low', 'mid', 'high'] as const).find(k => BUCKETS[k](t));
+    expect([11, 35, 45, 49].map(group)).toEqual(['low', 'low', 'low', 'low']);    // Рекрут…Герой
+    expect([50, 55, 65, 69].map(group)).toEqual(['mid', 'mid', 'mid', 'mid']);    // Легенда, Властелин
+    expect([70, 75, 80].map(group)).toEqual(['high', 'high', 'high']);            // Божество, Титан
   });
   it('неполные составы и неизвестные герои пропускаются', () => {
     const ix = new Map([[1, 0]]), acc = createAccs(1), counts = { all: 0, low: 0, mid: 0, high: 0 };
