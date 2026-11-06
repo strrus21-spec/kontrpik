@@ -186,8 +186,12 @@ export function renderResults(x: Ctx) {
 
 export function renderPosChips(x: Ctx) {
   const L = t();
-  $('poschips').innerHTML = `<button data-pos="0" aria-pressed="${!x.state.pos}">${L.anyPos}</button>` +
-    [1, 2, 3, 4, 5].map(p => `<button class="pc-${p}" data-pos="${p}" aria-pressed="${x.state.pos == p}">Pos ${p} · ${L.posn[p]}</button>`).join('');
+  // одна полоса: Любая · Pos 1…5 · ★ Мои (переключатель «Только мои герои»)
+  $('poschips').innerHTML = `<button data-pos="0" aria-pressed="${!x.state.pos}" title="${esc(L.anyPos)}">${L.posShort}</button>` +
+    [1, 2, 3, 4, 5].map(p => `<button class="pc-${p}" data-pos="${p}" aria-pressed="${x.state.pos == p}" title="Pos ${p} · ${esc(L.posn[p])}">Pos ${p}</button>`).join('') +
+    `<label class="mine-tab" id="mine-tab" title="${esc(L.meOnly)}"><input type="checkbox" id="me-only" ${me.only ? 'checked' : ''} aria-label="${esc(L.meOnly)}"><span>★ ${L.meTab}</span></label>`;
+  const lg = document.getElementById('pos-legend'); if (lg) lg.textContent = L.posLegend;
+  renderMe();
 }
 
 export function renderSelects(x: Ctx) {

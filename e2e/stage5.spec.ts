@@ -56,8 +56,10 @@ test('Мои последние игры (из профиля) и мой гер�
   await page.waitForSelector('html[data-ready]');
   await page.locator('#match-recent').click();
   await expect(page.locator('#match-status')).toContainText('загрузи профиль');
-  await page.locator('.nav a[href="#counterpick"]:not(.logo)').click(); await page.fill('#me-id', '86745912'); await page.click('.me-go');
+  await expect(page.locator('#me')).toBeVisible();               // окно профиля открылось само
+  await page.fill('#me-id', '86745912'); await page.click('#me .me-go');
   await expect(page.locator('.me-who strong')).toHaveText('FINIK');
+  await page.keyboard.press('Escape');
   await page.locator('.nav a[href="#match"]').click(); await page.locator('#match-recent').click();
   await expect(page.locator('.m-recent [data-mid]')).toHaveCount(2);
   await page.locator('.m-recent [data-mid="8000000002"]').click();

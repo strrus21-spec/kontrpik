@@ -43,6 +43,7 @@ function heroResolver(heroes: Hero[]) {
   };
 }
 
+/** Окно профиля (открывается кнопкой в меню) и кнопка профиля: аватар, если профиль загружен. */
 export function renderMe() {
   const box = $('me'), L = t(), p = me.player;
   const err = me.error ? `<p class="me-err" role="alert">${esc(me.error)}</p>` : '';
@@ -56,13 +57,41 @@ export function renderMe() {
       <div class="me-top">${top}</div>`;
   } else {
     body = `<form class="me-form" data-me="form"><input id="me-id" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="${esc(me.input)}" placeholder="${esc(L.st.meInput)}" aria-label="${esc(L.st.meInput)}">
-      <button type="submit" class="me-go" ${me.busy ? 'disabled' : ''}>${me.busy ? L.meLoading : L.meLoad}</button></form>
-      <p class="bans-note">${L.meHint}</p>`;
+      <button type="submit" class="me-go" ${me.busy ? 'disabled' : ''}>${me.busy ? L.meLoading : L.meLoad}</button></form>`;
   }
   const n = pool().size;
-  box.innerHTML = `<div class="bans-head"><h3>${L.meH}</h3><span>${L.meS}</span></div>${body}${err}
-    <label class="me-only"><input type="checkbox" id="me-only" ${me.only ? 'checked' : ''}> <span>${L.meOnly}</span></label>
-    ${n ? `<p class="bans-note">${L.mePool(n)}</p>` : ''}`;
+  box.innerHTML = `<div class="me-pop-head"><h3 id="me-title">${L.meH}</h3><button class="hd-x" type="button" data-me="close" aria-label="${esc(L.meClose)}">×</button></div>
+    ${p ? '' : `<p class="me-sub">${L.meS}</p>`}${body}${err}
+    <p class="bans-note">${n ? L.mePool(n) : L.meHint}</p>`;
+  // кнопка в меню
+  const btn = document.getElementById('prof-btn');
+  if (btn) {
+    btn.classList.toggle('has', !!p?.avatar);
+    const old = btn.querySelector('img'); old?.remove();
+    if (p?.avatar) btn.insertAdjacentHTML('afterbegin', `<img src="${esc(p.avatar)}" alt="" width="34" height="34" referrerpolicy="no-referrer">`);
+    const label = p ? `${L.meProfile}: ${p.name}` : L.meProfile;
+    btn.setAttribute('aria-label', label); btn.title = label;
+  }
+  // аватар и состояние вкладки «★ Мои»
+  const only = document.getElementById('me-only') as HTMLInputElement | null; if (only) only.checked = me.only;
+  const tab = document.getElementById('mine-tab');
+  if (tab) { tab.querySelector('img')?.remove(); if (p?.avatar) tab.insertAdjacentHTML('afterbegin', `<img src="${esc(p.avatar)}" alt="" width="22" height="22" referrerpolicy="no-referrer">`); }
+}
+
+/** Открыть / закрыть окно профиля. */
+export function openMe(open = true) {
+  const box = $('me'), btn = document.getElementById('prof-btn');
+  box.hidden = !open; btn?.setAttribute('aria-expanded', String(open));
+  if (open) {
+    const r = btn?.getBoundingClientRect();
+    if (r) {
+      box.style.top = (r.bottom + 10) + 'px';
+      // справа под кнопкой; если не влезает (телефон) — прижимаем к правому краю экрана
+      const right = innerWidth - r.right, w = box.offsetWidth || 380;
+      box.style.right = (innerWidth - right - w < 12 ? 12 : Math.max(12, right)) + 'px';
+    }
+    (document.getElementById('me-id') as HTMLInputElement | null)?.focus();
+  } else btn?.focus({ preventScroll: true });
 }
 
 export function bindMe(heroes: Hero[], onChange: () => void) {
@@ -81,14 +110,19 @@ export function bindMe(heroes: Hero[], onChange: () => void) {
     else me.error = r.reason === 'closed' ? L.meClosed : r.reason === 'notFound' ? L.meNotFound : L.meNet;
     save(); renderMe(); onChange();
   });
+  document.getElementById('prof-btn')?.addEventListener('click', e => { e.stopPropagation(); openMe(box.hidden); });
+  document.addEventListener('click', e => { if (!box.hidden && !box.contains(e.target as Node) && !(e.target as Element).closest?.('#prof-btn')) openMe(false); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !box.hidden) openMe(false); });
+  addEventListener('resize', () => { if (!box.hidden) openMe(true); });
   box.addEventListener('click', e => {
+    if ((e.target as Element).closest('[data-me="close"]')) { e.stopPropagation(); openMe(false); return; }
     const b = (e.target as Element).closest<HTMLElement>('[data-me="change"]'); if (!b) return;
     e.stopPropagation();
     me.player = null; me.error = ''; save(); renderMe(); onChange();
     ($('me-id') as HTMLInputElement | null)?.focus();
   });
-  box.addEventListener('change', e => {
-    if ((e.target as HTMLElement).id !== 'me-id' && (e.target as HTMLInputElement).id === 'me-only') {
+  document.addEventListener('change', e => {
+    if ((e.target as HTMLInputElement).id === 'me-only') {
       me.only = (e.target as HTMLInputElement).checked; save(); onChange();
     }
   });

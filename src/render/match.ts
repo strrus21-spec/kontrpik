@@ -4,7 +4,7 @@ import { replaceUrl } from '../nav.ts';
 import { LANG, dateOne, t } from '../i18n.ts';
 import { analyzeMatch, isRadiant, loadParsed, parseMatchId, recentMatches, won, type Match, type MPlayer, type RecentMatch } from '../match.ts';
 import { odHeroes, type OdHero } from '../odHeroes.ts';
-import { me } from '../me.ts';
+import { me, openMe } from '../me.ts';
 import type { Hero } from '../types.ts';
 import { $, esc } from './html.ts';
 import { positionOf } from '../matchx.ts';
@@ -113,7 +113,7 @@ export function bindMatch(x: Ctx) {
   });
   $('match-recent').addEventListener('click', async e => {
     e.stopPropagation();
-    if (!me.player) { status(t().mNeedMe, true); return; }
+    if (!me.player) { status(t().mNeedMe, true); openMe(true); return; }
     status(t().mLoading);
     try { od = await odHeroes(); } catch { /* иконки по odId из данных */ }
     const [rm, hs] = await Promise.all([recentMatches(me.player.id), loadHistory(me.player.id)]);

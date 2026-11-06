@@ -1081,3 +1081,41 @@ input[type=search]:focus,select:focus,.me-form input:focus{outline:none;border-c
 .mt-marks .mk-f{top:0;width:10px;height:10px;margin-left:-5px}
 .mt-marks .mk-d{top:13px;width:3px;height:9px;margin-left:-1.5px}
 .mt-marks button:hover{transform:scale(1.35)}
+
+/* ===== вариант Б: одна полоса позиций + «★ Мои»; профиль во всплывающем окне из меню ===== */
+.poschips{display:inline-flex;flex-wrap:wrap;gap:0;border:1px solid var(--line-2);border-radius:6px;overflow:hidden;background:var(--card);align-self:flex-start;max-width:100%}
+.poschips button,.poschips button[class^="pc-"],.poschips .mine-tab{border:0!important;border-radius:0!important;background:none!important;color:var(--fg-2)!important;
+  padding:8px 14px!important;font:600 14.5px var(--body)!important;letter-spacing:.01em!important;text-transform:none!important;border-right:1px solid var(--line)!important;box-shadow:none;cursor:pointer}
+.poschips button:hover,.poschips .mine-tab:hover{color:var(--fg)!important;background:color-mix(in srgb,var(--gold) 7%,transparent)!important}
+.poschips button[aria-pressed="true"],.poschips button[class^="pc-"][aria-pressed="true"]{background:color-mix(in srgb,var(--gold) 16%,var(--card))!important;color:var(--fg)!important;box-shadow:inset 0 -2px 0 var(--gold)!important;font-weight:600}
+.poschips .mine-tab{position:relative;display:inline-flex;align-items:center;gap:7px;border-right:0!important;border-left:1px solid var(--line-2)!important;color:var(--gold)!important;margin-left:auto}
+.poschips .mine-tab input{position:absolute;inset:0;margin:0;opacity:0;cursor:pointer}
+.poschips .mine-tab img{width:22px;height:22px;border-radius:50%;border:1px solid var(--gold-line)}
+.poschips .mine-tab:has(input:checked){background:color-mix(in srgb,var(--gold) 16%,var(--card))!important;color:var(--fg)!important;box-shadow:inset 0 -2px 0 var(--gold)}
+.poschips .mine-tab:has(input:focus-visible){outline:2px solid var(--gold);outline-offset:-2px}
+.pos-legend{margin:-4px 0 0;font-size:13px;color:var(--muted)}
+@media (max-width:520px){.poschips button,.poschips button[class^="pc-"],.poschips .mine-tab{padding:8px 10px!important;font-size:13.5px!important}}
+/* кнопка профиля в меню */
+.prof-btn{display:grid;place-items:center;width:38px;height:38px;padding:0;border-radius:50%;border:1px solid rgba(220,180,106,.45);background:rgba(10,11,17,.45);color:#f1d9a6;cursor:pointer;overflow:hidden;transition:border-color .2s,background .2s}
+.prof-btn:hover,.prof-btn[aria-expanded="true"]{border-color:#f0c35a;background:rgba(220,180,106,.14)}
+.prof-btn:focus-visible{outline:2px solid #f0c35a;outline-offset:2px}
+.prof-btn img{width:100%;height:100%;object-fit:cover}.prof-btn.has .prof-ic{display:none}
+[data-theme="light"] .nav.topbar.solid .prof-btn{background:rgba(255,255,255,.6);border-color:rgba(143,90,0,.45);color:#8a5a10}
+@media (max-width:700px){.prof-btn{width:34px;height:34px}}
+/* окно профиля */
+.me-pop{position:fixed;z-index:70;width:min(380px,calc(100vw - 24px));padding:16px;border-radius:8px;border:1px solid var(--gold-line);background:var(--panel);
+  box-shadow:0 22px 50px -16px rgba(0,0,0,.65);display:flex;flex-direction:column;gap:10px;color:var(--fg)}
+.me-pop[hidden]{display:none}
+.me-pop-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.me-pop-head h3{margin:0;font:700 19px var(--serif);letter-spacing:.06em;color:var(--gold)}
+.me-pop .hd-x{width:30px;height:30px;font-size:20px}
+.me-sub{margin:0;font-size:13.5px;color:var(--muted)}
+.me-pop .me-form{display:flex;gap:8px}.me-pop .me-form input{flex:1 1 auto}
+.me-pop .bans-note{margin:0}
+/* телефон: позиции ровной сеткой 6 колонок, «★ Мои» — отдельной строкой во всю ширину */
+@media (max-width:520px){
+  .poschips{display:grid;grid-template-columns:repeat(6,1fr);width:100%}
+  .poschips button,.poschips button[class^="pc-"]{padding:9px 2px!important;text-align:center;border-bottom:1px solid var(--line)!important}
+  .poschips button:nth-child(6){border-right:0!important}
+  .poschips .mine-tab{grid-column:1/-1;justify-content:center;border-left:0!important;margin:0}
+}

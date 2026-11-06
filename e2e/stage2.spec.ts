@@ -16,20 +16,26 @@ test('Мои герои: открытый профиль → пул, личны�
   await page.addInitScript(() => localStorage.setItem('kontrpik-lang', 'ru'));
   await page.goto('/#counterpick');
   await page.waitForSelector('html[data-ready]');
+  await page.locator('#prof-btn').click();                      // профиль — в верхнем меню
   await page.fill('#me-id', 'https://www.dotabuff.com/players/86745912');
   const t0 = Date.now();
-  await page.click('.me-go');
+  await page.click('#me .me-go');
   await expect(page.locator('.me-who strong')).toHaveText('FINIK');
   expect(Date.now() - t0).toBeLessThan(3000);
   await expect(page.locator('.me-who span')).toHaveText('Легенда 4');
   await expect(page.locator('#me-only')).toBeChecked();
+  await expect(page.locator('#prof-btn')).toHaveAttribute('aria-label', /FINIK/); // кнопка профиля знает игрока
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#me')).toBeHidden();
   await page.locator('#poschips [data-pos="1"]').click();
   expect(await topNames(page)).toEqual(['Lifestealer', 'Ursa', 'Sven']);   // Tiny: 3 игры — не в пуле
   await expect(page.locator('.podium .mine').first()).toHaveText('у тебя 25 игр, винрейт 64% · +3.0 за личный винрейт');
 
   await page.reload();
   await page.waitForSelector('html[data-ready]');
+  await page.locator('#prof-btn').click();
   await expect(page.locator('.me-who strong')).toHaveText('FINIK');
+  await page.keyboard.press('Escape');
   await page.locator('#me-only').uncheck();
   expect(await topNames(page)).toEqual(['Lifestealer', 'Ursa', 'Tiny']);    // как в контрольном примере
 });
@@ -39,9 +45,10 @@ test('Мои герои: закрытый профиль и короткая с�
   await page.addInitScript(() => localStorage.setItem('kontrpik-lang', 'ru'));
   await page.goto('/#counterpick');
   await page.waitForSelector('html[data-ready]');
-  await page.fill('#me-id', '86745912'); await page.click('.me-go');
+  await page.locator('#prof-btn').click();
+  await page.fill('#me-id', '86745912'); await page.click('#me .me-go');
   await expect(page.locator('.me-err')).toHaveText(/^Профиль закрыт\. Включи в Dota: Настройки → Общедоступная история матчей/);
-  await page.fill('#me-id', 'https://steamcommunity.com/id/finik'); await page.click('.me-go');
+  await page.fill('#me-id', 'https://steamcommunity.com/id/finik'); await page.click('#me .me-go');
   await expect(page.locator('.me-err')).toContainText('Короткие ссылки Steam');
 });
 
