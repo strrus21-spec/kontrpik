@@ -978,3 +978,4 @@ input[type=search]:focus,select:focus,.me-form input:focus{outline:none;border-c
 [data-theme="light"] .nav.topbar.solid .theme-btn{background:rgba(255,255,255,.6);border-color:rgba(143,90,0,.45);color:#8a5a10}
 [data-theme="light"] .m-stick{border-bottom-color:rgba(143,90,0,.28)}
 [data-theme="light"] body::before{background:var(--bg)}
+.b-inv{display:inline-flex;flex-wrap:wrap;gap:4px}

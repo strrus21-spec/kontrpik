@@ -25,7 +25,13 @@ export function buildBlock(items: ItemsData | null, hero: string): string {
 /** Коротко: 3 ключевых предмета середины игры — под рекомендацией. */
 export function buildLine(items: ItemsData | null, hero: string): string {
   const b = items?.heroes[hero]; if (!items || !b) return '';
-  const core = (b.mid.length ? b.mid : b.late).slice(0, 3);
+  // как инвентарь: 6 слотов — сапоги из ранней фазы + собранные предметы середины и конца игры
+  const it = items.items, BOOTS = /boots|treads|travel/;
+  const asm = (k: string) => !!it[k] && (k === 'blink' || k === 'aghanims_shard' || (!!it[k].a && it[k].c >= 1000));
+  const boots = b.early.find(k => BOOTS.test(k) && asm(k));
+  const rest = [...b.mid, ...b.late].filter(k => asm(k) && !BOOTS.test(k));
+  const core = [...new Set([...(boots ? [boots] : []), ...rest])].slice(0, 6);
   if (!core.length) return '';
-  return `<div class="b-line"><span class="b-ph">${t().buildCore}</span>${core.map(k => itemIcon(items, k, 'sm')).join('')}</div>`;
+  const slots = core.map(k => itemIcon(items, k, 'sm')).concat(Array(6 - core.length).fill('<span class="it it-sm empty"></span>'));
+  return `<div class="b-line"><span class="b-ph">${t().buildCore}</span><span class="b-inv">${slots.join('')}</span></div>`;
 }

@@ -93,7 +93,7 @@ test('Сборки предметов: в карточке героя 4 фазы
   await page.route('https://cdn.cloudflare.steamstatic.com/**', r => r.fulfill({ body: Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==', 'base64'), contentType: 'image/png' }));
   await page.goto('/#counterpick');
   await page.waitForSelector('html[data-ready]');
-  await expect(page.locator('.podium .top').first().locator('.b-line .it')).toHaveCount(3);
+  await expect(page.locator('.podium .top').first().locator('.b-line .it')).toHaveCount(6);
   await page.goto('/hero/pudge');
   await page.waitForSelector('html[data-ready]');
   await expect(page.locator('.hd-build h3')).toHaveText('Что собирают');
