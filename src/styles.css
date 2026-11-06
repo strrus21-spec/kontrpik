@@ -979,3 +979,27 @@ input[type=search]:focus,select:focus,.me-form input:focus{outline:none;border-c
 [data-theme="light"] .m-stick{border-bottom-color:rgba(143,90,0,.28)}
 [data-theme="light"] body::before{background:var(--bg)}
 .b-inv{display:inline-flex;flex-wrap:wrap;gap:4px}
+
+/* ===== огонь: тлеющие кнопки (вариант 1) и горящее «Pick» (вариант Б) ===== */
+.fx-layer{position:fixed;inset:0;pointer-events:none;z-index:60;overflow:hidden}
+.fx-spark{position:absolute;width:5px;height:5px;margin:-2.5px 0 0 -2.5px;border-radius:50%;
+  background:radial-gradient(circle,#fff6d0,#ffb347 45%,rgba(255,90,20,0) 70%);animation:fxRise var(--d,1s) ease-out forwards}
+.fx-ash{width:4px;height:4px;animation-timing-function:linear}
+@keyframes fxRise{0%{transform:translate(0,0) scale(1);opacity:0}10%{opacity:1}100%{transform:translate(var(--x,0),var(--y,-40px)) scale(.35);opacity:0}}
+@keyframes fxEmber{0%,100%{box-shadow:0 0 6px 1px rgba(255,140,40,.55),0 0 18px 4px rgba(255,90,20,.28),inset 0 0 8px rgba(255,170,60,.35)}
+  35%{box-shadow:0 0 10px 2px rgba(255,170,60,.75),0 0 28px 8px rgba(255,100,30,.38),inset 0 0 12px rgba(255,190,80,.45)}
+  60%{box-shadow:0 0 5px 1px rgba(255,120,30,.5),0 0 14px 3px rgba(255,80,20,.25),inset 0 0 6px rgba(255,150,50,.3)}}
+@keyframes fxEmberText{0%,100%{filter:drop-shadow(0 1px 0 #000) drop-shadow(0 0 6px rgba(255,150,40,.85)) drop-shadow(0 0 14px rgba(255,90,20,.45))}
+  40%{filter:drop-shadow(0 1px 0 #000) drop-shadow(0 0 9px rgba(255,190,80,.95)) drop-shadow(0 0 22px rgba(255,100,30,.6))}
+  70%{filter:drop-shadow(0 1px 0 #000) drop-shadow(0 0 5px rgba(255,130,30,.7)) drop-shadow(0 0 10px rgba(255,80,20,.35))}}
+:is(.cta,.me-go,.addbtn,.share,.more-btn,.install,.hd-enemy,#match-recent){transition:box-shadow .25s,filter .25s,color .2s}
+:is(.cta,.me-go,.addbtn,.share,.more-btn,.install,.hd-enemy,#match-recent):is(:hover,:focus-visible){animation:fxEmber 1.6s ease-in-out infinite;filter:brightness(1.08)}
+.nav.topbar .tabs-nav a:is(:hover,:focus-visible){animation:fxEmberText 1.6s ease-in-out infinite}
+[data-theme="light"] .nav.topbar.solid .tabs-nav a:is(:hover,:focus-visible){animation:none;filter:drop-shadow(0 0 6px rgba(255,140,40,.55))}
+/* горящее «Pick»: раскалённый градиент, мерцание и жар вокруг букв */
+.landing h1.brand .h1b{background:linear-gradient(180deg,#fffbe8,#ffd36a 35%,#ff8a2a 70%,#c2410f)!important;-webkit-background-clip:text!important;background-clip:text!important;
+  color:transparent!important;-webkit-text-fill-color:transparent;text-shadow:none!important;
+  filter:drop-shadow(0 2px 0 rgba(0,0,0,.85)) drop-shadow(0 0 8px rgba(255,140,40,.75)) drop-shadow(0 0 22px rgba(255,90,20,.45))!important;animation:fxFlick 2.2s steps(1) infinite}
+.landing h1.brand .h1a{text-shadow:0 2px 0 #000,0 0 14px rgba(255,170,80,.35)!important}
+@keyframes fxFlick{0%{opacity:1}12%{opacity:.9}14%{opacity:1}48%{opacity:.94}50%{opacity:1}77%{opacity:.88}79%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.landing h1.brand .h1b,:is(.cta,.me-go,.addbtn,.share,.more-btn,.install,.hd-enemy,#match-recent):hover,.nav.topbar .tabs-nav a:hover{animation:none}.fx-layer{display:none}}

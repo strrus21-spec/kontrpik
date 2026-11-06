@@ -9,7 +9,9 @@ import './styles.css';
 
 import { initialLang, saveLang, setLang, t, LANG, type Lang } from './i18n.ts';
 import { loadData, portraitFallback } from './data.ts';
+import { bindFx } from './fx.ts';
 portraitFallback();
+bindFx();
 import { loadState, saveState } from './state.ts';
 import { applyDraftQuery, hasDraftQuery } from './share.ts';
 import { bindMe, loadMe, renderMe } from './me.ts';
