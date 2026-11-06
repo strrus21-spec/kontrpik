@@ -8,7 +8,8 @@ const SITE_URL = (process.env.VITE_SITE_URL || 'https://strrus21-spec.github.io/
 const siteUrl = (): Plugin => ({ name: 'site-url', transformIndexHtml: html => html.replaceAll('%SITE_URL%', SITE_URL) });
 // Счётчик посетителей Cloudflare Web Analytics: без cookie и без регистрации посетителей.
 // Включается, только если при сборке задан токен (переменная CF_BEACON_TOKEN в настройках GitHub).
-const CF_BEACON = (process.env.VITE_CF_BEACON || '').trim();
+// Токен не секретный: он всё равно виден в коде страницы. Переменная CF_BEACON_TOKEN в GitHub может его заменить.
+const CF_BEACON = (process.env.VITE_CF_BEACON || 'e076a6ba8f6c49799bc12fd588732df0').trim();
 const analytics = (): Plugin => ({
   name: 'analytics',
   // оверлей для OBS не считаем: он открыт часами и исказил бы статистику
