@@ -1,7 +1,7 @@
 // Service worker: офлайн на последних загруженных данных.
 // Оболочка и данные — «сеть, потом кэш»; файлы со хешем, иконки, шрифты — «кэш, потом сеть».
 // Запросы к OpenDota и Twitch не кэшируются.
-const CACHE = 'kontrpik-v4';
+const CACHE = 'kontrpik-v5';
 const BASE = new URL(self.registration.scope).pathname;
 const SHELL = [BASE, BASE + 'manifest.webmanifest', BASE + 'data/stats.json', BASE + 'data/positions.json', BASE + 'data/tips.json', BASE + 'data/patch.json'];
 
