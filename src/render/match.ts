@@ -8,6 +8,7 @@ import { me } from '../me.ts';
 import type { Hero } from '../types.ts';
 import { $, esc } from './html.ts';
 import { positionOf } from '../matchx.ts';
+import { HERO_NPC } from '../heroNpc.ts';
 import { damageBlock, deathsBlock, fightsBlock, historyBlock, itemsBlock, laneBlock, posBlock, shareCard, statsBlock, summaryBlock, teamsBlock, tipsBlock, type MxCtx } from './matchx.ts';
 import { loadHistory, summarize, type HistSummary } from '../history.ts';
 import type { Ctx } from './draft.ts';
@@ -25,10 +26,14 @@ export const matchFromPath = (path = location.pathname) => { const m = path.slic
 function heroOf(x: Ctx, heroId: number): Hero | undefined {
   const byOd = x.data.heroes.find(h => h.odId === heroId);
   if (byOd) return byOd;
-  const name = od?.get(heroId)?.name;
+  // встроенный справочник, затем справочник OpenDota (для героев новее сборки сайта)
+  const name = HERO_NPC[heroId]?.[1] ?? od?.get(heroId)?.name;
   return name ? x.data.heroes.find(h => h.name === name) : undefined;
 }
+/** npc_dota_hero_furion → Nature's Prophet. Не зависит от сети: встроенный справочник HERO_NPC. */
 function heroByNpc(x: Ctx, npc: string): Hero | undefined {
+  const short = npc.replace(/^npc_dota_hero_/, '');
+  for (const [id, [n]] of Object.entries(HERO_NPC)) if (n === short) return heroOf(x, +id);
   for (const h of od?.values() || []) if (h.npc === npc) return x.data.heroes.find(y => y.name === h.name);
   return undefined;
 }
@@ -61,7 +66,7 @@ export function renderMatch(x: Ctx) {
   }
   const h = heroOf(x, p.hero_id);
   const win = m.radiant_win === isRadiant(p);
-  const ins = analyzeMatch(m, p, od?.get(p.hero_id)?.npc);
+  const ins = analyzeMatch(m, p, od?.get(p.hero_id)?.npc ?? (HERO_NPC[p.hero_id] ? 'npc_dota_hero_' + HERO_NPC[p.hero_id][0] : undefined));
   out.innerHTML = `<div class="m-head ${win ? 'w' : 'l'}">${icon(h, 44).replace('class="ic"', 'class="ic-big"')}
       <div class="m-title"><span class="place">${win ? L.mWin : L.mLoss} · ${mmss(m.duration)} · ${dateOne(LANG, m.start_time)}</span>
       <strong>${L.mFor(esc(h?.name || '?'))}</strong><span class="roles">${p.kills}/${p.deaths}/${p.assists}${p.personaname ? ' · ' + esc(p.personaname) : ''}</span></div></div>

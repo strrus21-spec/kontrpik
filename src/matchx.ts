@@ -156,3 +156,23 @@ export function smartTips(m: Match, p: MPlayer, ctx: { heroName: (npc: string) =
 }
 const mm = (s: number) => `${Math.floor(s / 60)}:${String(Math.max(0, Math.floor(s % 60))).padStart(2, '0')}`;
 export { npcName };
+
+/** Кто это: герой или юнит. Ключи из deaths_log / damage_taken: npc_dota_hero_pudge, creep_badguys_flagbearer, npc_dota_furion_treant… */
+export type UnitKind = 'hero' | 'creep' | 'siege' | 'tower' | 'rax' | 'fort' | 'neutral' | 'roshan' | 'ward' | 'summon' | 'other';
+export function unitOf(key: string, heroNpcs: string[]): { kind: UnitKind; hero?: string } {
+  const k = key.toLowerCase();
+  if (k.startsWith('npc_dota_hero_')) return { kind: 'hero', hero: k.slice(14) };
+  const rest = k.replace(/^npc_dota_/, '').replace(/^unit_/, '');
+  if (/roshan/.test(k)) return { kind: 'roshan' };
+  if (/tower/.test(k)) return { kind: 'tower' };
+  if (/(^|_)fort/.test(k)) return { kind: 'fort' };
+  if (/rax|barracks/.test(k)) return { kind: 'rax' };
+  if (/neutral/.test(k)) return { kind: 'neutral' };
+  if (/creep.*siege|siege/.test(k)) return { kind: 'siege' };
+  if (/creep|flagbearer|goodguys|badguys/.test(k)) return { kind: 'creep' };
+  // призванные существа: имя начинается с имени героя (furion_treant, lone_druid_bear, venomancer_plague_ward)
+  const owner = heroNpcs.filter(n => rest.startsWith(n + '_')).sort((a, b) => b.length - a.length)[0];
+  if (owner) return { kind: 'summon', hero: owner };
+  if (/ward/.test(k)) return { kind: 'ward' };
+  return { kind: 'other' };
+}

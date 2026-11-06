@@ -1,13 +1,15 @@
 // Расширенный разбор матча: блоки HTML/SVG. Данные — src/matchx.ts.
 import { t } from '../i18n.ts';
 import { isRadiant, type Match, type MPlayer } from '../match.ts';
-import { advantage, damage, fights, itemTimeline, laneOpponents, mapData, objectives, opponentByPos, positionOf, smartTips, teamOf, enemiesOf, vsPro } from '../matchx.ts';
+import { unitOf, advantage, damage, fights, itemTimeline, laneOpponents, mapData, objectives, opponentByPos, positionOf, smartTips, teamOf, enemiesOf, vsPro } from '../matchx.ts';
 import type { ItemsData } from '../data.ts';
 import type { Hero } from '../types.ts';
 import type { HistSummary } from '../history.ts';
 import { itemIcon } from './build.ts';
 import { esc, fmt } from './html.ts';
 
+import { HERO_NPC } from '../heroNpc.ts';
+const NPCS = Object.values(HERO_NPC).map(([n]) => n);
 export interface MxCtx { heroOf: (id: number) => Hero | undefined; heroByNpc: (npc: string) => Hero | undefined; items: ItemsData | null }
 const mm = (s: number) => `${Math.floor(s / 60)}:${String(Math.max(0, Math.floor(s % 60))).padStart(2, '0')}`;
 const ic = (h: Hero | undefined, s = 22) => h ? `<img class="ic" src="${esc(h.img)}" alt="${esc(h.name)}" title="${esc(h.name)}" width="${s}" height="${s}">` : '';
@@ -152,11 +154,18 @@ function miniMap(m: Match, p: MPlayer) {
   </svg>`;
 }
 
+/** Подпись юнита: герой — иконка и имя; крипы, башни, Рошан и т. п. — понятным словом; призыв — «Treant · Nature's Prophet». */
+function unitLabel(key: string, c: MxCtx): string {
+  const L = t().mx, u = unitOf(key, NPCS);
+  if (u.kind === 'hero') { const h = c.heroByNpc(key); return h ? ic(h) + esc(h.name) : esc(L.unit.hero); }
+  if (u.kind === 'summon') { const h = c.heroByNpc('npc_dota_hero_' + u.hero); return (h ? ic(h) : '') + esc(L.unit.summon(h?.name || u.hero!)); }
+  return `<span class="unit-ic u-${u.kind}" aria-hidden="true"></span>` + esc(L.unit[u.kind] as string);
+}
+
 export function deathsBlock(m: Match, p: MPlayer, c: MxCtx) {
   const L = t().mx, dl = p.deaths_log || [], bb = new Set((p.buyback_log || []).map(b => Math.floor(b.time / 60)));
   const list = dl.length ? `<div class="tw"><table class="mx-table sm"><thead><tr><th>${L.time}</th><th>${L.killer}</th><th>${L.goldLost}</th><th>${L.dead}</th></tr></thead><tbody>${dl.map(d => {
-    const h = c.heroByNpc(d.key);
-    return `<tr><td class="n">${mm(d.time)}${bb.has(Math.floor(d.time / 60)) ? ` <span class="tag-bb">${L.bb}</span>` : ''}</td><td>${h ? ic(h) + esc(h.name) : esc(d.key.replace(/^npc_dota_/, ''))}</td><td class="n">${d.gold_lost ?? '–'}</td><td class="n">${d.time_dead ? d.time_dead + ' ' + L.sec : '–'}</td></tr>`;
+    return `<tr><td class="n">${mm(d.time)}${bb.has(Math.floor(d.time / 60)) ? ` <span class="tag-bb">${L.bb}</span>` : ''}</td><td>${unitLabel(d.key, c)}</td><td class="n">${d.gold_lost ?? '–'}</td><td class="n">${d.time_dead ? d.time_dead + ' ' + L.sec : '–'}</td></tr>`;
   }).join('')}</tbody></table></div>` : `<p class="bans-note">${L.noDeaths}</p>`;
   return sec(L.mapDeaths, `<div class="mx-lane"><div>${miniMap(m, p)}<div class="legend-l"><span class="lg w1">${L.myWards}</span><span class="lg w2">${L.enWards}</span><span class="lg dx1">${L.fightDeaths}</span><span class="lg pp1">${L.path10}</span></div></div><div>${list}</div></div>`);
 }
@@ -171,7 +180,7 @@ export function fightsBlock(m: Match, p: MPlayer, c: MxCtx) {
 
 export function damageBlock(p: MPlayer, c: MxCtx) {
   const L = t().mx, d = damage(p); if (!d.dealt.length && !d.taken.length) return '';
-  const bars = (list: [string, number][], cls: string) => { const mx = Math.max(1, ...list.map(x => x[1])); return list.slice(0, 5).map(([k, v]) => { const h = c.heroByNpc(k); return `<div class="dmg-row">${ic(h)}<span class="nm">${esc(h?.name || k)}</span><span class="bar-track"><span class="bar ${cls}" style="width:${v / mx * 100}%;left:0"></span></span><b class="n">${fmt(v)}</b></div>`; }).join(''); };
+  const bars = (list: [string, number][], cls: string) => { const mx = Math.max(1, ...list.map(x => x[1])); return list.slice(0, 5).map(([k, v]) => `<div class="dmg-row"><span class="nm">${unitLabel(k, c)}</span><span class="bar-track"><span class="bar ${cls}" style="width:${v / mx * 100}%;left:0"></span></span><b class="n">${fmt(v)}</b></div>`).join(''); };
   return sec(L.damageH, `<div class="mx-lane"><div><h4 class="mx-sub">${L.dealt}</h4>${bars(d.dealt, 'up')}</div><div><h4 class="mx-sub">${L.taken}</h4>${bars(d.taken, 'dn')}</div></div>`);
 }
 

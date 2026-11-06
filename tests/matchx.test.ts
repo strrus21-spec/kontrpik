@@ -1,7 +1,7 @@
 // Расширенный разбор на реальном разобранном матче 9076499476 (OpenDota, 5 ноября 2026).
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { advantage, damage, fights, itemTimeline, laneOpponents, mapData, objectives, opponentByPos, phaseOf, positionOf, smartTips, vsPro } from '../src/matchx.ts';
+import { advantage, damage, fights, itemTimeline, laneOpponents, mapData, objectives, opponentByPos, phaseOf, positionOf, smartTips, unitOf, vsPro } from '../src/matchx.ts';
 import type { Match } from '../src/match.ts';
 
 const m: Match = JSON.parse(readFileSync('tests/fixtures/match-9076499476.json', 'utf8'));
@@ -55,5 +55,21 @@ describe('расширенный разбор', () => {
     const sf = m.players.find(p => p.hero_id === 16)!;
     const t2 = smartTips(m, sf, { heroName: k => k.replace('npc_dota_hero_', ''), heroById: id => String(id), isAssembled: () => true });
     expect(t2.find(t => t.key === 'streak')?.v).toEqual({ n: 3, from: '12:32', to: '20:32', hero: 'leshrac' });
+  });
+});
+
+describe('кто убил: юниты, а не только герои', () => {
+  const npcs = ['furion', 'lone_druid', 'venomancer', 'pudge', 'shadow_shaman'];
+  it('распознаёт героев, крипов, постройки, Рошана и призыв с хозяином', () => {
+    expect(unitOf('npc_dota_hero_pudge', npcs)).toEqual({ kind: 'hero', hero: 'pudge' });
+    expect(unitOf('creep_badguys_flagbearer', npcs).kind).toBe('creep');
+    expect(unitOf('npc_dota_creep_goodguys_melee', npcs).kind).toBe('creep');
+    expect(unitOf('npc_dota_badguys_siege', npcs).kind).toBe('siege');
+    expect(unitOf('npc_dota_goodguys_tower2_mid', npcs).kind).toBe('tower');
+    expect(unitOf('npc_dota_neutral_centaur_khan', npcs).kind).toBe('neutral');
+    expect(unitOf('npc_dota_roshan', npcs).kind).toBe('roshan');
+    expect(unitOf('npc_dota_furion_treant_large', npcs)).toEqual({ kind: 'summon', hero: 'furion' });
+    expect(unitOf('npc_dota_shadow_shaman_ward_2', npcs)).toEqual({ kind: 'summon', hero: 'shadow_shaman' });
+    expect(unitOf('npc_dota_something_new', npcs).kind).toBe('other');
   });
 });

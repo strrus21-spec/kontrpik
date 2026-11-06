@@ -1048,3 +1048,9 @@ input[type=search]:focus,select:focus,.me-form input:focus{outline:none;border-c
 .landing{--scene-y:.46}
 @media (max-width:700px){.landing{--scene-y:.4;background:
   linear-gradient(180deg,rgba(8,9,14,.7),rgba(8,9,14,.15) 34%,rgba(8,9,14,0) 64%,rgba(8,9,14,.55)),var(--art) 50% 40%/cover no-repeat}}
+/* значок юнита в разборе (крипы, башня, Рошан…) вместо портрета героя */
+.unit-ic{display:inline-grid;place-items:center;width:22px;height:22px;margin-right:6px;vertical-align:-6px;border-radius:3px;background:var(--card-2);border:1px solid var(--line-2);color:var(--muted);font-size:13px;line-height:1}
+.u-creep::before{content:"⚔"}.u-siege::before{content:"⚙"}.u-tower::before{content:"♜"}.u-rax::before{content:"▣"}.u-fort::before{content:"♛"}
+.u-neutral::before{content:"✦"}.u-roshan::before{content:"☠";color:#c79bff}.u-ward::before{content:"◉"}.u-other::before{content:"•"}
+.dmg-row .nm{display:flex;align-items:center;gap:0}
+.mx-table td>.ic,.dmg-row .nm>.ic{vertical-align:-6px;margin-right:6px}
