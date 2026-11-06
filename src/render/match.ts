@@ -7,6 +7,7 @@ import { odHeroes, type OdHero } from '../odHeroes.ts';
 import { me } from '../me.ts';
 import type { Hero } from '../types.ts';
 import { $, esc } from './html.ts';
+import { positionOf } from '../matchx.ts';
 import { damageBlock, deathsBlock, fightsBlock, historyBlock, itemsBlock, laneBlock, posBlock, shareCard, statsBlock, summaryBlock, teamsBlock, tipsBlock, type MxCtx } from './matchx.ts';
 import { loadHistory, summarize, type HistSummary } from '../history.ts';
 import type { Ctx } from './draft.ts';
@@ -67,8 +68,13 @@ export function renderMatch(x: Ctx) {
     ${tipsBlock(m, p, mx, `<ol class="m-ins m-base">${ins.map(i => `<li class="t-${i.tone}"><p class="m-fact">${esc((L.ins[i.kind] as (v: unknown) => string)(i.v))}</p>${L.adv[i.kind][i.tone] ? `<p class="m-adv">${esc(L.adv[i.kind][i.tone])}</p>` : ''}</li>`).join('')}</ol>`)}
     ${summaryBlock(m, p, mx)}${statsBlock(m, p)}${laneBlock(m, p, mx)}${posBlock(m, p, mx)}${itemsBlock(p, mx)}
     ${deathsBlock(m, p, mx)}${fightsBlock(m, p, mx)}${damageBlock(p, mx)}${teamsBlock(m, p, mx)}
+    <div class="m-stick" id="m-stick" aria-hidden="true"><div class="in">${icon(h, 30)}<span class="res ${win ? 'w' : 'l'}">${win ? L.mWin : L.mLoss}</span><b class="nm">${esc(h?.name || '?')}</b><span class="kda">${p.kills}/${p.deaths}/${p.assists}</span>
+      <span class="sw" role="group" aria-label="${esc(L.mx.stickPick)}"><span class="lb">${L.mx.stickPick}</span>${[true, false].map(rad => `<span class="tm ${rad ? 'rad' : 'dire'}">${m.players.filter(pl => isRadiant(pl) === rad).sort((a, b) => (positionOf(m, a) ?? 9) - (positionOf(m, b) ?? 9)).map(pl => {
+        const hh = heroOf(x, pl.hero_id); return `<button class="${pl === p ? 'on' : ''}" data-pslot="${pl.player_slot}" title="${esc(hh?.name || '?')}" tabindex="-1">${icon(hh, 28)}</button>`;
+      }).join('')}</span>`).join('')}</span></div></div>
     <div class="m-foot"><button class="share" data-mshare>${L.mShare}</button><button class="share" data-mcard>${L.mx.shareImg}</button><button class="clear" data-mother>${L.mOther}</button>
       <a class="vt-more" href="https://www.opendota.com/matches/${m.match_id}" target="_blank" rel="noopener">${L.mOnOD}</a><span id="m-share-msg" class="share-msg" role="status"></span></div>`;
+  requestAnimationFrame(stick);
 }
 
 async function analyze(x: Ctx, id: number, slot: number | null, push = true) {
@@ -113,7 +119,13 @@ export function bindMatch(x: Ctx) {
     const b = (e.target as Element).closest<HTMLElement>('[data-mid],[data-pslot],[data-mshare],[data-mother],[data-mcard]'); if (!b) return;
     e.stopPropagation();
     if (b.dataset.mid) { ($('match-id') as HTMLInputElement).value = b.dataset.mid; void analyze(x, +b.dataset.mid, +b.dataset.slot!); }
-    else if (b.dataset.pslot && current) { current.slot = +b.dataset.pslot; renderMatch(x); updateUrl(); }
+    else if (b.dataset.pslot && current) {
+      current.slot = +b.dataset.pslot; renderMatch(x); updateUrl();
+      // из таблицы команд — к началу разбора; из прилипающей полоски — остаёмся на том же месте
+      const head = document.querySelector<HTMLElement>('#match-out .m-head');
+      if (b.dataset.top !== undefined && head) scrollTo({ top: scrollY + head.getBoundingClientRect().top - (document.getElementById('topbar')?.offsetHeight ?? 0) - 12 });
+      stick();
+    }
     else if (b.dataset.mcard !== undefined && current) {
       const m = current.match, p = m.players.find(pl => pl.player_slot === current!.slot); if (!p) return;
       const blob = await shareCard(m, p, { heroOf: id => heroOf(x, id), heroByNpc: n => heroByNpc(x, n), items: x.data.items }, m.radiant_win === isRadiant(p));
@@ -132,6 +144,22 @@ export function bindMatch(x: Ctx) {
     }
   });
 }
+
+/** Прилипающая полоска разбора: видна, когда шапка разбора ушла под меню, а сам разбор ещё на экране. */
+function stick() {
+  const st = document.getElementById('m-stick'), head = document.querySelector<HTMLElement>('#match-out .m-head'), foot = document.querySelector<HTMLElement>('#match-out .m-foot');
+  if (!st || !head || !foot) return;
+  const tb = document.getElementById('topbar');
+  // меню сжимается при прокрутке с анимацией — пересчитываем отступ, когда она закончится
+  if (tb && !tbBound) { tbBound = true; tb.addEventListener('transitionend', () => stick()); }
+  const top = Math.max(0, tb?.getBoundingClientRect().bottom ?? 0);
+  const on = head.getBoundingClientRect().bottom < top && foot.getBoundingClientRect().top > top + 60 && !$('match').hidden;
+  st.style.top = top + 'px';
+  if (st.classList.contains('on') !== on) { st.classList.toggle('on', on); st.setAttribute('aria-hidden', String(!on)); st.querySelectorAll('button').forEach(b => b.tabIndex = on ? 0 : -1); }
+}
+let stickQueued = false, tbBound = false;
+addEventListener('scroll', () => { if (!stickQueued) { stickQueued = true; requestAnimationFrame(() => { stickQueued = false; stick(); }); } }, { passive: true });
+addEventListener('resize', () => stick());
 
 /** Прямая ссылка /match/{id}?p={slot}. */
 export function syncMatchFromPath(x: Ctx) {

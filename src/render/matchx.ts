@@ -59,7 +59,8 @@ export function teamsBlock(m: Match, p: MPlayer, c: MxCtx) {
     const slots = ([pl.item_0, pl.item_1, pl.item_2, pl.item_3, pl.item_4, pl.item_5] as (number | undefined)[]).map(id => {
       const k = id && it?.ids?.[String(id)]; return k && it ? itemIcon(it, k, 'xs') : '<span class="it it-xs empty"></span>';
     }).join('');
-    return `<tr class="${pl === p ? 'me' : ''}"><td class="th">${ic(h)}<span>${esc(h?.name || '?')}</span>${positionOf(m, pl) ? `<span class="posb">${positionOf(m, pl)}</span>` : ''}</td>
+    const nm = pl === p ? `<span>${esc(h?.name || '?')}</span>` : `<button class="th-pick" data-pslot="${pl.player_slot}" data-top title="${esc(L.pickThis)}">${esc(h?.name || '?')}</button>`;
+    return `<tr class="${pl === p ? 'me' : ''}"><td class="th">${ic(h)}${nm}${positionOf(m, pl) ? `<span class="posb">${positionOf(m, pl)}</span>` : ''}</td>
       <td class="n">${pl.kills}/${pl.deaths}/${pl.assists}</td><td class="n">${pl.last_hits ?? '–'}/${pl.denies ?? '–'}</td><td class="n">${pl.gold_per_min ?? '–'}/${pl.xp_per_min ?? '–'}</td>
       <td class="n">${k1(pl.hero_damage ?? 0)}</td><td class="n c-opt">${k1(pl.tower_damage ?? 0)}</td><td class="n c-opt">${k1(pl.hero_healing ?? 0)}</td><td class="its">${slots}</td></tr>`;
   };

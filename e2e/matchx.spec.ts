@@ -20,5 +20,16 @@ for (const w of [400, 1440]) test(`расширенный разбор матч�
   for (const s of ['.m-smart li', '.m-base li', '.chart', '.sc-grid', '.mx-items li', '.mmap', '[data-mcard]']) await expect(page.locator(s).first()).toBeVisible();
   await expect(page.locator('.m-smart')).toContainText('4 смерти за 8 минут: с 18:11 по 24:22.');
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(w);
+  // прилипающая полоска: скрыта вверху, видна в середине разбора, переключает игрока без прыжка
+  await expect(page.locator('#m-stick')).not.toHaveClass(/on/);
+  await page.locator('.mx-items').scrollIntoViewIfNeeded(); await page.evaluate(() => scrollBy(0, 300));
+  await expect(page.locator('#m-stick')).toHaveClass(/on/);
+  await page.locator('#m-stick button[data-pslot="132"]').click();
+  await expect(page).toHaveURL(/\?p=132$/);
+  await expect(page.locator('#m-stick button.on')).toHaveAttribute('data-pslot', '132');
+  // клик по герою в таблице команд — разбор за него и возврат к началу
+  await page.locator('.mx-team .th-pick').first().click();
+  await expect(page.locator('#m-stick')).not.toHaveClass(/on/);
+  await expect(page.locator('.m-head')).toBeInViewport();
   expect(errs).toEqual([]);
 });

@@ -808,3 +808,23 @@ body{font-size:16px}
 .tr-up{color:var(--rad-glow)} .tr-down{color:#ff7a62} .tr-flat{color:var(--gold)}
 @media (max-width:480px){.mx-table .c-opt{display:none}.mx{padding:10px}.mx-draft .b-ph{width:auto;flex-basis:100%}}
 .m-smart+.m-base{margin-top:8px}
+/* прилипающая полоска разбора + выбор героя из таблицы */
+.m-stick{position:fixed;left:0;right:0;top:0;z-index:4;background:rgba(14,15,19,.96);border-bottom:1px solid var(--gold-dim);backdrop-filter:blur(6px);box-shadow:0 6px 18px rgba(0,0,0,.45);transform:translateY(-8px);opacity:0;visibility:hidden;transition:opacity .15s,transform .15s,visibility .15s}
+.m-stick.on{opacity:1;transform:none;visibility:visible}
+.m-stick .in{max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:10px;padding:6px 16px;font-size:14px;min-width:0}
+.m-stick .ic{width:30px;height:30px;border-radius:3px;flex:none}
+.m-stick .res{font-family:var(--display);font-size:12px;letter-spacing:.08em;text-transform:uppercase}.m-stick .res.w{color:var(--rad-glow)}.m-stick .res.l{color:var(--dire-glow)}
+.m-stick .nm{font-family:var(--display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.m-stick .kda{font-family:var(--mono);color:var(--muted);white-space:nowrap}
+.m-stick .sw{margin-left:auto;display:flex;align-items:center;gap:10px;flex:none}
+.m-stick .lb{font-size:12px;color:var(--muted)}
+.m-stick .tm{display:flex;gap:3px}
+.m-stick .tm button{all:unset;cursor:pointer;width:30px;height:30px;border-radius:3px;display:grid;place-items:center;opacity:.55;transition:opacity .12s}
+.m-stick .tm.rad button{box-shadow:inset 0 -2px 0 var(--rad-glow)}.m-stick .tm.dire button{box-shadow:inset 0 -2px 0 var(--dire-glow)}
+.m-stick .tm button .ic{width:26px;height:26px}
+.m-stick .tm button:hover,.m-stick .tm button:focus-visible{opacity:1}
+.m-stick .tm button.on{opacity:1;outline:2px solid var(--gold);outline-offset:-1px}
+.th-pick{all:unset;cursor:pointer;text-decoration:underline dotted var(--gold-dim);text-underline-offset:4px}
+.th-pick:hover,.th-pick:focus-visible{color:var(--gold);text-decoration-color:var(--gold)}
+@media (max-width:760px){.m-stick .lb,.m-stick .res,.m-stick .kda{display:none}.m-stick .in{padding:5px 10px;gap:8px}.m-stick .tm button{width:26px;height:26px}.m-stick .tm button .ic{width:22px;height:22px}.m-stick .sw{gap:6px}}
+@media (max-width:440px){.m-stick .in>.ic,.m-stick .nm{display:none}.m-stick .sw{margin:0 auto}.m-stick .tm{gap:2px}.m-stick .tm button{width:24px;height:24px}}
