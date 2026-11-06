@@ -999,7 +999,52 @@ input[type=search]:focus,select:focus,.me-form input:focus{outline:none;border-c
 /* горящее «Pick»: раскалённый градиент, мерцание и жар вокруг букв */
 .landing h1.brand .h1b{background:linear-gradient(180deg,#fffbe8,#ffd36a 35%,#ff8a2a 70%,#c2410f)!important;-webkit-background-clip:text!important;background-clip:text!important;
   color:transparent!important;-webkit-text-fill-color:transparent;text-shadow:none!important;
-  filter:drop-shadow(0 2px 0 rgba(0,0,0,.85)) drop-shadow(0 0 8px rgba(255,140,40,.75)) drop-shadow(0 0 22px rgba(255,90,20,.45))!important;animation:fxFlick 2.2s steps(1) infinite}
+  filter:drop-shadow(0 2px 0 rgba(0,0,0,.85)) drop-shadow(0 0 8px rgba(255,140,40,.75)) drop-shadow(0 0 22px rgba(255,90,20,.45));animation:fxHeat 3.8s ease-in-out infinite}
 .landing h1.brand .h1a{text-shadow:0 2px 0 #000,0 0 14px rgba(255,170,80,.35)!important}
-@keyframes fxFlick{0%{opacity:1}12%{opacity:.9}14%{opacity:1}48%{opacity:.94}50%{opacity:1}77%{opacity:.88}79%{opacity:1}}
+/* плавный жар без мигания: меняется только сила свечения вокруг букв */
+@keyframes fxHeat{0%,100%{filter:drop-shadow(0 2px 0 rgba(0,0,0,.85)) drop-shadow(0 0 7px rgba(255,140,40,.6)) drop-shadow(0 0 18px rgba(255,90,20,.35))}50%{filter:drop-shadow(0 2px 0 rgba(0,0,0,.85)) drop-shadow(0 0 11px rgba(255,160,60,.85)) drop-shadow(0 0 30px rgba(255,100,30,.5))}}
 @media (prefers-reduced-motion:reduce){.landing h1.brand .h1b,:is(.cta,.me-go,.addbtn,.share,.more-btn,.install,.hd-enemy,#match-recent):hover,.nav.topbar .tabs-nav a:hover{animation:none}.fx-layer{display:none}}
+
+/* ===== живой фон главной: руны Света, лава Тьмы, солнце и река =====
+   .scene-in повторяет размеры картины при background-size:cover (считает src/fx.ts),
+   поэтому координаты в % привязаны к самой картине. */
+.landing{isolation:isolate}
+.landing>.landing-in{position:relative;z-index:2}
+.scene{position:absolute;inset:0;overflow:hidden;z-index:1;pointer-events:none}
+.scene-in{position:absolute}
+.sc-glow{position:absolute;left:var(--l);top:var(--t);width:var(--w);height:var(--h);border-radius:50%;mix-blend-mode:screen;animation-delay:var(--dl,0s)}
+.sc-rad{background:radial-gradient(closest-side,rgba(120,210,255,.75),rgba(60,150,255,.35) 55%,rgba(40,120,255,0));animation:scRad 3.6s ease-in-out infinite}
+.sc-rad.sm{animation-duration:2.8s}
+@keyframes scRad{0%,100%{opacity:.15;transform:scale(.92)}50%{opacity:.85;transform:scale(1.06)}}
+.sc-swirl{background:conic-gradient(from 0deg,rgba(90,190,255,0),rgba(110,215,255,.75),rgba(90,190,255,0) 40%,rgba(140,225,255,.6) 70%,rgba(90,190,255,0));
+  -webkit-mask:radial-gradient(closest-side,#000 35%,transparent 75%);mask:radial-gradient(closest-side,#000 35%,transparent 75%);animation:scSwirl 6s linear infinite}
+@keyframes scSwirl{to{transform:rotate(360deg)}}
+.sc-lava{background:radial-gradient(closest-side,rgba(255,200,90,.8),rgba(255,110,30,.45) 50%,rgba(255,60,10,0));animation:scLava 2.4s steps(6,end) infinite}
+@keyframes scLava{0%{opacity:.35}17%{opacity:.75}33%{opacity:.45}50%{opacity:.9}67%{opacity:.5}83%{opacity:.7}100%{opacity:.35}}
+.sc-sun{background:radial-gradient(closest-side,rgba(255,235,180,.6),rgba(255,180,90,.2) 55%,rgba(255,150,60,0));animation:scSun 7s ease-in-out infinite}
+@keyframes scSun{0%,100%{opacity:.35;transform:scale(.95)}50%{opacity:.8;transform:scale(1.08)}}
+/* река: бегущие поперёк блики внутри русла + мерцающая дорожка солнца */
+.sc-river{position:absolute;inset:0;mix-blend-mode:screen;opacity:.5;filter:blur(1.5px);
+  clip-path:polygon(45% 61.5%,55% 61.5%,62% 68%,66% 76%,70% 88%,73% 100%,24% 100%,29% 86%,33% 76%,38% 68%);
+  /* рябь: короткие светлые штрихи разной длины, два слоя с разной скоростью */
+  background:
+    radial-gradient(ellipse 18px 2px at 20% 30%,rgba(255,228,170,.5),transparent 70%),radial-gradient(ellipse 26px 2px at 62% 12%,rgba(255,228,170,.45),transparent 70%),
+    radial-gradient(ellipse 14px 1.5px at 44% 70%,rgba(255,228,170,.5),transparent 70%),radial-gradient(ellipse 30px 2px at 80% 55%,rgba(255,228,170,.4),transparent 70%),
+    radial-gradient(ellipse 22px 2px at 8% 85%,rgba(255,228,170,.45),transparent 70%),
+    radial-gradient(ellipse 20px 2px at 35% 20%,rgba(255,228,170,.4),transparent 70%),radial-gradient(ellipse 16px 1.5px at 72% 80%,rgba(255,228,170,.45),transparent 70%),
+    radial-gradient(ellipse 28px 2px at 52% 45%,rgba(255,228,170,.35),transparent 70%);
+  background-size:160px 90px,160px 90px,160px 90px,160px 90px,160px 90px,230px 130px,230px 130px,230px 130px;
+  animation:scRiver 7s linear infinite}
+@keyframes scRiver{to{background-position:0 90px,0 90px,0 90px,0 90px,0 90px,40px 130px,40px 130px,40px 130px}}
+.sc-glint{position:absolute;left:41%;top:64%;width:16%;height:12%;mix-blend-mode:screen;
+  background:radial-gradient(ellipse 50% 45% at 50% 50%,rgba(255,225,150,.55),rgba(255,170,80,0));animation:scGlint 3.2s ease-in-out infinite}
+@keyframes scGlint{0%,100%{opacity:.25;transform:scaleX(.9)}40%{opacity:.75;transform:scaleX(1.08)}70%{opacity:.4}}
+/* частицы: искры от лавы, огоньки от вихря Света */
+.sc-p{position:absolute;width:5px;height:5px;margin:-2.5px;border-radius:50%;animation:fxRise var(--d) ease-out forwards}
+.sc-p.ember{background:radial-gradient(circle,#fff3c8,#ffab3d 45%,rgba(255,80,20,0) 70%)}
+.sc-p.wisp{width:6px;height:6px;background:radial-gradient(circle,#e9f8ff,#7fd0ff 45%,rgba(60,150,255,0) 70%)}
+@media (prefers-reduced-motion:reduce){.scene *{animation:none!important}.sc-river,.sc-glint{display:none}}
+/* телефон: та же картина целиком (координаты общие), позиция по вертикали своя */
+.landing{--scene-y:.46}
+@media (max-width:700px){.landing{--scene-y:.4;background:
+  linear-gradient(180deg,rgba(8,9,14,.7),rgba(8,9,14,.15) 34%,rgba(8,9,14,0) 64%,rgba(8,9,14,.55)),var(--art) 50% 40%/cover no-repeat}}

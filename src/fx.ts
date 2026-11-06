@@ -19,7 +19,34 @@ function spark(x: number, y: number, dx: number, dy: number, dur: number, cls = 
   fxLayer().append(s);
 }
 
+/** Живой фон главной: подгоняем .scene-in под картину (как background-size:cover) и пускаем частицы. */
+function bindScene() {
+  const land = document.getElementById('landing'), sc = document.getElementById('scene');
+  if (!land || !sc) return;
+  const fit = () => {
+    const W = land.clientWidth, H = land.clientHeight; if (!W || !H) return;
+    const k = Math.max(W / 3, H / 2), w = 3 * k, h = 2 * k;
+    const py = parseFloat(getComputedStyle(land).getPropertyValue('--scene-y')) || .46;
+    Object.assign(sc.style, { width: w + 'px', height: h + 'px', left: (W - w) / 2 + 'px', top: (H - h) * py + 'px' });
+  };
+  new ResizeObserver(fit).observe(land); fit();
+  const p = (cls: string, x: number, y: number, dx: number, dy: number, d: number) => {
+    const s = document.createElement('span'); s.className = 'sc-p ' + cls;
+    s.style.left = x + '%'; s.style.top = y + '%';
+    s.style.setProperty('--x', dx + 'px'); s.style.setProperty('--y', dy + 'px'); s.style.setProperty('--d', d + 's');
+    s.addEventListener('animationend', () => s.remove()); sc.append(s);
+  };
+  setInterval(() => {
+    if (reduced() || document.hidden || document.body.dataset.tab !== 'home') return;
+    // искры от лавы Тьмы — вверх и чуть вправо
+    p('ember', 71 + Math.random() * 7, 27 + Math.random() * 20, Math.random() * 30 - 5, -(50 + Math.random() * 70), 1.6 + Math.random() * 1.2);
+    // огоньки Света — от вихря у основания башни, медленно вверх
+    if (Math.random() < .55) p('wisp', 22 + Math.random() * 8, 54 + Math.random() * 4, Math.random() * 20 - 10, -(40 + Math.random() * 60), 2.2 + Math.random() * 1.4);
+  }, 260);
+}
+
 export function bindFx() {
+  bindScene();
   // тлеющие кнопки: пока курсор на кнопке — искры от нижнего края
   let timer = 0, cur: Element | null = null;
   const stop = () => { clearInterval(timer); timer = 0; cur = null; };
