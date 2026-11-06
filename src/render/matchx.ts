@@ -1,7 +1,7 @@
 // Расширенный разбор матча: блоки HTML/SVG. Данные — src/matchx.ts.
 import { t } from '../i18n.ts';
 import { isRadiant, type Match, type MPlayer } from '../match.ts';
-import { unitOf, advantage, damage, fights, itemTimeline, laneOpponents, mapData, objectives, opponentByPos, positionOf, smartTips, teamOf, enemiesOf, vsPro } from '../matchx.ts';
+import { mapAt, timeline, type Timeline, unitOf, advantage, damage, fights, itemTimeline, laneOpponents, mapData, objectives, opponentByPos, positionOf, smartTips, teamOf, enemiesOf, vsPro } from '../matchx.ts';
 import type { ItemsData } from '../data.ts';
 import type { Hero } from '../types.ts';
 import type { HistSummary } from '../history.ts';
@@ -135,14 +135,34 @@ export function itemsBlock(p: MPlayer, c: MxCtx) {
   }).join('')}</ol><p class="note">${L.itemsNote}</p>`);
 }
 
-/** Мини-карта: схема Dota (река, линии, базы) + варды, смерти в драках, перемещения в первые 10 минут. */
+/** Мини-карта: схема Dota (река, линии, базы) + слой событий. Ползунок времени меняет слой (см. mapFrame, bindMapTime). */
+const X = (v: number) => ((v - 64) / 128) * 300, Y = (v: number) => 300 - ((v - 64) / 128) * 300;
+let TL: Timeline | null = null, STATIC = '';
+const wardSvg = (w: { x: number; y: number; obs: boolean }, mine: boolean) => `<circle cx="${X(w.x)}" cy="${Y(w.y)}" r="4" class="wd ${w.obs ? 'obs' : 'sen'} ${mine ? 'mine' : 'en'}"/>`;
+const cross = (x: number, y: number, cls: string) => `<g transform="translate(${X(x)} ${Y(y)})" class="dx ${cls}"><path d="M-5 -5L5 5M5 -5L-5 5"/></g>`;
+function heatSvg(tl: Timeline, k: number) {
+  const maxN = Math.max(1, ...tl.heat.map(q => q.n));
+  return k <= 0 ? '' : `<g style="opacity:${k}">${tl.heat.map(q => `<circle cx="${X(q.x)}" cy="${Y(q.y)}" r="${1.4 + 2.6 * q.n / maxN}" class="pp"/>`).join('')}</g>`;
+}
+/** Слой событий в момент t; t = null — весь матч сразу (как раньше). */
+export function mapFrame(t: number | null): string {
+  if (!TL) return '';
+  if (t === null) return STATIC;
+  const st = mapAt(TL, t);
+  const fightsSvg = st.fights.map(f => {
+    const pts = f.deaths; if (!pts.length) return '';
+    const cx = pts.reduce((a, q) => a + X(q.x), 0) / pts.length, cy = pts.reduce((a, q) => a + Y(q.y), 0) / pts.length;
+    return `<circle cx="${cx}" cy="${cy}" r="22" class="tf-ring ${f.won === null ? '' : f.won ? 'w' : 'l'}"/>` + pts.map(q => cross(q.x, q.y, q.me ? 'me' : q.ally ? 'al' : 'en')).join('');
+  }).join('');
+  return heatSvg(TL, st.heat) + st.wards.filter(w => !w.ally).map(w => wardSvg(w, false)).join('') + st.wards.filter(w => w.ally).map(w => wardSvg(w, true)).join('') + fightsSvg;
+}
 function miniMap(m: Match, p: MPlayer) {
   const d = mapData(m, p), L = t().mx;
-  const X = (v: number) => ((v - 64) / 128) * 300, Y = (v: number) => 300 - ((v - 64) / 128) * 300;
-  const maxN = Math.max(1, ...d.path.map(q => q.n));
-  const path = d.path.map(q => `<circle cx="${X(q.x)}" cy="${Y(q.y)}" r="${1.4 + 2.6 * q.n / maxN}" class="pp"/>`).join('');
-  const ward = (w: { x: number; y: number; obs: boolean }, mine: boolean) => `<circle cx="${X(w.x)}" cy="${Y(w.y)}" r="4" class="wd ${w.obs ? 'obs' : 'sen'} ${mine ? 'mine' : 'en'}"/>`;
-  const deaths = d.deaths.map(q => `<g transform="translate(${X(q.x)} ${Y(q.y)})" class="dx"><path d="M-5 -5L5 5M5 -5L-5 5"/></g>`).join('');
+  TL = timeline(m, p);
+  STATIC = heatSvg(TL, 1) + d.enemyWards.map(w => wardSvg(w, false)).join('') + d.myWards.map(w => wardSvg(w, true)).join('') + d.deaths.map(q => cross(q.x, q.y, 'me')).join('');
+  const D = Math.max(1, TL.duration), pct = (s: number) => Math.max(0, Math.min(100, s / D * 100));
+  const marks = TL.fights.map(f => `<button type="button" class="mk-f ${f.won === null ? '' : f.won ? 'w' : 'l'}" style="left:${pct(f.start)}%" data-mt-seek="${f.start}" title="${esc(L.mtFight)} ${mm(f.start)}"></button>`).join('')
+    + TL.myDeaths.map(s => `<button type="button" class="mk-d" style="left:${pct(s)}%" data-mt-seek="${Math.max(0, s - 3)}" title="${esc(L.mtDeath)} ${mm(s)}"></button>`).join('');
   return `<svg class="mmap" viewBox="0 0 300 300" role="img" aria-label="${esc(L.map)}">
     <rect width="300" height="300" rx="6" class="bg"/>
     <path d="M0 300 L0 150 Q60 120 110 135 Q150 150 160 190 Q170 240 150 300Z" class="rad-z"/>
@@ -150,8 +170,14 @@ function miniMap(m: Match, p: MPlayer) {
     <path d="M0 95 Q140 150 300 210" class="river"/>
     <path d="M24 276 L24 24 L276 24 M24 276 L276 276 L276 24 M30 270 L270 30" class="lanes"/>
     <circle cx="30" cy="270" r="13" class="anc r"/><circle cx="270" cy="30" r="13" class="anc d"/>
-    ${path}${d.enemyWards.map(w => ward(w, false)).join('')}${d.myWards.map(w => ward(w, true)).join('')}${deaths}
-  </svg>`;
+    <g id="mt-layer">${STATIC}</g>
+  </svg>
+  <div class="mt" data-dur="${D}">
+    <button type="button" class="mt-btn" data-mt-play aria-label="${esc(L.mtPlay)}" title="${esc(L.mtPlay)}">▶</button>
+    <div class="mt-rail"><input type="range" id="mt-range" min="0" max="${D}" step="1" value="${D}" aria-label="${esc(L.mtTime)}"><div class="mt-marks">${marks}</div></div>
+    <span class="mt-time" id="mt-time">${esc(L.mtAll)}</span>
+    <button type="button" class="mt-btn mt-all on" data-mt-all>${esc(L.mtAll)}</button>
+  </div>`;
 }
 
 /** Подпись юнита: герой — иконка и имя; крипы, башни, Рошан и т. п. — понятным словом; призыв — «Treant · Nature's Prophet». */
@@ -167,7 +193,7 @@ export function deathsBlock(m: Match, p: MPlayer, c: MxCtx) {
   const list = dl.length ? `<div class="tw"><table class="mx-table sm"><thead><tr><th>${L.time}</th><th>${L.killer}</th><th>${L.goldLost}</th><th>${L.dead}</th></tr></thead><tbody>${dl.map(d => {
     return `<tr><td class="n">${mm(d.time)}${bb.has(Math.floor(d.time / 60)) ? ` <span class="tag-bb">${L.bb}</span>` : ''}</td><td>${unitLabel(d.key, c)}</td><td class="n">${d.gold_lost ?? '–'}</td><td class="n">${d.time_dead ? d.time_dead + ' ' + L.sec : '–'}</td></tr>`;
   }).join('')}</tbody></table></div>` : `<p class="bans-note">${L.noDeaths}</p>`;
-  return sec(L.mapDeaths, `<div class="mx-lane"><div>${miniMap(m, p)}<div class="legend-l"><span class="lg w1">${L.myWards}</span><span class="lg w2">${L.enWards}</span><span class="lg dx1">${L.fightDeaths}</span><span class="lg pp1">${L.path10}</span></div></div><div>${list}</div></div>`);
+  return sec(L.mapDeaths, `<div class="mx-lane"><div>${miniMap(m, p)}<div class="legend-l"><span class="lg w1">${L.myWards}</span><span class="lg ws">${L.mySentries}</span><span class="lg w2">${L.enWards}</span><span class="lg dx1">${L.fightDeaths}</span><span class="lg dxa">${L.mtAllyDeath}</span><span class="lg dxe">${L.mtEnemyDeath}</span><span class="lg pp1">${L.path10}</span></div><p class="note">${L.mtHint}</p></div><div>${list}</div></div>`);
 }
 
 export function fightsBlock(m: Match, p: MPlayer, c: MxCtx) {

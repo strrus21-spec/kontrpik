@@ -25,7 +25,7 @@ export interface MPlayer {
   lane?: number | null; position_est?: number | null; lane_efficiency_pct?: number | null; is_roaming?: boolean | null;
   deaths_log?: { time: number; key: string; gold_lost?: number; gold_fed?: number; time_dead?: number }[] | null;
   buyback_log?: { time: number }[] | null;
-  obs_log?: { time: number; x: number; y: number }[] | null; sen_log?: { time: number; x: number; y: number }[] | null;
+  obs_log?: WardLog[] | null; sen_log?: WardLog[] | null; obs_left_log?: WardLog[] | null; sen_left_log?: WardLog[] | null;
   lane_pos?: Record<string, Record<string, number>> | null;
   damage_targets?: Record<string, Record<string, number>> | null; damage_taken?: Record<string, number> | null;
   stuns?: number | null; teamfight_participation?: number | null; camps_stacked?: number | null;
@@ -39,6 +39,8 @@ export interface Match {
   picks_bans?: { is_pick: boolean; hero_id: number; team: number; order: number }[] | null;
   first_blood_time?: number;
 }
+/** Запись о варде: поставлен (obs_log/sen_log) или исчез (…_left_log). */
+export interface WardLog { time: number; x: number; y: number; key?: string; ehandle?: number }
 export interface TfPlayer { deaths: number; damage?: number; healing?: number; gold_delta?: number; xp_delta?: number; buybacks?: number; killed?: Record<string, number>; item_uses?: Record<string, number>; ability_uses?: Record<string, number>; deaths_pos?: Record<string, Record<string, number>> }
 export interface Teamfight { start: number; end: number; deaths: number; players: TfPlayer[] }
 

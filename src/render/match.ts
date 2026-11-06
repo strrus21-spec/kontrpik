@@ -9,6 +9,7 @@ import type { Hero } from '../types.ts';
 import { $, esc } from './html.ts';
 import { positionOf } from '../matchx.ts';
 import { HERO_NPC } from '../heroNpc.ts';
+import { mapFrame } from './matchx.ts';
 import { damageBlock, deathsBlock, fightsBlock, historyBlock, itemsBlock, laneBlock, posBlock, shareCard, statsBlock, summaryBlock, teamsBlock, tipsBlock, type MxCtx } from './matchx.ts';
 import { loadHistory, summarize, type HistSummary } from '../history.ts';
 import type { Ctx } from './draft.ts';
@@ -119,6 +120,31 @@ export function bindMatch(x: Ctx) {
     recent = rm; hist = hs ? summarize(hs) : null;
     status(recent ? null : t().mNet, !recent);
     renderMatch(x);
+  });
+  // карта по времени: ползунок, ▶, «Весь матч», метки драк и смертей
+  let play = 0;
+  const mtSet = (sec: number | null) => {
+    const r = document.getElementById('mt-range') as HTMLInputElement | null, layer = document.getElementById('mt-layer'), lab = document.getElementById('mt-time');
+    if (!r || !layer || !lab) { clearInterval(play); play = 0; return; }
+    if (sec !== null) r.value = String(sec);
+    layer.innerHTML = mapFrame(sec);
+    lab.textContent = sec === null ? t().mx.mtAll : mmss(Math.max(0, sec));
+    document.querySelector('[data-mt-all]')?.classList.toggle('on', sec === null);
+  };
+  const stopPlay = () => { clearInterval(play); play = 0; const b = document.querySelector<HTMLElement>('[data-mt-play]'); if (b) { b.textContent = '▶'; b.title = t().mx.mtPlay; b.setAttribute('aria-label', t().mx.mtPlay); } };
+  $('match').addEventListener('input', e => { if ((e.target as HTMLElement).id === 'mt-range') { stopPlay(); mtSet(+(e.target as HTMLInputElement).value); } });
+  $('match').addEventListener('click', e => {
+    const b = (e.target as Element).closest<HTMLElement>('[data-mt-play],[data-mt-all],[data-mt-seek]'); if (!b) return;
+    e.stopPropagation();
+    if (b.dataset.mtSeek !== undefined) { stopPlay(); mtSet(+b.dataset.mtSeek); return; }
+    if (b.dataset.mtAll !== undefined) { stopPlay(); mtSet(null); return; }
+    if (play) { stopPlay(); return; }
+    const r = document.getElementById('mt-range') as HTMLInputElement, max = +r.max;
+    let cur = document.querySelector('[data-mt-all].on') || +r.value >= max ? 0 : +r.value;
+    const step = max / 300;                       // весь матч ≈ за 30 секунд
+    b.textContent = '❚❚'; b.title = t().mx.mtPause; b.setAttribute('aria-label', t().mx.mtPause);
+    mtSet(cur);
+    play = window.setInterval(() => { cur = Math.min(max, cur + step); mtSet(Math.round(cur)); if (cur >= max) stopPlay(); }, 100);
   });
   $('match').addEventListener('click', async e => {
     const b = (e.target as Element).closest<HTMLElement>('[data-mid],[data-pslot],[data-mshare],[data-mother],[data-mcard]'); if (!b) return;

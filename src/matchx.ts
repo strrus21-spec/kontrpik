@@ -176,3 +176,39 @@ export function unitOf(key: string, heroNpcs: string[]): { kind: UnitKind; hero?
   if (/ward/.test(k)) return { kind: 'ward' };
   return { kind: 'other' };
 }
+
+/* ---------- Карта по времени: что видно на карте в каждую минуту матча ---------- */
+export interface TlWard { x: number; y: number; obs: boolean; ally: boolean; from: number; to: number }
+export interface TlFight { start: number; end: number; won: boolean | null; deaths: { x: number; y: number; ally: boolean; me: boolean }[] }
+export interface Timeline { duration: number; wards: TlWard[]; fights: TlFight[]; heat: { x: number; y: number; n: number }[]; myDeaths: number[] }
+const OBS_LIFE = 360, SEN_LIFE = 420;
+export function timeline(m: Match, p: MPlayer): Timeline {
+  const ally = (pl: MPlayer) => isRadiant(pl) === isRadiant(p);
+  const wards: TlWard[] = [];
+  for (const pl of m.players) for (const obs of [true, false]) {
+    const placed = (obs ? pl.obs_log : pl.sen_log) || [], left = [...((obs ? pl.obs_left_log : pl.sen_left_log) || [])];
+    for (const w of placed) {
+      // когда исчез: та же запись в …_left_log (по ehandle, ключу или координатам), иначе — по времени жизни варда
+      const i = left.findIndex(l => (w.ehandle != null && l.ehandle === w.ehandle) || (w.key != null && l.key === w.key) || (l.x === w.x && l.y === w.y && l.time >= w.time));
+      const gone = i >= 0 ? left.splice(i, 1)[0].time : w.time + (obs ? OBS_LIFE : SEN_LIFE);
+      wards.push({ x: w.x, y: w.y, obs, ally: ally(pl), from: w.time, to: Math.min(gone, w.time + (obs ? OBS_LIFE : SEN_LIFE)) });
+    }
+  }
+  const fl = fights(m, p);
+  const tfs: TlFight[] = (m.teamfights || []).map((tf, k) => ({
+    start: tf.start, end: tf.end, won: fl[k]?.won ?? null,
+    deaths: tf.players.flatMap((tp, i) => Object.entries(tp.deaths_pos || {}).flatMap(([x, ys]) => Object.entries(ys).flatMap(([y, n]) =>
+      Array.from({ length: n }, () => ({ x: +x, y: +y, ally: ally(m.players[i]), me: m.players[i] === p }))))),
+  }));
+  const heat: Timeline['heat'] = [];
+  for (const [x, ys] of Object.entries(p.lane_pos || {})) for (const [y, n] of Object.entries(ys)) heat.push({ x: +x, y: +y, n });
+  return { duration: m.duration, wards, fights: tfs, heat, myDeaths: (p.deaths_log || []).map(d => d.time) };
+}
+/** Состояние карты в момент t (секунды). */
+export function mapAt(tl: Timeline, t: number) {
+  return {
+    wards: tl.wards.filter(w => w.from <= t && t < w.to),
+    fights: tl.fights.filter(f => f.start - 5 <= t && t <= f.end + 20),
+    heat: t <= 600 ? 1 : Math.max(0, 1 - (t - 600) / 120),   // пятно «где стоял» гаснет после 10-й минуты
+  };
+}
