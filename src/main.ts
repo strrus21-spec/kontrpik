@@ -8,7 +8,8 @@ import '@fontsource/jetbrains-mono/500.css';
 import './styles.css';
 
 import { initialLang, saveLang, setLang, t, LANG, type Lang } from './i18n.ts';
-import { loadData } from './data.ts';
+import { loadData, portraitFallback } from './data.ts';
+portraitFallback();
 import { loadState, saveState } from './state.ts';
 import { applyDraftQuery, hasDraftQuery } from './share.ts';
 import { bindMe, loadMe, renderMe } from './me.ts';

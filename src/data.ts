@@ -1,7 +1,17 @@
 import type { Hero, Positions, Stats, Tip } from './types.ts';
 
+/** Чёткий портрет героя (public/heroes/*.webp, scripts/portraits.py) вместо иконки 32×32; если портрета нет — см. portraitFallback. */
+export const portraitOf = (iconPath: string) => iconPath.replace(/^icons\/(.+)\.png$/, 'heroes/$1.webp');
 export const heroesFrom = (s: Stats, baseUrl = ''): Hero[] =>
-  s.heroes.map((h, i) => ({ i, name: h[0], attr: h[1], roles: h[2], img: h[3].startsWith('data:') ? h[3] : baseUrl + h[3], odId: h[4] }));
+  s.heroes.map((h, i) => ({ i, name: h[0], attr: h[1], roles: h[2], img: h[3].startsWith('data:') ? h[3] : baseUrl + portraitOf(h[3]), odId: h[4] }));
+
+/** Портрет не загрузился (новый герой, портрет ещё не сделан) — показываем старую иконку. */
+export function portraitFallback(doc: Document = document) {
+  doc.addEventListener('error', e => {
+    const img = e.target as HTMLImageElement;
+    if (img?.tagName === 'IMG' && /\/heroes\/[^/]+\.webp$/.test(img.src)) img.src = img.src.replace(/\/heroes\/([^/]+)\.webp$/, '/icons/$1.png');
+  }, true);
+}
 
 /** Сборки предметов про-игроков (scripts/lib/items.ts). */
 export interface HeroBuild { start: string[]; early: string[]; mid: string[]; late: string[] }

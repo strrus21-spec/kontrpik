@@ -1,7 +1,7 @@
 // Один файл kontrpik.html, который открывается двойным щелчком (file://), без сервера.
 // Внутри: код, стили, шрифты (woff2), иконки героев и данные. Запуск: npm run standalone
 import { execSync } from 'node:child_process';
-import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 const OUT = 'dist-standalone';
@@ -34,7 +34,8 @@ html = html.replace(/href="\.\/icon\.svg"/, `href="${dataUri('icon.svg', 'image/
 
 // Данные: иконки героев → data URI
 const stats = JSON.parse(read('data/stats.json').toString('utf8'));
-for (const h of stats.heroes) h[3] = dataUri(h[3], 'image/png');
+// чёткие портреты, если есть (scripts/portraits.py), иначе иконка
+for (const h of stats.heroes) { const p = h[3].replace(/^icons\/(.+)\.png$/, 'heroes/$1.webp'); h[3] = existsSync(join(OUT, p)) ? dataUri(p, 'image/webp') : dataUri(h[3], 'image/png'); }
 const data = { stats, positions: JSON.parse(read('data/positions.json').toString()), tips: JSON.parse(read('data/tips.json').toString()), patch: JSON.parse(read('data/patch.json').toString()), items: (() => { try { return JSON.parse(read('data/items.json').toString()); } catch { return undefined; } })() };
 const json = JSON.stringify(data).replace(/</g, '\\u003c');
 

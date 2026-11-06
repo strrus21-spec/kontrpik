@@ -46,5 +46,5 @@ self.addEventListener('fetch', e => {
     return;
   }
   if (path.startsWith(BASE + 'data/')) { e.respondWith(networkFirst(req)); return; }
-  if (path.startsWith(BASE + 'assets/') || path.startsWith(BASE + 'icons/') || /\.(png|svg|woff2?)$/.test(path)) { e.respondWith(cacheFirst(req)); return; }
+  if (path.startsWith(BASE + 'assets/') || path.startsWith(BASE + 'icons/') || path.startsWith(BASE + 'heroes/') || /\.(png|webp|svg|woff2?)$/.test(path)) { e.respondWith(cacheFirst(req)); return; }
 });
