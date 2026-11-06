@@ -24,6 +24,7 @@ for (const w of [400, 1440]) test(`расширенный разбор матч�
   await expect(page.locator('#m-stick')).not.toHaveClass(/on/);
   await page.locator('.mx-items').scrollIntoViewIfNeeded(); await page.evaluate(() => scrollBy(0, 300));
   await expect(page.locator('#m-stick')).toHaveClass(/on/);
+  await expect(page.locator('#m-stick')).toBeInViewport();
   await page.locator('#m-stick button[data-pslot="132"]').click();
   await expect(page).toHaveURL(/\?p=132$/);
   await expect(page.locator('#m-stick button.on')).toHaveAttribute('data-pslot', '132');

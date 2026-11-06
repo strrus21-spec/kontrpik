@@ -1,8 +1,6 @@
 import { replaceUrl } from './nav.ts';
 import '@fontsource/cormorant-sc/600.css';
 import '@fontsource/cormorant-sc/700.css';
-import '@fontsource/tektur/500.css';
-import '@fontsource/tektur/700.css';
 import '@fontsource/golos-text/400.css';
 import '@fontsource/golos-text/500.css';
 import '@fontsource/golos-text/600.css';
@@ -42,7 +40,23 @@ function applyStatic() {
   document.querySelectorAll<HTMLElement>('[data-ta]').forEach(el => { el.setAttribute('aria-label', S[el.dataset.ta!]); });
   $('home-link').title = S.homeLabel;
   document.querySelectorAll<HTMLElement>('[data-lang]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.lang === LANG)));
+  themeLabel();
 }
+/** Дневной / вечерний режим: выбор хранится в localStorage, по умолчанию — как в системе (см. скрипт в index.html). */
+function themeLabel() {
+  const b = document.getElementById('theme-btn'); if (!b) return;
+  const S = t().st, light = document.documentElement.dataset.theme === 'light';
+  const label = light ? S.themeNight : S.themeDay;
+  b.setAttribute('aria-label', label); b.title = label;
+}
+function setTheme(th: 'light' | 'dark') {
+  document.documentElement.dataset.theme = th;
+  try { localStorage.setItem('kontrpik-theme', th); } catch { /* приватный режим */ }
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', th === 'light' ? '#f3eee5' : '#0d1014');
+  themeLabel();
+}
+if (!document.documentElement.dataset.theme) document.documentElement.dataset.theme = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+document.getElementById('theme-btn')?.addEventListener('click', () => setTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light'));
 applyStatic();
 
 async function start() {

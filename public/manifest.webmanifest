@@ -1,6 +1,6 @@
 {
-  "name": "Контрпик — помощник по Dota 2",
-  "short_name": "Контрпик",
+  "name": "DotaPick — контрпик Dota 2",
+  "short_name": "DotaPick",
   "description": "Контрпик по статистике матчей, мета, разбор матча и фишки. Counterpicks, meta, match analysis and tips for Dota 2.",
   "lang": "ru",
   "start_url": "./",

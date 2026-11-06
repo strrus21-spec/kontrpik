@@ -9,9 +9,10 @@ const audit = async (page: Page, where: string) => {
   expect(bad).toEqual([]);
 };
 
-for (const lang of ['ru', 'en']) {
-  test(`axe: главная, карточка героя, викторина, голосование (${lang})`, async ({ page }) => {
-    await page.addInitScript(l => localStorage.setItem('kontrpik-lang', l), lang);
+// ru — дневной режим, en — вечерний: так проверяются оба языка и обе темы
+for (const [lang, theme] of [['ru', 'light'], ['en', 'dark']] as const) {
+  test(`axe: главная, карточка героя, викторина, голосование (${lang}, ${theme})`, async ({ page }) => {
+    await page.addInitScript(([l, th]) => { localStorage.setItem('kontrpik-lang', l); localStorage.setItem('kontrpik-theme', th); }, [lang, theme]);
     await page.goto('/#counterpick');
     await page.waitForSelector('html[data-ready]');
     await page.locator('#poschips [data-pos="1"]').click();

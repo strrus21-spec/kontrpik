@@ -26,7 +26,7 @@ for (const lang of ['ru', 'en'] as const) {
       await expect(page.locator('#slots-enemy .slot:not(.empty)')).toHaveCount(5);
       await expect(page.locator('.slot.you .sname')).toHaveText('Earth Spirit?');
       await expect(page.locator('#tips .tip')).toHaveCount(30);
-      await expect(page.locator('h1')).toContainText(lang === 'ru' ? 'помощник' : 'helper');
+      await expect(page.locator('h1')).toHaveText('DotaPick');
       await expect(page.locator('html')).toHaveAttribute('lang', lang);
       expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
       await page.screenshot({ path: `test-results/shots/${lang}-${width}.png`, fullPage: true });
@@ -77,7 +77,7 @@ test('драфт, язык и изученные фишки сохраняютс
   await page.goto('/#counterpick');
   await page.waitForSelector('html[data-ready]');
   await page.locator('.lang [data-lang="en"]').click();
-  await expect(page.locator('h1')).toContainText('helper');
+  await expect(page.locator('h1')).toHaveText('DotaPick'); await expect(page).toHaveTitle(/counterpicks/);
   await page.locator('[data-clear="enemy"]').click();
   await page.locator('#q').fill('Axe');
   await page.locator('#pool .hero', { hasText: /^Axe$/ }).click();
@@ -89,7 +89,7 @@ test('драфт, язык и изученные фишки сохраняютс
 
   await page.reload();
   await page.waitForSelector('html[data-ready]');
-  await expect(page.locator('h1')).toContainText('helper');
+  await expect(page.locator('h1')).toHaveText('DotaPick'); await expect(page).toHaveTitle(/counterpicks/);
   await expect(page.locator('#slots-enemy .slot:not(.empty) .sname')).toHaveText(['Axe']);
   await expect(page.locator('#prog-text')).toHaveText('Learned 1 of 30');
 });
