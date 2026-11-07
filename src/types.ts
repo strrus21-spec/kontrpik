@@ -15,6 +15,10 @@ export interface Stats {
   from: number;
   to: number;
   updated: number;
+  /** Откуда паблики: OpenDota (по умолчанию) или Steam (запасной источник, группы рангов — по снимку). */
+  source?: 'opendota' | 'steam';
+  /** Дата снимка OpenDota, из которого взяты поправки групп рангов (только при source = 'steam'). */
+  rankSnap?: number;
 }
 
 export interface Hero { i: number; name: string; attr: Attr; roles: string[]; img: string; odId?: number }

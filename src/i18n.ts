@@ -31,6 +31,9 @@ const ru = {
   noHero: 'Такого героя нет. Попробуй английское имя или прозвище, например «Pudge» или «пудж».',
   legend: (a: boolean) => `Число у героя показывает, на сколько процентов чаще он выигрывает против этого пика${a ? ' и с твоими союзниками' : ''}, чем обычно. Больше 3 — хороший выбор.`,
   notePro: (date: string) => `Про-сцена: матчапы из профессиональных матчей OpenDota, выгружены ${date}. Выборки маленькие (в среднем около 40 игр на пару), поэтому синергия здесь не считается, а редкие пары показаны бледнее.`,
+  notePubSteam: (g: string, range: string, snap: string, ranked: boolean) => ranked
+    ? `Паблик: группа рангов посчитана по свежим матчам из Steam за ${range} с поправкой по снимку OpenDota от ${snap} (OpenDota сейчас недоступен). Малые выборки сглажены.`
+    : `Паблик: ${g} рейтинговых матчей из Steam за ${range} (OpenDota сейчас недоступен). Преимущество — насколько пара выигрывает чаще, чем ожидалось бы по общим винрейтам двух героев. Малые выборки сглажены.`,
   notePub: (g: string, range: string) => `Паблик: ${g} рейтинговых матчей из OpenDota за ${range}. Преимущество — насколько пара выигрывает чаще, чем ожидалось бы по общим винрейтам двух героев. Малые выборки сглажены.`,
   notePos: ' Позиции героев определены по про-матчам за последние полгода: по линии и золоту внутри линии. В пабликах героев иногда играют иначе.',
   noPick: 'Отметь вражеских героев слева (или своих союзников), и здесь появятся лучшие пики.',
@@ -235,6 +238,9 @@ const en: Dict = {
   noHero: 'No such hero. Try the English name, for example “Pudge”.',
   legend: a => `The number shows how many percentage points more often the hero wins against this draft${a ? ' and with your allies' : ''} than usual. Above 3 is a good pick.`,
   notePro: date => `Pro scene: matchups from professional matches on OpenDota, pulled on ${date}. Samples are small (about 40 games per pair on average), so synergy is not counted here and rare pairs are shown faded.`,
+  notePubSteam: (g, range, snap, ranked) => ranked
+    ? `Pubs: this rank group uses fresh Steam matches from ${range}, adjusted by the OpenDota snapshot of ${snap} (OpenDota is unavailable right now). Small samples are smoothed.`
+    : `Pubs: ${g} ranked matches from Steam, ${range} (OpenDota is unavailable right now). Advantage means how much more often the pair wins than expected from the two heroes' overall win rates. Small samples are smoothed.`,
   notePub: (g, range) => `Pubs: ${g} ranked matches from OpenDota, ${range}. Advantage means how much more often the pair wins than expected from the two heroes' overall win rates. Small samples are smoothed.`,
   notePos: ' Hero positions come from pro matches over the last six months, by lane and gold within the lane. Pub players sometimes play heroes differently.',
   noPick: 'Mark enemy heroes on the left (or your allies), and the best picks will appear here.',

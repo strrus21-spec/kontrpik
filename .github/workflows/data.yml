@@ -1,4 +1,4 @@
-# Ежедневная выгрузка статистики OpenDota.
+# Ежедневная выгрузка статистики OpenDota (если OpenDota недоступен — паблики из Steam Web API).
 # Данные хранятся в ветке `data` (один коммит, перезаписывается), чтобы main не раздувался.
 # Если сборка падает, ветка `data` и сайт остаются на вчерашних данных.
 name: Data
@@ -11,13 +11,17 @@ on:
         description: 'Обновить позиции и сборки предметов (про-матчи) сейчас'
         type: boolean
         default: false
+      steam:
+        description: 'Проверка запасного пути: паблики из Steam вместо OpenDota'
+        type: boolean
+        default: false
 
 concurrency: { group: data, cancel-in-progress: false }
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 55
     permissions:
       contents: write
     steps:
@@ -38,10 +42,12 @@ jobs:
       - name: Собрать данные
         env:
           OPENDOTA_API_KEY: ${{ secrets.OPENDOTA_API_KEY }}
+          STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
         # Позиции и сборки предметов — раз в неделю (по понедельникам) или по кнопке.
         run: |
           FLAGS=""
           if [ "$(date -u +%u)" = "1" ] || [ "${{ inputs.positions }}" = "true" ]; then FLAGS="--positions --items"; fi
+          if [ "${{ inputs.steam }}" = "true" ]; then FLAGS="$FLAGS --steam"; fi
           node scripts/build-data.ts $FLAGS
 
       - name: Опубликовать в ветку data
@@ -49,6 +55,7 @@ jobs:
           # Только генерируемые файлы. tips.json и прочее живут в main.
           rm -rf /tmp/data-branch && mkdir -p /tmp/data-branch/data
           cp public/data/stats.json public/data/positions.json /tmp/data-branch/data/
+          if [ -f public/data/stats-od.json ]; then cp public/data/stats-od.json /tmp/data-branch/data/; fi
           if [ -f public/data/items.json ]; then cp public/data/items.json /tmp/data-branch/data/; fi
           cp -r public/data/history /tmp/data-branch/data/
           cp -r public/icons /tmp/data-branch/

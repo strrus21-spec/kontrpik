@@ -170,9 +170,13 @@ export async function build(o: BuildOptions): Promise<{ stats: Stats; positionsU
   writeAtomic(join(histDir, 'index.json'), JSON.stringify(readdirSync(histDir).filter(f => /^\d{4}-\d{2}-\d{2}\.json$/.test(f)).sort().map(f => f.slice(0, 10))));
 
   writeAtomic(join(dataDir, 'stats.json'), JSON.stringify(stats));
+  // снимок OpenDota — из него берутся группы рангов, если однажды придётся считать по Steam
+  writeAtomic(join(dataDir, 'stats-od.json'), JSON.stringify(stats));
   log(`Готово: ${counts.all} матчей, ${N} героев`);
   return { stats, positionsUpdated, itemsUpdated };
 }
+
+export { writeAtomic };
 
 /** Боевой клиент OpenDota: лимит ~60 запросов в минуту, на 429 ждём и повторяем. */
 export function openDotaApi(base = 'https://api.opendota.com/api', key = process.env.OPENDOTA_API_KEY): Api {
