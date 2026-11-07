@@ -16,26 +16,32 @@ export function steamRow(m: SteamMatch): MatchRow | null {
   return { r: m.radiant_win, t: null, a: m.players.filter(rad).map(p => p.hero_id), d: m.players.filter(p => !rad(p)).map(p => p.hero_id), s: m.start_time };
 }
 
-/** Собрать «все ранги» из последних матчей Steam: несколько потоков по соседним диапазонам seq. */
-export async function steamPubs(api: SteamApi, ix: Map<number, number>, n: number, o: { target?: number; span?: number; workers?: number; budgetMs?: number; log?: (m: string) => void } = {}) {
-  const target = o.target ?? 150_000, span = o.span ?? 340_000, W = o.workers ?? 4, budget = o.budgetMs ?? 30 * 60_000, log = o.log ?? (() => {});
-  const latest = await api.latestSeq();
-  const start = latest - span, part = Math.ceil(span / W), t0 = Date.now();
+/**
+ * Собрать «все ранги» из последних матчей Steam. Steam ограничивает частоту запросов, поэтому
+ * один поток с паузой; при отказе — ждём всё дольше (до минуты) и продолжаем с того же места.
+ */
+export async function steamPubs(api: SteamApi, ix: Map<number, number>, n: number, o: { target?: number; span?: number; paceMs?: number; budgetMs?: number; log?: (m: string) => void } = {}) {
+  const target = o.target ?? 120_000, span = o.span ?? 260_000, pace = o.paceMs ?? 1000, budget = o.budgetMs ?? 32 * 60_000, log = o.log ?? (() => {});
+  const latest = await api.latestSeq(), t0 = Date.now();
   const acc = createAccs(n), counts: Record<PubKey, number> = { all: 0, low: 0, mid: 0, high: 0 };
   const times: number[] = [];
-  let reqs = 0, fails = 0;
-  await Promise.all(Array.from({ length: W }, async (_, w) => {
-    let seq = start + w * part; const end = Math.min(latest, start + (w + 1) * part);
-    while (seq < end && counts.all < target && Date.now() - t0 < budget) {
-      let ms: SteamMatch[];
-      try { ms = await api.bySeq(seq); reqs++; } catch { fails++; await api.sleep(3000); if (fails > 200) break; continue; }
-      if (!ms.length) break;
-      for (const m of ms) { const r = steamRow(m); if (r && addMatch(acc, counts, r, ix, n)) times.push(r.s); }
-      seq = ms[ms.length - 1].match_seq_num + 1;
-      if (reqs % 200 === 0) log(`  Steam: ${reqs} запросов, ${counts.all} матчей`);
+  let seq = latest - span, reqs = 0, fails = 0, streak = 0;
+  while (seq < latest && counts.all < target && Date.now() - t0 < budget) {
+    let ms: SteamMatch[];
+    try { ms = await api.bySeq(seq); reqs++; streak = 0; }
+    catch (e) {
+      fails++; streak++;
+      if (fails <= 5 || fails % 20 === 0) log(`  Steam: отказ (${(e as Error).message}), пауза`);
+      if (streak > 30) break;
+      await api.sleep(Math.min(60_000, 5000 * streak)); continue;
     }
-  }));
-  log(`Steam: ${counts.all} матчей за ${reqs} запросов (ошибок ${fails})`);
+    if (!ms.length) break;
+    for (const m of ms) { const r = steamRow(m); if (r && addMatch(acc, counts, r, ix, n)) times.push(r.s); }
+    seq = ms[ms.length - 1].match_seq_num + 1;
+    if (reqs % 200 === 0) log(`  Steam: ${reqs} запросов, ${counts.all} матчей`);
+    await api.sleep(pace);
+  }
+  log(`Steam: ${counts.all} матчей за ${reqs} запросов (отказов ${fails}), ${((Date.now() - t0) / 60000).toFixed(1)} мин`);
   return { all: acc.all, count: counts.all, times };
 }
 
@@ -73,14 +79,13 @@ export function steamStats(snap: Stats, fresh: Accs['all'], count: number, times
 export function steamWebApi(key: string): SteamApi {
   const B = 'https://api.steampowered.com/IDOTA2Match_570';
   const sleep = (ms: number) => new Promise<void>(r => setTimeout(r, ms));
-  async function get<T>(p: string, tries = 4): Promise<T> {
+  async function get<T>(p: string, tries = 2): Promise<T> {
     for (let i = 0; ; i++) {
       try {
         const r = await fetch(`${B}${p}&key=${key}`, { signal: AbortSignal.timeout(60_000) });
-        if (r.status === 429 || r.status >= 500) throw new Error('HTTP ' + r.status);
-        if (!r.ok) throw new Error('HTTP ' + r.status);
+        if (!r.ok) throw Object.assign(new Error('HTTP ' + r.status), { status: r.status });
         return await r.json() as T;
-      } catch (e) { if (i >= tries - 1) throw e; await sleep(2000 * (i + 1)); }
+      } catch (e) { if (i >= tries - 1 || (e as { status?: number }).status === 429) throw e; await sleep(2000); }
     }
   }
   return {
