@@ -69,7 +69,7 @@ export function renderPool(x: Ctx) {
 function renderMeta(x: Ctx) {
   const pro = x.state.src === 'pro', L = t(), st = x.data.stats;
   $('legend').innerHTML = `<span>${L.legend(!pro)}</span>`;
-  const g = fmt(st.counts[x.state.src as Exclude<typeof x.state.src, 'pro'>]), range = dateRange(LANG, st.from, st.to);
+  const g = pro ? '' : fmt(st.counts[x.state.src as Exclude<typeof x.state.src, 'pro'>]), range = dateRange(LANG, st.from, st.to);
   $('note').textContent = (pro ? L.notePro(dateOne(LANG, st.rankSnap ?? st.updated))
     : st.source === 'steam' ? L.notePubSteam(g, range, dateOne(LANG, st.rankSnap ?? st.updated), x.state.src !== 'all')
     : L.notePub(g, range)) + L.notePos;
