@@ -21,7 +21,7 @@ export function steamRow(m: SteamMatch): MatchRow | null {
  * один поток с паузой; при отказе — ждём всё дольше (до минуты) и продолжаем с того же места.
  */
 export async function steamPubs(api: SteamApi, ix: Map<number, number>, n: number, o: { target?: number; span?: number; paceMs?: number; budgetMs?: number; log?: (m: string) => void } = {}) {
-  const target = o.target ?? 120_000, span = o.span ?? 260_000, pace = o.paceMs ?? 1000, budget = o.budgetMs ?? 32 * 60_000, log = o.log ?? (() => {});
+  const target = o.target ?? 120_000, span = o.span ?? 60_000, pace = o.paceMs ?? 4500, budget = o.budgetMs ?? 25 * 60_000, log = o.log ?? (() => {});
   const latest = await api.latestSeq(), t0 = Date.now();
   const acc = createAccs(n), counts: Record<PubKey, number> = { all: 0, low: 0, mid: 0, high: 0 };
   const times: number[] = [];
@@ -95,26 +95,71 @@ export function steamWebApi(key: string): SteamApi {
   };
 }
 
-/**
- * Запасная сборка: OpenDota недоступен → паблики из Steam, группы рангов и про-сцена — из снимка.
- * Снимок — data/stats-od.json (последняя удачная сборка OpenDota), иначе data/stats.json, если он из OpenDota.
- */
-export async function steamFallback(o: { api: SteamApi; root: string; now?: Date; log?: (m: string) => void; target?: number; budgetMs?: number }) {
-  const { readFileSync, existsSync } = await import('node:fs');
+/** Дневная порция матчей Steam: только «все ранги», герои — по id (порядок героев в stats.json может меняться). */
+export interface SteamDay { date: string; ids: number[]; count: number; from: number; to: number; vs: number[]; with: number[]; solo: number[] }
+const DAY_FILE = /^\d{4}-\d{2}-\d{2}\.json$/;
+
+/** Каждую ночь: собрать порцию свежих матчей Steam в data/steam/ДАТА.json, хранить последние keepDays дней. */
+export async function steamCollect(o: { api: SteamApi; root: string; now?: Date; keepDays?: number; log?: (m: string) => void; target?: number; budgetMs?: number; paceMs?: number }) {
+  const { readFileSync, existsSync, mkdirSync, readdirSync, unlinkSync } = await import('node:fs');
   const { join } = await import('node:path');
   const { writeAtomic } = await import('./build.ts');
-  const log = o.log ?? (() => {}), dataDir = join(o.root, 'data');
+  const log = o.log ?? (() => {}), now = o.now ?? new Date(), dataDir = join(o.root, 'data'), dir = join(dataDir, 'steam');
+  const st = JSON.parse(readFileSync(join(dataDir, 'stats.json'), 'utf8')) as Stats;
+  const ids = st.heroes.map(h => h[4]!).filter(Boolean), ix = new Map(ids.map((id, i) => [id, i]));
+  const r = await steamPubs(o.api, ix, ids.length, { log, target: o.target, budgetMs: o.budgetMs, paceMs: o.paceMs });
+  if (!r.count) throw new Error('Steam: ни одного матча');
+  mkdirSync(dir, { recursive: true });
+  const date = now.toISOString().slice(0, 10);
+  const t = r.times.slice().sort((a, b) => a - b);
+  writeAtomic(join(dir, `${date}.json`), JSON.stringify({ date, ids, count: r.count, from: t[0], to: t[t.length - 1], vs: r.all.vs, with: r.all.with, solo: r.all.solo } satisfies SteamDay));
+  const keepFrom = new Date(now.getTime() - ((o.keepDays ?? 7) - 1) * 864e5).toISOString().slice(0, 10);
+  for (const f of readdirSync(dir)) if (DAY_FILE.test(f) && f.slice(0, 10) < keepFrom) unlinkSync(join(dir, f));
+  const days = existsSync(dir) ? readdirSync(dir).filter(f => DAY_FILE.test(f)).length : 0;
+  log(`Steam: порция ${r.count} матчей сохранена, дней в запасе: ${days}`);
+  return r.count;
+}
+
+/** Сложить дневные порции Steam в таблицы «все ранги» в порядке героев снимка. */
+export function sumDays(days: SteamDay[], snap: Stats) {
+  const n = snap.n, idx = new Map(snap.heroes.map((h, i) => [h[4]!, i] as [number, number]));
+  const all = { vs: new Array(n * n * 2).fill(0), with: new Array(n * n * 2).fill(0), solo: new Array(n * 2).fill(0) };
+  let count = 0; const times: number[] = [];
+  for (const d of days) {
+    const m = d.ids.map(id => idx.get(id)), k = d.ids.length;
+    for (let x = 0; x < k; x++) {
+      const X = m[x]; if (X === undefined) continue;
+      all.solo[2 * X] += d.solo[2 * x]; all.solo[2 * X + 1] += d.solo[2 * x + 1];
+      for (let y = 0; y < k; y++) {
+        const Y = m[y]; if (Y === undefined) continue;
+        const a = 2 * (x * k + y), b = 2 * (X * n + Y);
+        all.vs[b] += d.vs[a]; all.vs[b + 1] += d.vs[a + 1]; all.with[b] += d.with[a]; all.with[b + 1] += d.with[a + 1];
+      }
+    }
+    count += d.count; times.push(d.from, d.to);
+  }
+  return { all, count, times };
+}
+
+/**
+ * Запасная сборка: OpenDota недоступен → паблики из накопленных порций Steam (data/steam/),
+ * группы рангов — поправками из последнего снимка OpenDota (data/stats-od.json), про-сцена — из снимка.
+ */
+export async function steamFallback(o: { root: string; now?: Date; log?: (m: string) => void; min?: number }) {
+  const { readFileSync, existsSync, readdirSync } = await import('node:fs');
+  const { join } = await import('node:path');
+  const { writeAtomic } = await import('./build.ts');
+  const log = o.log ?? (() => {}), dataDir = join(o.root, 'data'), dir = join(dataDir, 'steam');
   const read = (f: string) => existsSync(join(dataDir, f)) ? JSON.parse(readFileSync(join(dataDir, f), 'utf8')) as Stats : null;
   const cur = read('stats.json');
   const snap = read('stats-od.json') ?? (cur && cur.source !== 'steam' ? cur : null);
   if (!snap) throw new Error('нет снимка OpenDota для групп рангов');
-  const ix = new Map(snap.heroes.map((h, i) => [h[4]!, i] as [number, number]).filter(([id]) => id));
-  if (ix.size < snap.n * 0.9) throw new Error('в снимке нет id героев');
-  const r = await steamPubs(o.api, ix, snap.n, { log, target: o.target, budgetMs: o.budgetMs });
-  if (r.count < 30_000) throw new Error(`Steam: слишком мало матчей (${r.count})`);
+  const days = existsSync(dir) ? readdirSync(dir).filter(f => DAY_FILE.test(f)).map(f => JSON.parse(readFileSync(join(dir, f), 'utf8')) as SteamDay) : [];
+  const r = sumDays(days, snap);
+  if (r.count < (o.min ?? 30_000)) throw new Error(`Steam: в запасе слишком мало матчей (${r.count} за ${days.length} дн.)`);
   const stats = steamStats(snap, r.all, r.count, r.times, o.now ?? new Date());
   if (!read('stats-od.json')) writeAtomic(join(dataDir, 'stats-od.json'), JSON.stringify(snap));
   writeAtomic(join(dataDir, 'stats.json'), JSON.stringify(stats));
-  log(`Готово (Steam): ${r.count} матчей; группы рангов по снимку от ${new Date(snap.updated * 1000).toISOString().slice(0, 10)}`);
+  log(`Готово (Steam): ${r.count} матчей за ${days.length} дн.; группы рангов по снимку от ${new Date(snap.updated * 1000).toISOString().slice(0, 10)}`);
   return stats;
 }

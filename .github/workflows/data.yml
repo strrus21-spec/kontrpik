@@ -12,7 +12,7 @@ on:
         type: boolean
         default: false
       steam:
-        description: 'Проверка запасного пути: паблики из Steam вместо OpenDota'
+        description: 'Проверка запасного пути: паблики из накопленных матчей Steam вместо OpenDota'
         type: boolean
         default: false
 
@@ -39,10 +39,16 @@ jobs:
             echo "Ветки data ещё нет — стартуем с public/data из main"
           fi
 
+      - name: Steam — порция матчей в запас (на случай падения OpenDota)
+        continue-on-error: true
+        timeout-minutes: 28
+        env:
+          STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
+        run: node scripts/steam-collect.ts
+
       - name: Собрать данные
         env:
           OPENDOTA_API_KEY: ${{ secrets.OPENDOTA_API_KEY }}
-          STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
         # Позиции и сборки предметов — раз в неделю (по понедельникам) или по кнопке.
         run: |
           FLAGS=""
@@ -51,11 +57,14 @@ jobs:
           node scripts/build-data.ts $FLAGS
 
       - name: Опубликовать в ветку data
+        # и при неудачной сборке: stats.json тогда вчерашний, а порция Steam не должна пропасть
+        if: always()
         run: |
           # Только генерируемые файлы. tips.json и прочее живут в main.
           rm -rf /tmp/data-branch && mkdir -p /tmp/data-branch/data
           cp public/data/stats.json public/data/positions.json /tmp/data-branch/data/
           if [ -f public/data/stats-od.json ]; then cp public/data/stats-od.json /tmp/data-branch/data/; fi
+          if [ -d public/data/steam ]; then cp -r public/data/steam /tmp/data-branch/data/; fi
           if [ -f public/data/items.json ]; then cp public/data/items.json /tmp/data-branch/data/; fi
           cp -r public/data/history /tmp/data-branch/data/
           cp -r public/icons /tmp/data-branch/
