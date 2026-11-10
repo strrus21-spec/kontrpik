@@ -1119,3 +1119,20 @@ input[type=search]:focus,select:focus,.me-form input:focus{outline:none;border-c
   .poschips button:nth-child(6){border-right:0!important}
   .poschips .mine-tab{grid-column:1/-1;justify-content:center;border-left:0!important;margin:0}
 }
+/* панель «Для стрима»: вид оверлея и предпросмотр */
+.st-look{display:flex;flex-wrap:wrap;gap:10px}
+.st-look label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted);flex:1 1 150px}
+.st-look select{width:100%}
+.st-prev{position:relative;width:100%;max-width:560px;aspect-ratio:16/9;border-radius:6px;overflow:hidden;border:1px solid var(--gold-line);
+  background:linear-gradient(180deg,rgba(8,9,14,.25),rgba(8,9,14,.45)),var(--art-s) center/cover no-repeat}
+.st-prev iframe{position:absolute;left:0;top:0;width:1920px;height:1080px;border:0;transform-origin:0 0;transform:scale(var(--k,.29));pointer-events:none;background:transparent}
+.st-prev>span{position:absolute;right:8px;bottom:6px;font-size:12px;color:#f1d9a6;text-shadow:0 1px 2px #000}
+/* страница голосования зрителей — в золоте, как сайт и оверлей */
+.vt-name{font-family:var(--body);font-weight:600;font-size:20px;letter-spacing:0}
+.vt-name b{font-family:var(--body);font-weight:600;color:var(--gold)}
+.vt-bar span{background:linear-gradient(90deg,#c08a2c,#ffe7a3)}
+.vt-opt{border-radius:6px;transition:border-color .15s,background .15s}
+.vt-opt:hover{border-color:var(--gold)}
+.vt-opt.on{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),0 0 18px -6px rgba(240,195,90,.7);background:color-mix(in srgb,var(--gold) 12%,var(--card))}
+.vt-pc{font-family:var(--body);font-weight:600}
+.vt-code{font-family:var(--body)}
