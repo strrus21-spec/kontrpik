@@ -14,7 +14,7 @@ export type FromRoom = { type: 'state'; state: unknown } | { type: 'vote'; voter
 
 /** Ограничения. */
 export const MAX_STATE_BYTES = 32 * 1024;
-export const MAX_VOTERS_PER_IP = 3;
+export const MAX_VOTERS_PER_IP = 10; // мобильные операторы выводят многих зрителей под одним IP
 export const QUIZ_MAX = 10;
 export const BOARD_SIZE = 20;
 
