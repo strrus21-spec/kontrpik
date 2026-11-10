@@ -1136,3 +1136,4 @@ input[type=search]:focus,select:focus,.me-form input:focus{outline:none;border-c
 .vt-opt.on{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),0 0 18px -6px rgba(240,195,90,.7);background:color-mix(in srgb,var(--gold) 12%,var(--card))}
 .vt-pc{font-family:var(--body);font-weight:600}
 .vt-code{font-family:var(--body)}
+.obs-btn{border-color:var(--gold);color:var(--gold)}

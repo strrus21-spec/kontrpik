@@ -75,12 +75,13 @@ function roomHtml(): string {
   const L = t();
   if (!room) return `<div class="st-room"><h3 class="m-h">${L.rmH}</h3><div class="st-row"><button class="share" data-st="room" ${roomBusy ? 'disabled' : ''}>${roomBusy ? L.rmCreating : L.rmCreate}</button></div></div>`;
   const base = import.meta.env.BASE_URL;
-  const ov = abs(base + 'overlay/?room=' + room.code), vt = abs(base + 'vote/?room=' + room.code);
+  const q = lookQuery(), ov = abs(base + 'overlay/?room=' + room.code + (q ? '&' + q.slice(1) : '')), vt = abs(base + 'vote/?room=' + room.code);
   return `<div class="st-room"><h3 class="m-h">${L.rmH}</h3>
     <p class="st-code"><span>${L.rmCode}</span> <b>${room.code}</b> <span class="st-chat ${roomOnline ? 'on' : ''}">${roomOnline ? L.rmOnline : L.rmOffline}</span></p>
     <p class="bans-note">${L.rmHow}</p>
     <label class="st-lab">${L.rmOverlay}<input class="share-url" readonly value="${esc(ov)}"></label>
     <label class="st-lab">${L.rmVote}<input class="share-url" readonly value="${esc(vt)}"></label>
+    <div class="st-row"><button class="share obs-btn" data-st="obs" data-url="${esc(ov)}">${L.stObs}</button><span class="bans-note">${L.stObsHow}</span></div>
     <div class="st-row"><button class="clear" data-st="roomclose">${L.rmClose}</button></div></div>`;
 }
 
@@ -104,6 +105,29 @@ export function renderStream() {
     ${chat || room ? `<div class="st-row">${vote?.open ? `<button class="hd-enemy" data-st="stop">${L.stVoteStop}</button>` : `<button class="addbtn" data-st="start">${L.stVoteStart}</button>`}<span class="bans-note">${L.stVoteHint}</span></div>` : ''}
     ${vote ? `<ol class="st-vote">${vote.options.map((o, i) => `<li><b>!${i + 1}</b> ${esc(o)} <span class="st-bar"><span style="width:${pc[i]}%"></span></span> <span class="st-pc">${pc[i]}%</span></li>`).join('')}</ol><p class="bans-note">${L.stVotes(vote.total)}</p>` : ''}`;
   fitPreview();
+}
+
+/** Файл коллекции сцен OBS: одна сцена «DotaPick» с источником «Браузер» 1920×1080 на ссылку оверлея. */
+export function obsScene(url: string) {
+  const uid = () => crypto.randomUUID();
+  const src = uid(), scene = uid();
+  return {
+    name: 'DotaPick', current_scene: 'DotaPick', current_program_scene: 'DotaPick',
+    scene_order: [{ name: 'DotaPick' }], groups: [], quick_transitions: [], transitions: [], current_transition: 'Fade', transition_duration: 300,
+    sources: [
+      { versioned_id: 'browser_source', id: 'browser_source', name: 'DotaPick overlay', uuid: src, enabled: true, flags: 0, mixers: 0, volume: 1, muted: false,
+        settings: { url, width: 1920, height: 1080, fps: 30, shutdown: false, restart_when_active: false, reroute_audio: false,
+          css: 'body { background-color: rgba(0, 0, 0, 0); margin: 0px auto; overflow: hidden; }' } },
+      { versioned_id: 'scene', id: 'scene', name: 'DotaPick', uuid: scene, enabled: true, flags: 0, mixers: 0, volume: 1, muted: false,
+        settings: { id_counter: 1, custom_size: false, items: [{ name: 'DotaPick overlay', source_uuid: src, visible: true, locked: false, id: 1,
+          pos: { x: 0, y: 0 }, rot: 0, scale: { x: 1, y: 1 }, alignment: 5, bounds_type: 0, bounds_alignment: 0, bounds: { x: 0, y: 0 }, crop_left: 0, crop_top: 0, crop_right: 0, crop_bottom: 0 }] } },
+    ],
+  };
+}
+function obsDownload(url: string) {
+  const blob = new Blob([JSON.stringify(obsScene(url), null, 2)], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'DotaPick-OBS.json'; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
 }
 
 function fitPreview() {
@@ -144,7 +168,8 @@ export function bindStream() {
       const r = await createRoom();
       roomBusy = false;
       if (r) { saveRoom(r); openRoom(r); } else err = t().rmFail;
-    } else if (a === 'roomclose') { conn?.close(); conn = null; room = null; roomOnline = false; saveRoom(null); }
+    } else if (a === 'obs') { obsDownload(b.dataset.url || ''); return; }
+    else if (a === 'roomclose') { conn?.close(); conn = null; room = null; roomOnline = false; saveRoom(null); }
     else if (a === 'start') {
       if (!top.length) { err = t().stNeedPicks; renderStream(); return; }
       err = ''; tally = new Tally(Math.min(3, top.length));

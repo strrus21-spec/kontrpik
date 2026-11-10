@@ -1,5 +1,6 @@
 // Бэкенд стрима: оверлей и зрители на «другом устройстве» (отдельный браузерный контекст), таблица лидеров.
 import { expect, test } from '@playwright/test';
+import { readFileSync } from 'node:fs';
 
 test.beforeEach(async ({ context }) => { await context.addInitScript(() => localStorage.setItem('kontrpik-lang', 'ru')); });
 
@@ -16,6 +17,12 @@ test('Комната: оверлей и голосование зрителей 
   const ovUrl = await page.locator('.st-lab input').nth(0).inputValue();
   const vtUrl = await page.locator('.st-lab input').nth(1).inputValue();
   expect(ovUrl).toContain('/overlay/?room=' + code);
+  // готовая сцена для OBS: браузерный источник 1920×1080 на ссылку оверлея комнаты
+  const dl = page.waitForEvent('download'); await page.locator('[data-st="obs"]').click();
+  const scene = JSON.parse(readFileSync(await (await dl).path(), 'utf8'));
+  const bsrc = scene.sources.find((x: { id: string }) => x.id === 'browser_source');
+  expect([bsrc.settings.url, bsrc.settings.width, bsrc.settings.height]).toEqual([ovUrl, 1920, 1080]);
+  expect(scene.sources.find((x: { id: string }) => x.id === 'scene').settings.items[0].source_uuid).toBe(bsrc.uuid);
 
   // «другое устройство»: новый контекст без общего localStorage и BroadcastChannel
   const dev2 = await browser.newContext(); const ov = await dev2.newPage();

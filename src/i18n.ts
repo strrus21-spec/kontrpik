@@ -137,6 +137,7 @@ const ru = {
     wards: { bad: 'Мало обзора. Бери Observer каждый раз, когда он есть в лавке.', info: 'Ставь варды заранее перед целями: Рошан, башни.', good: 'Хороший обзор для команды.' },
   } as Record<string, Record<string, string>>,
   // этап 6: стрим и викторина
+  stObs: 'Скачать сцену для OBS', stObsHow: 'В OBS: Коллекция сцен → Импорт → выбери файл → Коллекция сцен → DotaPick.',
   stPos: 'Угол экрана', stSize: 'Размер', stBg: 'Подложка', stPreview: 'Предпросмотр',
   stPosN: { tl: 'Слева сверху', tr: 'Справа сверху', bl: 'Слева снизу', br: 'Справа снизу' } as Record<string, string>,
   stBgN: { solid: 'Тёмная', glass: 'Полупрозрачная', none: 'Без подложки' } as Record<string, string>,
@@ -340,6 +341,7 @@ const en: Dict = {
     goldLost: { bad: 'That’s a whole item. Buy before a risky move, not after.', info: 'Spend your gold before risky moves.', good: '' },
     wards: { bad: 'Too little vision. Buy an Observer every time one is in stock.', info: 'Place wards ahead of objectives: Roshan, towers.', good: 'Good vision for your team.' },
   },
+  stObs: 'Download OBS scene', stObsHow: 'In OBS: Scene Collection → Import → pick the file → Scene Collection → DotaPick.',
   stPos: 'Screen corner', stSize: 'Size', stBg: 'Backdrop', stPreview: 'Preview',
   stPosN: { tl: 'Top left', tr: 'Top right', bl: 'Bottom left', br: 'Bottom right' },
   stBgN: { solid: 'Dark', glass: 'Translucent', none: 'None' },
