@@ -36,11 +36,11 @@ test('Комната: оверлей и голосование зрителей 
   await expect.poll(() => send !== null).toBe(true);
   send!(':a!a@a.tmi.twitch.tv PRIVMSG #finik :!1\r\n');
   await expect(page.locator('.st-vote + .bans-note')).toHaveText('2 голоса');
-  await expect(ov.locator('.ov-pc')).toHaveText(['!1 50%', '!2 50%', '!3 0%']);
+  await expect(ov.locator('.ov-pc')).toHaveText(['!1 · 50%', '!2 · 50%', '!3 · 0%']);
   await expect(viewer.locator('.vt-pc')).toHaveText(['50%', '50%', '0%']);
   // передумал — голос один
   await viewer.locator('.vt-opt').nth(2).click();
-  await expect(ov.locator('.ov-pc')).toHaveText(['!1 50%', '!2 0%', '!3 50%']);
+  await expect(ov.locator('.ov-pc')).toHaveText(['!1 · 50%', '!2 · 0%', '!3 · 50%']);
   await page.locator('[data-st="stop"]').click();
   await expect(viewer.locator('.empty-state')).toHaveText('Сейчас голосования нет. Страница обновится сама.');
   await dev2.close(); await dev3.close();

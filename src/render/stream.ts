@@ -16,6 +16,13 @@ let chat: { channel: string; stop: () => void; open: boolean } | null = null;
 let err = '';
 let room: RoomKey | null = null, conn: RoomConn | null = null, roomOnline = false, roomBusy = false;
 const abs = (u: string) => new URL(u, location.href).href;
+/** Вид оверлея: угол экрана, размер, подложка. Запоминается и попадает в ссылку для OBS. */
+const OV_KEY = 'kontrpik-ov-look';
+type Look = { pos: 'tl' | 'tr' | 'bl' | 'br'; scale: string; bg: 'solid' | 'glass' | 'none' };
+let look: Look = { pos: 'tl', scale: '1', bg: 'solid' };
+try { look = { ...look, ...JSON.parse(localStorage.getItem(OV_KEY) || '{}') }; } catch { /* ignore */ }
+const lookQuery = () => { const q = new URLSearchParams(); if (look.pos !== 'tl') q.set('pos', look.pos); if (look.scale !== '1') q.set('scale', look.scale); if (look.bg !== 'solid') q.set('bg', look.bg); const s = q.toString(); return s ? '?' + s : ''; };
+const opt = (v: string, cur: string, label: string) => `<option value="${v}" ${v === cur ? 'selected' : ''}>${label}</option>`;
 
 export function overlayState(): OverlayState {
   const L = t();
@@ -80,9 +87,15 @@ function roomHtml(): string {
 export function renderStream() {
   const L = t(), body = $('stream-body');
   $('stream').querySelector('summary')!.textContent = L.stH;
-  const url = abs(import.meta.env.BASE_URL + 'overlay/');
+  const url = abs(import.meta.env.BASE_URL + 'overlay/') + lookQuery();
   const pc = vote ? percents(vote.counts) : [];
   body.innerHTML = `<p class="bans-note">${L.stHow}</p>
+    <div class="st-look">
+      <label>${L.stPos}<select data-look="pos">${opt('tl', look.pos, L.stPosN.tl)}${opt('tr', look.pos, L.stPosN.tr)}${opt('bl', look.pos, L.stPosN.bl)}${opt('br', look.pos, L.stPosN.br)}</select></label>
+      <label>${L.stSize}<select data-look="scale">${['0.75', '1', '1.25', '1.5'].map(v => opt(v, look.scale, Math.round(+v * 100) + '%')).join('')}</select></label>
+      <label>${L.stBg}<select data-look="bg">${opt('solid', look.bg, L.stBgN.solid)}${opt('glass', look.bg, L.stBgN.glass)}${opt('none', look.bg, L.stBgN.none)}</select></label>
+    </div>
+    <div class="st-prev" aria-label="${esc(L.stPreview)}"><iframe src="${esc(url)}" title="${esc(L.stPreview)}" tabindex="-1" loading="lazy"></iframe><span>${L.stPreview} · 1920×1080</span></div>
     <div class="st-row"><input class="share-url" readonly value="${esc(url)}" aria-label="${esc(L.stOverlay)}"><button class="share" data-st="copy">${L.stCopy}</button><span class="share-msg" id="st-msg" role="status"></span></div>
     <form class="me-form" data-st="chat">${chat ? `<span class="st-chat ${chat.open ? 'on' : ''}">${L.stConnected(esc(chat.channel))}</span><button type="button" class="clear" data-st="disconnect">${L.stDisconnect}</button>`
       : `<input id="st-channel" type="text" autocomplete="off" placeholder="${esc(L.stChannel)}" aria-label="${esc(L.stChannel)}"><button type="submit" class="me-go">${L.stConnect}</button>`}</form>
@@ -90,7 +103,13 @@ export function renderStream() {
     ${roomHtml()}
     ${chat || room ? `<div class="st-row">${vote?.open ? `<button class="hd-enemy" data-st="stop">${L.stVoteStop}</button>` : `<button class="addbtn" data-st="start">${L.stVoteStart}</button>`}<span class="bans-note">${L.stVoteHint}</span></div>` : ''}
     ${vote ? `<ol class="st-vote">${vote.options.map((o, i) => `<li><b>!${i + 1}</b> ${esc(o)} <span class="st-bar"><span style="width:${pc[i]}%"></span></span> <span class="st-pc">${pc[i]}%</span></li>`).join('')}</ol><p class="bans-note">${L.stVotes(vote.total)}</p>` : ''}`;
+  fitPreview();
 }
+
+function fitPreview() {
+  const p = document.querySelector<HTMLElement>('.st-prev'); if (p) p.style.setProperty('--k', String(p.clientWidth / 1920));
+}
+addEventListener('resize', fitPreview);
 
 export function bindStream() {
   const box = $('stream');
@@ -105,6 +124,12 @@ export function bindStream() {
       const v = voteOf(text, vote.options.length); if (v !== null) addVote('tw:' + user, v);
     }, st => { c.open = st === 'open'; renderStream(); });
     chat = c; renderStream();
+  });
+  box.addEventListener('change', e => {
+    const sel = (e.target as HTMLElement).closest<HTMLSelectElement>('[data-look]'); if (!sel) return;
+    look = { ...look, [sel.dataset.look!]: sel.value } as Look;
+    try { localStorage.setItem(OV_KEY, JSON.stringify(look)); } catch { /* ignore */ }
+    renderStream();
   });
   box.addEventListener('click', async e => {
     const b = (e.target as Element).closest<HTMLElement>('[data-st]'); if (!b || b.tagName === 'FORM') return;

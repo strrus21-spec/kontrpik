@@ -47,7 +47,7 @@ test('Голосование из чата Twitch: !1/!2/!3, один голос
   await expect(main.locator('.st-pc')).toHaveText(['33%', '33%', '33%']);
   const ov = await context.newPage();
   await ov.goto('/overlay/');
-  await expect(ov.locator('.ov-pc')).toHaveText(['!1 33%', '!2 33%', '!3 33%']);
+  await expect(ov.locator('.ov-pc')).toHaveText(['!1 · 33%', '!2 · 33%', '!3 · 33%']);
   await expect(ov.locator('.ov-hint')).toContainText('!1, !2 или !3');
   await main.locator('[data-st="stop"]').click();
   msg('f', '!1');
