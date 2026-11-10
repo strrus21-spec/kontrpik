@@ -31,13 +31,15 @@ function render(s: OverlayState | null) {
       const k = voteFor(p.name);
       return `<li class="m${i + 1}" style="--i:${i + 5}"><img src="${esc(p.img)}" alt=""><span class="ov-name">${esc(p.name)}</span><b class="${p.score >= 0 ? 'up' : 'dn'}">${sign(p.score)}</b>${k >= 0 ? `<span class="ov-vote"><span class="ov-bar"><span style="width:${pc[k]}%"></span></span><span class="ov-pc">!${k + 1} · ${pc[k]}%</span></span>` : ''}</li>`;
     }).join('')}</ol></div>` : ''}
-    ${s.vote?.open ? `<div class="ov-hint">${esc(s.labels.vote)}: ${esc(s.labels.voteHint)}</div>` : ''}
+    ${s.vote?.open ? `<div class="ov-hint">${esc(s.labels.vote)}: ${esc(s.labels.voteHint)}</div>${voteLink ? `<div class="ov-link">${s.lang === 'ru' ? 'или нажми тут' : 'or tap here'}: <b>${esc(voteLink)}</b></div>` : ''}` : ''}
   </div>`;
   shown = true;
 }
 
 let state: OverlayState | null = null;
 const roomCode = roomEnabled ? codeFromQuery() : null;
+// короткая ссылка на страницу голосования для зрителей (видна на стриме, пока идёт голосование)
+const voteLink = roomCode ? new URL('../vote/?room=' + roomCode, location.href).href.replace(/^https?:\/\//, '') : '';
 if (roomCode) {
   // Режим комнаты: состояние приходит с сервера — оверлей может быть на любом устройстве.
   connectRoom(roomCode, 'overlay', null, m => { if (m.type === 'state') { state = m.state as OverlayState; render(state); } });

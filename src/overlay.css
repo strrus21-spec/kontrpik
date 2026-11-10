@@ -55,3 +55,5 @@ html,body{margin:0;background:transparent!important;overflow:hidden}
 .ov[data-bg="none"] .ov-top li{background:linear-gradient(90deg,rgba(8,9,14,.72),rgba(8,9,14,.45))}
 .ov[data-bg="none"] .ov-brand,.ov[data-bg="none"] .ov-h{text-shadow:0 1px 2px #000,0 0 10px rgba(0,0,0,.9)}
 .ov[data-bg="none"] .ov-brand{color:#f1e4c8}
+.ov-link{margin-top:-6px;text-align:center;font-size:17px;color:#e8dcc0;text-shadow:0 2px 0 #000}
+.ov-link b{color:#ffe2a6;font-weight:600;letter-spacing:.01em}
