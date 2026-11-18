@@ -1187,3 +1187,9 @@ input[type=search]:focus,select:focus,.me-form input:focus{outline:none;border-c
 .ab-link.st{border-color:rgba(102,192,244,.5);color:#8fd0f7}
 .ab-link.st:hover{background:rgba(102,192,244,.12);border-color:#66c0f4}
 [data-theme="light"] .ab-link.st{color:#1b5f8c}
+.ab-link.da{border-color:rgba(245,125,7,.6);color:#ffb35c;background:color-mix(in srgb,#f57d07 10%,var(--card))}
+.ab-link.da:hover{background:color-mix(in srgb,#f57d07 22%,var(--card));border-color:#f57d07}
+[data-theme="light"] .ab-link.da{color:#a14d00}
+.ab-or{font-size:13px!important;color:var(--muted)!important;margin-top:2px!important}
+.ab-qrbox{margin:0;display:flex;flex-direction:column;align-items:center;gap:6px}
+.ab-qrbox figcaption{font-size:12.5px;font-weight:600;color:var(--muted);letter-spacing:.04em}
