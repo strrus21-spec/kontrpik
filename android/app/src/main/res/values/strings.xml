@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">DotaPick</string>
+    <string name="offline_title">Нет подключения</string>
+    <string name="offline_text">DotaPick нужен интернет: статистика и разбор матчей приходят с сайта.</string>
+    <string name="retry">Повторить</string>
+</resources>

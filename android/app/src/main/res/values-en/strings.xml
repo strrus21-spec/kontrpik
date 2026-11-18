@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="offline_title">No connection</string>
+    <string name="offline_text">DotaPick needs the internet: stats and match analysis come from the website.</string>
+    <string name="retry">Retry</string>
+</resources>
