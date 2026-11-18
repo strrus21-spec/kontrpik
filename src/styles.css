@@ -1146,7 +1146,7 @@ input[type=search]:focus,select:focus,.me-form input:focus{outline:none;border-c
 .ab-letter::before{left:24px}.ab-letter::after{right:24px}
 .ab-letter h3{margin:0;font:700 34px var(--serif);letter-spacing:.06em;color:var(--gold)}
 .ab-letter p{margin:0;font-size:17px;line-height:1.7;color:var(--fg-2)}
-.ab-letter p:first-of-type::first-letter{font:700 46px/1 var(--serif);float:left;margin:4px 8px 0 0;color:var(--gold)}
+.ab-letter>p:first-of-type::first-letter{font:700 46px/1 var(--serif);float:left;margin:4px 8px 0 0;color:var(--gold)}
 .ab-points{list-style:none;margin:6px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .ab-points li{display:flex;flex-direction:column;gap:4px;padding:14px 16px;border-radius:8px;border:1px solid var(--line);background:color-mix(in srgb,var(--gold) 5%,transparent)}
 .ab-points b{font:700 18px var(--serif);letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
@@ -1172,3 +1172,15 @@ input[type=search]:focus,select:focus,.me-form input:focus{outline:none;border-c
 .ab-link.tw{border-color:rgba(145,70,255,.55);color:#bf94ff}
 .ab-link.tw:hover{background:rgba(145,70,255,.14);border-color:#9146ff}
 [data-theme="light"] .ab-link.tw{color:#6b2fd6}
+/* донат */
+.ab-donate{display:grid;grid-template-columns:148px minmax(0,1fr);gap:20px;align-items:center;margin-top:6px;padding:18px;border-radius:8px;
+  border:1px solid var(--gold-line);background:color-mix(in srgb,var(--gold) 6%,transparent)}
+.ab-qr{width:148px;height:148px;border-radius:6px;background:#fff;padding:4px}
+.ab-don-body{display:flex;flex-direction:column;gap:8px;min-width:0}
+.ab-don-body h4{margin:0;font:700 20px var(--serif);letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+.ab-don-body p{font-size:15px!important;line-height:1.55!important}
+.ab-net b{color:var(--fg)}
+.ab-addr{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ab-addr code{flex:1 1 280px;min-width:0;padding:8px 10px;border-radius:5px;background:var(--field);border:1px solid var(--line-2);color:var(--fg);font:500 14px ui-monospace,Menlo,Consolas,monospace;overflow-wrap:anywhere;user-select:all}
+.ab-warn{font-size:13px!important;color:var(--muted)!important}
+@media (max-width:600px){.ab-donate{grid-template-columns:1fr;justify-items:center;text-align:center}.ab-addr{justify-content:center}}
