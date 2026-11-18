@@ -79,7 +79,7 @@ jobs:
   deploy:
     needs: build
     permissions:
-      contents: write   # сборка для dotapick.pro публикуется в ветку site
+      contents: read
       pages: write
       id-token: write
     uses: ./.github/workflows/deploy.yml

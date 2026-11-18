@@ -4,12 +4,12 @@ import { join } from 'node:path';
 
 // GitHub Pages отдаёт 404.html на неизвестные пути: копия index.html делает рабочими прямые ссылки /hero/pudge.
 // Полный адрес сайта для превью ссылок (og:image должен быть абсолютным). В деплое задаётся из GitHub Pages.
-const SITE_URL = (process.env.VITE_SITE_URL || 'https://strrus21-spec.github.io/kontrpik/').replace(/\/?$/, '/');
+const SITE_URL = (process.env.VITE_SITE_URL || 'https://dotapick.pro/').replace(/\/?$/, '/');
 const siteUrl = (): Plugin => ({ name: 'site-url', transformIndexHtml: html => html.replaceAll('%SITE_URL%', SITE_URL) });
 // Счётчик посетителей Cloudflare Web Analytics: без cookie и без регистрации посетителей.
 // Включается, только если при сборке задан токен (переменная CF_BEACON_TOKEN в настройках GitHub).
 // Токен не секретный: он всё равно виден в коде страницы. Переменная CF_BEACON_TOKEN в GitHub может его заменить.
-const CF_BEACON = (process.env.VITE_CF_BEACON || 'e076a6ba8f6c49799bc12fd588732df0').trim();
+const CF_BEACON = (process.env.VITE_CF_BEACON || 'ab487f05d8374196a14f962d54bd146c').trim();
 const analytics = (): Plugin => ({
   name: 'analytics',
   // оверлей для OBS не считаем: он открыт часами и исказил бы статистику
