@@ -1,7 +1,9 @@
 // Клиент бэкенда стрима (worker/). Адрес задаётся при сборке: VITE_ROOM_API. Без него функции скрыты.
 import { normalizeCode, isRoomCode, type BoardEntry, type FromRoom, type Role } from './room-protocol.ts';
 
-export const ROOM_API: string = String(import.meta.env.VITE_ROOM_API || '').replace(/\/$/, '');
+// По умолчанию — сервер комнат DotaPick; VITE_ROOM_API=off выключает комнаты (например, в тестах).
+const RAW = String(import.meta.env.VITE_ROOM_API ?? '').trim();
+export const ROOM_API: string = (RAW === 'off' ? '' : RAW || 'https://kontrpik-room.strrus21.workers.dev').replace(/\/$/, '');
 export const roomEnabled = !!ROOM_API;
 
 export interface RoomKey { code: string; key: string }

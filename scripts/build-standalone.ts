@@ -5,7 +5,7 @@ import { existsSync, readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 const OUT = 'dist-standalone';
-execSync(`npx vite build --outDir ${OUT} --emptyOutDir`, { stdio: 'inherit', env: { ...process.env, STANDALONE: '1', VITE_BASE: './' } });
+execSync(`npx vite build --outDir ${OUT} --emptyOutDir`, { stdio: 'inherit', env: { ...process.env, STANDALONE: '1', VITE_BASE: './', VITE_ROOM_API: 'off' } });
 
 const read = (p: string) => readFileSync(join(OUT, p));
 const dataUri = (p: string, mime: string) => `data:${mime};base64,${read(p).toString('base64')}`;
