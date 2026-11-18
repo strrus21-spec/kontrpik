@@ -10,6 +10,7 @@ import './styles.css';
 import { dateOne, initialLang, saveLang, setLang, t, LANG, type Lang } from './i18n.ts';
 import { loadData, portraitFallback } from './data.ts';
 import { bindFx } from './fx.ts';
+import { bindFeedback } from './feedback.ts';
 portraitFallback();
 // «Скопировать» для элементов с data-copy (адрес кошелька на «О сайте»)
 document.addEventListener('click', async e => {
@@ -21,6 +22,7 @@ document.addEventListener('click', async e => {
   setTimeout(() => { if (msg) msg.textContent = ''; }, 2500);
 });
 bindFx();
+bindFeedback();
 import { loadState, saveState } from './state.ts';
 import { applyDraftQuery, hasDraftQuery } from './share.ts';
 import { bindMe, loadMe, renderMe } from './me.ts';
