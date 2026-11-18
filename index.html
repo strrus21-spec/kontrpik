@@ -178,7 +178,15 @@ try{var t=localStorage.getItem('kontrpik-theme');if(t!=='light'&&t!=='dark')t=ma
             <span class="share-msg" id="ab-copied" role="status"></span>
           </div>
         </section>
-        <p><a class="share" href="https://github.com/strrus21-spec/kontrpik/issues/new" target="_blank" rel="noopener" data-t="abIdea">Предложить идею или сообщить об ошибке</a></p>
+        <form class="ab-form" id="fb-form" novalidate>
+          <h4 data-t="fbH">Предложить идею или сообщить об ошибке</h4>
+          <p data-t="fbS">Письмо придёт автору на почту. Ответ — по контакту, если оставишь его.</p>
+          <label><span data-t="fbSubj">Тема</span><input id="fb-subject" name="subject" maxlength="120" required autocomplete="off"></label>
+          <label><span data-t="fbMsg">Описание</span><textarea id="fb-message" name="message" rows="5" maxlength="3000" required></textarea></label>
+          <label><span data-t="fbContact">Как с тобой связаться (необязательно): почта, Telegram, Discord</span><input id="fb-contact" name="contact" maxlength="120" autocomplete="email"></label>
+          <input type="checkbox" name="botcheck" class="fb-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <div class="fb-row"><button type="submit" class="me-go" id="fb-send" data-t="fbSend">Отправить</button><span class="fb-status" id="fb-status" role="status"></span></div>
+        </form>
       </article>
       <p class="ab-fine"><span data-t="abValve">Dota 2 — товарный знак Valve Corporation. DotaPick — фанатский проект и не связан с Valve.</span> <span data-t="abCredArt">Картина на фоне — </span><a href="https://eranfolio.com" target="_blank" rel="noopener">Eran Fowler</a>. <span data-t="abCredData">Статистика — </span><a href="https://www.opendota.com" target="_blank" rel="noopener">OpenDota</a>, Steam Web API. <span data-t="abUpd">Статистика обновлена:</span> <b id="ab-updated">—</b>.</p>
     </div>
@@ -186,10 +194,6 @@ try{var t=localStorage.getItem('kontrpik-theme');if(t!=='light'&&t!=='dark')t=ma
 
 </div>
 <div id="me" class="me-pop" role="dialog" aria-labelledby="me-title" hidden></div>
-<footer class="footer"><div class="footer-in">
-  <p class="sources"><span data-t="src1">Изменения патча: </span><a href="https://www.dota2.com/patches/7.41" target="_blank" rel="noopener" data-t="src2">официальные заметки 7.41</a>, <a href="https://www.gosugamers.net/dota2/news/78166-dota-2-patch-7-41-removes-facets-and-adds-nine-new-items" target="_blank" rel="noopener">GosuGamers</a>, <a href="https://liquipedia.net/dota2/7.41e" target="_blank" rel="noopener">Liquipedia</a><span data-t="src3">. Статистика: </span><a href="https://www.opendota.com" target="_blank" rel="noopener">OpenDota</a>.</p>
-  <p class="art-credit"><span data-t="artBy">Картина на фоне — </span><a href="https://eranfolio.com" target="_blank" rel="noopener">Eran Fowler</a>, 2016</p>
-</div></footer>
 <dialog id="quiz" class="hero-dlg quiz-dlg" aria-labelledby="quiz-title"><div id="quiz-body"></div></dialog>
 <dialog id="hero" class="hero-dlg" aria-labelledby="hero-title"><div id="hero-body"></div></dialog>
 <script type="module" src="/src/main.ts"></script>

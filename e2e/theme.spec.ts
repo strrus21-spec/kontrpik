@@ -16,5 +16,5 @@ test('режим: по системе, переключение и запоми�
   await expect(html).toHaveAttribute('data-theme', 'light');
   await page.locator('#theme-btn').click();
   await expect(html).toHaveAttribute('data-theme', 'dark');
-  await expect(page.locator('.art-credit')).toContainText('Eran Fowler');
+  await page.goto('/#about'); await expect(page.locator('.ab-fine')).toContainText('Eran Fowler');   // автор картины — на «О сайте»
 });

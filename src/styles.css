@@ -1193,3 +1193,15 @@ input[type=search]:focus,select:focus,.me-form input:focus{outline:none;border-c
 .ab-or{font-size:13px!important;color:var(--muted)!important;margin-top:2px!important}
 .ab-qrbox{margin:0;display:flex;flex-direction:column;align-items:center;gap:6px}
 .ab-qrbox figcaption{font-size:12.5px;font-weight:600;color:var(--muted);letter-spacing:.04em}
+/* форма обратной связи */
+.ab-form{display:flex;flex-direction:column;gap:12px;margin-top:6px;padding:20px;border-radius:8px;border:1px solid var(--gold-line);background:color-mix(in srgb,var(--gold) 4%,transparent)}
+.ab-form h4{margin:0;font:700 20px var(--serif);letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+.ab-form p{font-size:14.5px!important}
+.ab-form label{display:flex;flex-direction:column;gap:6px;font-size:13.5px;color:var(--muted)}
+.ab-form input,.ab-form textarea{background:var(--field);border:1px solid var(--line-2);border-radius:5px;color:var(--fg);padding:9px 11px;font:inherit;font-size:15px;resize:vertical}
+.ab-form input:focus,.ab-form textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 22%,transparent)}
+.fb-hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.fb-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+.fb-status{font-size:14px;color:var(--muted)}.fb-status.ok{color:var(--rad-glow)}.fb-status.err{color:var(--bad)}
+/* без подвала — небольшой отступ внизу страниц */
+body{padding-bottom:40px}
