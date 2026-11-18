@@ -1203,3 +1203,5 @@ input[type=search]:focus,select:focus,.me-form input:focus{outline:none;border-c
 .fb-hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
 .fb-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
 .fb-status{font-size:14px;color:var(--muted)}.fb-status.ok{color:var(--rad-glow)}.fb-status.err{color:var(--bad)}
+/* без подвала — небольшой отступ внизу страниц */
+body{padding-bottom:40px}
