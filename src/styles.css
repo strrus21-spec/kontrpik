@@ -1184,3 +1184,6 @@ input[type=search]:focus,select:focus,.me-form input:focus{outline:none;border-c
 .ab-addr code{flex:1 1 280px;min-width:0;padding:8px 10px;border-radius:5px;background:var(--field);border:1px solid var(--line-2);color:var(--fg);font:500 14px ui-monospace,Menlo,Consolas,monospace;overflow-wrap:anywhere;user-select:all}
 .ab-warn{font-size:13px!important;color:var(--muted)!important}
 @media (max-width:600px){.ab-donate{grid-template-columns:1fr;justify-items:center;text-align:center}.ab-addr{justify-content:center}}
+.ab-link.st{border-color:rgba(102,192,244,.5);color:#8fd0f7}
+.ab-link.st:hover{background:rgba(102,192,244,.12);border-color:#66c0f4}
+[data-theme="light"] .ab-link.st{color:#1b5f8c}
