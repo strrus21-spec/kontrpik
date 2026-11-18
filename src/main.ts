@@ -7,10 +7,19 @@ import '@fontsource/golos-text/600.css';
 import '@fontsource/jetbrains-mono/500.css';
 import './styles.css';
 
-import { initialLang, saveLang, setLang, t, LANG, type Lang } from './i18n.ts';
+import { dateOne, initialLang, saveLang, setLang, t, LANG, type Lang } from './i18n.ts';
 import { loadData, portraitFallback } from './data.ts';
 import { bindFx } from './fx.ts';
 portraitFallback();
+// «Скопировать» для элементов с data-copy (адрес кошелька на «О сайте»)
+document.addEventListener('click', async e => {
+  const b = (e.target as Element).closest<HTMLElement>('[data-copy]'); if (!b) return;
+  const text = document.getElementById(b.dataset.copy!)?.textContent?.trim() || ''; if (!text) return;
+  const msg = document.getElementById('ab-copied');
+  try { await navigator.clipboard.writeText(text); if (msg) msg.textContent = t().st.abCopied; }
+  catch { const r = document.createRange(); const el = document.getElementById(b.dataset.copy!); if (el) { r.selectNodeContents(el); getSelection()?.removeAllRanges(); getSelection()?.addRange(r); } }
+  setTimeout(() => { if (msg) msg.textContent = ''; }, 2500);
+});
 bindFx();
 import { loadState, saveState } from './state.ts';
 import { applyDraftQuery, hasDraftQuery } from './share.ts';
@@ -82,6 +91,7 @@ async function start() {
   for (const im of Object.values(IMG)) im.addEventListener('load', () => { if (!pending) pending = requestAnimationFrame(() => { pending = 0; redrawAll(); }); }, { once: true });
 
   const renderAll = () => {
+    const upd = document.getElementById('ab-updated'); if (upd) upd.textContent = dateOne(LANG, data.stats.updated);
     applyStatic(); renderSelects(x); renderPosChips(x); renderTipFilters(); renderFeatured(); renderMe(); renderDraft(x); renderMeta(x); renderMatch(x); renderStream(); renderTips(); refreshHero(x); refreshQuiz(); applyCompact();
   };
   bindDraft(x); bindTips(data.tips);
