@@ -7,7 +7,7 @@ import '@fontsource/golos-text/600.css';
 import '@fontsource/jetbrains-mono/500.css';
 import './styles.css';
 
-import { initialLang, saveLang, setLang, t, LANG, type Lang } from './i18n.ts';
+import { dateOne, initialLang, saveLang, setLang, t, LANG, type Lang } from './i18n.ts';
 import { loadData, portraitFallback } from './data.ts';
 import { bindFx } from './fx.ts';
 portraitFallback();
@@ -82,6 +82,7 @@ async function start() {
   for (const im of Object.values(IMG)) im.addEventListener('load', () => { if (!pending) pending = requestAnimationFrame(() => { pending = 0; redrawAll(); }); }, { once: true });
 
   const renderAll = () => {
+    const upd = document.getElementById('ab-updated'); if (upd) upd.textContent = dateOne(LANG, data.stats.updated);
     applyStatic(); renderSelects(x); renderPosChips(x); renderTipFilters(); renderFeatured(); renderMe(); renderDraft(x); renderMeta(x); renderMatch(x); renderStream(); renderTips(); refreshHero(x); refreshQuiz(); applyCompact();
   };
   bindDraft(x); bindTips(data.tips);

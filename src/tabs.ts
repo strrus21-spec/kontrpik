@@ -2,7 +2,7 @@
 import { bindAnims } from './anim/player.ts';
 import { replaceUrl } from './nav.ts';
 
-export const TABS = ['home', 'counterpick', 'meta', 'match', 'tips-block'] as const;
+export const TABS = ['home', 'counterpick', 'meta', 'match', 'tips-block', 'about'] as const;
 export type Tab = typeof TABS[number];
 const isTab = (s: string): s is Tab => (TABS as readonly string[]).includes(s);
 
