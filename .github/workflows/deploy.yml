@@ -63,7 +63,7 @@ jobs:
         env:
           VITE_BASE: /
           VITE_SITE_URL: https://dotapick.pro/
-          VITE_CF_BEACON: ${{ vars.CF_BEACON_TOKEN_PRO || 'off' }}
+          VITE_CF_BEACON: ${{ vars.CF_BEACON_TOKEN_PRO || 'ab487f05d8374196a14f962d54bd146c' }}
       - name: Опубликовать в ветку site
         run: |
           cd dist
