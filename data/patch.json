@@ -1,0 +1,12 @@
+{
+  "version": "7.41",
+  "url": "https://www.dota2.com/patches/7.41",
+  "items": [
+    { "ru": "Аспекты (facets) убраны из игры.", "en": "Facets are removed from the game." },
+    { "ru": "Девять новых предметов, среди них Shawl, Splintmail, Wizard Hat и Crella's Crozier.", "en": "Nine new items, including Shawl, Splintmail, Wizard Hat and Crella's Crozier." },
+    { "ru": "Refresher Orb перезаряжает только способности, предметы — нет.", "en": "Refresher Orb resets abilities only, not items." },
+    { "ru": "Shiva's Guard увеличивает радиус способностей и больше не режет лечение.", "en": "Shiva's Guard increases ability radius and no longer reduces healing." },
+    { "ru": "Blade Mail собирается из Splintmail, Arcane Boots — из Wizard Hat.", "en": "Blade Mail builds from Splintmail, Arcane Boots from Wizard Hat." },
+    { "ru": "7.41e: рут во время Twin Gates отменяет телепорт.", "en": "7.41e: a root during Twin Gates cancels the warp." }
+  ]
+}

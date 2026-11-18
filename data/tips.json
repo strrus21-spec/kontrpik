@@ -1,0 +1,319 @@
+[
+ {
+  "c": "heroes",
+  "l": 2,
+  "r": "Все",
+  "t": "BKB не спасает от этих ульт",
+  "d": "Chronosphere, Black Hole, Duel, Fiend's Grip, Reverse Polarity и Doom бьют сквозь Black King Bar. Против них нужна позиция, а не кнопка.",
+  "te": "BKB won't save you from these",
+  "de": "Chronosphere, Black Hole, Duel, Fiend's Grip, Reverse Polarity and Doom go through Black King Bar. Against them you need positioning, not a button.",
+  "h": [
+   "Faceless Void",
+   "Enigma",
+   "Legion Commander",
+   "Bane",
+   "Magnus",
+   "Doom"
+  ]
+ },
+ {
+  "c": "heroes",
+  "l": 2,
+  "r": "Все",
+  "t": "Echo Slam сильнее от каждого юнита",
+  "d": "Не держи рядом иллюзии, призванных юнитов и крипов против Earthshaker. Каждый юнит в радиусе добавляет урон ульты.",
+  "te": "Each unit makes Echo Slam stronger",
+  "de": "Against Earthshaker, keep illusions, summons and creeps away from you. Every unit in range adds damage to his ultimate.",
+  "h": [
+   "Earthshaker"
+  ]
+ },
+ {
+  "c": "heroes",
+  "l": 1,
+  "r": "Все",
+  "t": "Ульта Zeus бьёт по всей карте",
+  "d": "С низким здоровьем не прячься в лесу от Zeus. Беги к фонтану или лечись сразу.",
+  "te": "Zeus's ultimate hits the whole map",
+  "de": "With low health, hiding in the trees from Zeus won't work. Head to the fountain or heal right away.",
+  "h": [
+   "Zeus"
+  ]
+ },
+ {
+  "c": "heroes",
+  "l": 1,
+  "r": "Все",
+  "t": "Против Pudge стой за крипами",
+  "d": "Хук цепляет первую цель. Держи своего крипа между собой и Pudge.",
+  "te": "Against Pudge, stand behind creeps",
+  "de": "Hook grabs the first target. Keep one of your creeps between you and Pudge.",
+  "h": [
+   "Pudge"
+  ]
+ },
+ {
+  "c": "heroes",
+  "l": 2,
+  "r": "Все",
+  "t": "Смерть от Reaper's Scythe дольше",
+  "d": "Ульта Necrophos увеличивает время возрождения. Если он рядом, держи золото на выкуп.",
+  "te": "Reaper's Scythe means a longer respawn",
+  "de": "Necrophos's ultimate adds to respawn time. When he's around, keep gold for buyback.",
+  "h": [
+   "Necrophos"
+  ]
+ },
+ {
+  "c": "heroes",
+  "l": 1,
+  "r": "Саппорт",
+  "t": "Sentry Ward видит мины",
+  "d": "Против Techies ставь Sentry на линию и у башен. Мины видно, и их можно сломать.",
+  "te": "Sentry Wards reveal mines",
+  "de": "Against Techies, put a Sentry on the lane and near towers. Mines become visible and you can destroy them.",
+  "h": [
+   "Techies"
+  ]
+ },
+ {
+  "c": "heroes",
+  "l": 2,
+  "r": "Все",
+  "t": "Break снимает пассивки",
+  "d": "Silver Edge выключает пассивные способности. Bristleback теряет защиту спиной, Spectre перестаёт отражать урон.",
+  "te": "Break removes passives",
+  "de": "Silver Edge disables passive abilities. Bristleback loses his back protection, Spectre stops reflecting damage.",
+  "h": [
+   "Bristleback",
+   "Spectre",
+   "Phantom Assassin",
+   "Slardar"
+  ]
+ },
+ {
+  "c": "heroes",
+  "l": 1,
+  "r": "Все",
+  "t": "Иллюзии — урон по площади",
+  "d": "Иллюзии получают больше урона. Против PL, Naga и CK бери способности и предметы с уроном по области.",
+  "te": "Illusions: hit them in an area",
+  "de": "Illusions take extra damage. Against PL, Naga and CK, use abilities and items that hit an area.",
+  "h": [
+   "Phantom Lancer",
+   "Naga Siren",
+   "Chaos Knight",
+   "Terrorblade"
+  ]
+ },
+ {
+  "c": "items",
+  "l": 2,
+  "r": "Все",
+  "t": "Manta уворачивает от снарядов",
+  "d": "Нажми Manta Style, когда в тебя летит стан-снаряд, например Storm Hammer. Снаряд пропадёт, а с тебя снимется замедление или немота.",
+  "te": "Manta dodges projectiles",
+  "de": "Press Manta Style while a stun projectile like Storm Hammer flies at you. The projectile is lost, and slows or silence are removed.",
+  "h": [
+   "Sven"
+  ]
+ },
+ {
+  "c": "items",
+  "l": 2,
+  "r": "Все",
+  "t": "Lotus Orb отражает ульту",
+  "d": "Повесь Lotus на союзника, на которого целятся. Hex, Doom или Laguna Blade полетят обратно во врага.",
+  "te": "Lotus Orb sends the spell back",
+  "de": "Put Lotus on the ally who is about to be targeted. Hex, Doom or Laguna Blade bounce back to the caster.",
+  "h": [
+   "Lion",
+   "Lina",
+   "Doom"
+  ]
+ },
+ {
+  "c": "items",
+  "l": 2,
+  "r": "Все",
+  "t": "Linken ломай дешёвым заклинанием",
+  "d": "Сначала кинь в цель любое слабое целевое заклинание. Сфера сработает, и сильная способность пройдёт.",
+  "te": "Pop Linken's with a cheap spell",
+  "de": "First throw any weak targeted spell at the hero. The sphere triggers, and your big ability goes through."
+ },
+ {
+  "c": "items",
+  "l": 1,
+  "r": "Все",
+  "p": true,
+  "t": "Refresher больше не обновляет предметы",
+  "d": "С 7.41 он перезаряжает только способности. Двойной BKB через Refresher не работает.",
+  "te": "Refresher no longer refreshes items",
+  "de": "Since 7.41 it only resets abilities. A second BKB through Refresher no longer works."
+ },
+ {
+  "c": "items",
+  "l": 1,
+  "r": "Все",
+  "p": true,
+  "t": "Shiva's Guard теперь про радиус",
+  "d": "В 7.41 Shiva увеличивает радиус твоих способностей и больше не режет лечение врагов.",
+  "te": "Shiva's Guard is now about area",
+  "de": "In 7.41 Shiva increases your ability area and no longer cuts enemy healing."
+ },
+ {
+  "c": "items",
+  "l": 1,
+  "r": "Все",
+  "p": true,
+  "t": "Blade Mail теперь через Splintmail",
+  "d": "В 7.41 Blade Mail собирается из Splintmail (+7 брони), а Arcane Boots — из Wizard Hat.",
+  "te": "Blade Mail now uses Splintmail",
+  "de": "In 7.41 Blade Mail builds from Splintmail (+7 armor), and Arcane Boots from Wizard Hat."
+ },
+ {
+  "c": "map",
+  "l": 2,
+  "r": "Все",
+  "t": "Денай свою башню",
+  "d": "Когда у твоей башни меньше 10% здоровья, добей её сам. Враги получат меньше золота.",
+  "te": "Deny your own tower",
+  "de": "When your tower drops under 10% health, finish it yourself. The enemy gets less gold."
+ },
+ {
+  "c": "map",
+  "l": 2,
+  "r": "Все",
+  "t": "Аегис можно денайнуть",
+  "d": "Если не успеваете забрать Аегис, ударь его. Враг не получит второй жизни.",
+  "te": "You can deny the Aegis",
+  "de": "If you can't pick up the Aegis in time, attack it. The enemy won't get a second life."
+ },
+ {
+  "c": "map",
+  "l": 1,
+  "r": "Все",
+  "t": "Стан прерывает телепорт",
+  "d": "Враг телепортируется? Оглуши его до конца канала, и он останется на месте.",
+  "te": "A stun cancels a teleport",
+  "de": "Enemy teleporting out? Stun him before the channel ends and he stays put."
+ },
+ {
+  "c": "map",
+  "l": 2,
+  "r": "Все",
+  "p": true,
+  "t": "Корень прерывает Twin Gates",
+  "d": "С 7.41e рут во время перехода через Twin Gates отменяет телепорт. Лови врага прямо у портала.",
+  "te": "A root cancels Twin Gates",
+  "de": "Since 7.41e a root during the Twin Gates channel cancels the warp. Catch enemies right at the portal."
+ },
+ {
+  "c": "map",
+  "l": 1,
+  "r": "Все",
+  "t": "Смок слетает рядом с врагом",
+  "d": "Smoke of Deceit пропадает, когда вражеский герой или башня подходят близко. Обходи их стороной.",
+  "te": "Smoke breaks near enemies",
+  "de": "Smoke of Deceit drops when an enemy hero or tower gets close. Walk around them."
+ },
+ {
+  "c": "line",
+  "l": 1,
+  "r": "Все",
+  "t": "Агр крипов: ударь и отойди",
+  "d": "Ударь вражеского героя и сразу отступи. Крипы пойдут за тобой, и линия сдвинется к твоей башне.",
+  "te": "Creep aggro: hit and step back",
+  "de": "Hit the enemy hero and back off right away. The creeps follow you and the lane moves toward your tower."
+ },
+ {
+  "c": "line",
+  "l": 1,
+  "r": "Все",
+  "t": "Сброс агра — атака по своему крипу",
+  "d": "Если по тебе бьют крипы, дай команду атаки по союзному крипу. Агр слетит мгновенно.",
+  "te": "Drop aggro by attacking your creep",
+  "de": "If creeps are hitting you, order an attack on an allied creep. The aggro resets instantly."
+ },
+ {
+  "c": "line",
+  "l": 2,
+  "r": "Саппорт",
+  "t": "Отдай танго союзнику",
+  "d": "Используй танго на союзника, и он получит его в инвентарь. Удобно, когда керри забыл купить реген.",
+  "te": "Give a tango to an ally",
+  "de": "Use a tango on an ally and it goes to their inventory. Handy when your carry forgot regen."
+ },
+ {
+  "c": "farm",
+  "l": 1,
+  "r": "Саппорт",
+  "t": "Стак на :53",
+  "d": "Ударь лагерь в 53–55 секунд и уведи нейтралов. В :00 появится вторая пачка.",
+  "te": "Stack at :53",
+  "de": "Hit the camp at :53–:55 and lead the neutrals away. A second group spawns at :00."
+ },
+ {
+  "c": "farm",
+  "l": 2,
+  "r": "Керри",
+  "t": "Стак древних для AoE-керри",
+  "d": "Двойной стак древних отдай герою с уроном по площади. Это быстрые уровни и предмет раньше врага.",
+  "te": "Stack ancients for an AoE carry",
+  "de": "Give a double ancient stack to a hero with area damage. Fast levels and an item before the enemy."
+ },
+ {
+  "c": "control",
+  "l": 1,
+  "r": "Все",
+  "t": "Двойное нажатие — каст на себя",
+  "d": "Дважды нажми клавишу предмета, например Glimmer Cape, чтобы применить его на себя.",
+  "te": "Double tap to self-cast",
+  "de": "Press an item key twice, Glimmer Cape for example, to use it on yourself."
+ },
+ {
+  "c": "control",
+  "l": 1,
+  "r": "Все",
+  "t": "Shift ставит команды в очередь",
+  "d": "Зажми Shift: телепорт, потом шаг, потом вард. Герой сделает всё сам по порядку.",
+  "te": "Shift queues commands",
+  "de": "Hold Shift: teleport, then move, then ward. The hero does it all in order."
+ },
+ {
+  "c": "control",
+  "l": 1,
+  "r": "Все",
+  "t": "Alt-клик пишет команде",
+  "d": "Alt-клик по способности или предмету сообщает в чат, готово ли оно или сколько ждать.",
+  "te": "Alt-click tells your team",
+  "de": "Alt-click an ability or item to post in chat whether it's ready or how long to wait."
+ },
+ {
+  "c": "control",
+  "l": 2,
+  "r": "Все",
+  "t": "Blink не дальше радиуса",
+  "d": "Клик за пределом дальности даёт прыжок короче максимума. Кликай внутри круга.",
+  "te": "Blink within range",
+  "de": "Clicking past max range gives a shorter jump. Click inside the circle."
+ },
+ {
+  "c": "draft",
+  "l": 1,
+  "r": "Все",
+  "t": "Бери контрпик последним",
+  "d": "Чем больше врагов выбрано, тем точнее контрпик. Блок выше считает его за тебя.",
+  "te": "Counterpick last",
+  "de": "The more enemies picked, the sharper the counter. The block above works it out for you."
+ },
+ {
+  "c": "draft",
+  "l": 2,
+  "r": "Все",
+  "t": "Первым — гибкого героя",
+  "d": "Ранний пик отдай герою на несколько позиций. Врагу сложнее ответить.",
+  "te": "First pick a flexible hero",
+  "de": "Spend an early pick on a hero who fits several positions. Harder for the enemy to answer."
+ }
+]

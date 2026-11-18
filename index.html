@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark light">
+<meta name="description" content="Подбор контрпика в Dota 2 по статистике матчей и сборник фишек. Counterpicks for Dota 2 based on match statistics.">
+<title>DotaPick — контрпик Dota 2</title>
+<link rel="icon" type="image/svg+xml" href="/icon.svg">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0d1014">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="DotaPick">
+<meta property="og:title" content="DotaPick — контрпик, мета, разбор матча Dota 2">
+<meta property="og:description" content="Подбор контрпика по статистике миллиона матчей, тир-лист, сборки предметов, разбор своих игр и фишки с анимациями.">
+<meta property="og:url" content="https://dotapick.pro/">
+<meta property="og:image" content="https://dotapick.pro/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:locale:alternate" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://dotapick.pro/og.jpg">
+<script>/* режим до отрисовки — без мигания: сохранённый выбор или настройка системы */
+try{var t=localStorage.getItem('kontrpik-theme');if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.dataset.theme=t}catch(e){document.documentElement.dataset.theme='dark'}</script>
+  <script type="module" crossorigin src="/assets/main-B3Q0Ml3S.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/room-BTRrKc_i.js">
+  <link rel="modulepreload" crossorigin href="/assets/html-Cme6zpfS.js">
+  <link rel="stylesheet" crossorigin href="/assets/room-CBXGnrQK.css">
+  <link rel="stylesheet" crossorigin href="/assets/html-DKzleZlO.css">
+  <link rel="stylesheet" crossorigin href="/assets/main-EcNpqVyd.css">
+  <link rel="stylesheet" crossorigin href="/assets/500-N6Hogaz1.css">
+</head>
+<body>
+<div class="bg-art" aria-hidden="true"></div>
+  <nav class="nav topbar" id="topbar" aria-label="Разделы" data-ta="navLabel"><a class="logo" id="home-link" href="#home" aria-label="На главную" data-ta="homeLabel" title="На главную"><svg class="logo-ic" width="40" height="40" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><defs><linearGradient id="lgC" gradientUnits="userSpaceOnUse" x1="0" y1="6" x2="0" y2="58"><stop offset="0" stop-color="#fff3cc"/><stop offset=".45" stop-color="#e9b64e"/><stop offset="1" stop-color="#8a5a14"/></linearGradient></defs><rect x="6" y="6" width="52" height="52" rx="7" fill="#0f0f15" stroke="url(#lgC)" stroke-width="2.6"/><g fill="none" stroke="url(#lgC)" stroke-linecap="round"><path d="M15 49V17q0-2 2-2h30" stroke-width="1.8" opacity=".6"/><path d="M15 49h32q2 0 2-2V17" stroke-width="1.8" opacity=".6"/><path d="M17 47 47 17" stroke-width="1.8" opacity=".6"/><path d="M10 22q14 4 22 10t22 10" stroke-width="3.2"/></g><circle cx="18" cy="46" r="3.4" fill="url(#lgC)"/><circle cx="46" cy="18" r="3.4" fill="#d9573a"/></svg></a><div class="tabs-nav"><a href="#counterpick"><span class="n">01</span><span data-t="nav1">Контрпик</span></a><a href="#meta"><span class="n">02</span><span data-t="nav3">Мета</span></a><a href="#match"><span class="n">03</span><span data-t="nav4">Разбор</span></a><a href="#tips-block"><span class="n">04</span><span data-t="nav2">Фишки</span></a><a href="#about"><span class="n">05</span><span data-t="nav5">О сайте</span></a></div><div class="nav-actions"><button class="prof-btn" id="prof-btn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="me"><svg class="prof-ic" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="8" r="4.2"/><path d="M3.5 21c.8-4.4 4.2-7 8.5-7s7.7 2.6 8.5 7z"/></svg></button><button class="install" id="install" hidden data-t="install">Установить</button><button class="theme-btn" id="theme-btn" type="button"><svg class="i-sun" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></svg><svg class="i-moon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.6A8.2 8.2 0 0 1 9.4 4a8.2 8.2 0 1 0 10.6 10.6Z"/></svg></button><div class="lang" role="group" aria-label="Language"><button data-lang="ru">RU</button><button data-lang="en">EN</button></div></div></nav>
+<div class="wrap">
+  <section id="home" class="wrap home" style="max-width:none;margin:0" aria-label="Главная" data-ta="homeLabel">
+  <div class="landing" id="landing">
+    <div class="scene" aria-hidden="true"><div class="scene-in" id="scene">
+      <i class="sc-glow sc-rad" style="--l:19%;--t:19%;--w:5%;--h:5%;--dl:.2s"></i>
+      <i class="sc-glow sc-rad" style="--l:19.5%;--t:26%;--w:10.5%;--h:9%"></i>
+      <i class="sc-glow sc-rad" style="--l:21.5%;--t:33.5%;--w:7%;--h:6%;--dl:.9s"></i>
+      <i class="sc-glow sc-rad sm" style="--l:26%;--t:29%;--w:3.4%;--h:6%;--dl:1.4s"></i>
+      <i class="sc-glow sc-rad sm" style="--l:26.2%;--t:40%;--w:3%;--h:6%;--dl:.5s"></i>
+      <i class="sc-glow sc-rad sm" style="--l:26.3%;--t:47%;--w:2.6%;--h:6%;--dl:1.8s"></i>
+      <i class="sc-glow sc-swirl" style="--l:21%;--t:52.5%;--w:10%;--h:8%"></i>
+      <i class="sc-glow sc-lava" style="--l:70%;--t:25%;--w:9%;--h:10%"></i>
+      <i class="sc-glow sc-lava" style="--l:71%;--t:31%;--w:8%;--h:9%;--dl:.7s"></i>
+      <i class="sc-glow sc-lava" style="--l:71.5%;--t:40%;--w:6%;--h:9%;--dl:1.3s"></i>
+      <i class="sc-glow sc-sun" style="--l:38%;--t:50%;--w:24%;--h:16%"></i>
+      <i class="sc-river"></i><i class="sc-glint"></i>
+    </div></div>
+    <div class="landing-in">
+      <h1 class="brand"><span data-t="h1a" class="h1a">Dota</span><span data-t="h1b" class="h1b">Pick</span></h1>
+      <p class="sub landing-sub" data-t="sub">Подбор контрпика по статистике матчей и сборник фишек, которые помогают выигрывать.</p>
+    </div>
+  </div>
+  </section>
+
+  <section id="counterpick" class="wrap" style="max-width:none;margin:0">
+  <div class="block-title" id="draft"><h2 class="big" data-t="cpTitle">Контрпик</h2><span class="sub" data-t="cpSub">Отметь врагов и союзников. Справа появятся герои, которые лучше всех играют против этого пика и сочетаются с твоей командой.</span></div>
+
+  <div class="compact-bar"><button class="share" id="compact-toggle" aria-pressed="false" data-t="compactOn">Компактный режим</button></div>
+  <div id="compact-top" class="compact-top" hidden></div>
+  <section class="board dota-draft" aria-label="Драфт" data-ta="draftLabel">
+    <div class="side ally team radiant">
+      <div class="side-head"><h2><span class="team-name" data-t="radiant">Силы Света</span><span class="team-sub" data-t="radiantSub">твоя команда</span></h2><button class="clear" data-clear="ally" data-t="clear">Очистить</button></div>
+      <div class="slots" id="slots-ally"></div>
+    </div>
+    <div class="draft-center">
+      <div class="vs-badge">VS</div>
+      <div class="side ban">
+        <div class="side-head"><h2 data-t="bans">Баны</h2><button class="clear" data-clear="ban" data-t="clear">Очистить</button></div>
+        <div class="slots" id="slots-ban"></div>
+      </div>
+    </div>
+    <div class="side enemy team dire">
+      <div class="side-head"><h2><span class="team-name" data-t="dire">Силы Тьмы</span><span class="team-sub"><span data-t="direSub">враги </span><span id="exampleTag" class="example" data-t="example" hidden>· пример пика</span></span></h2><button class="clear" data-clear="enemy" data-t="clear">Очистить</button></div>
+      <div class="slots" id="slots-enemy"></div>
+    </div>
+  </section>
+
+  <div class="main">
+    <section class="pool" aria-label="Герои" data-ta="heroesLabel">
+      <div class="tools">
+        <div class="mode" role="group" aria-label="Куда добавлять героя" data-ta="modeLabel">
+          <button id="m-enemy" class="m-enemy" aria-pressed="true" data-mode="enemy" data-t="mEnemy">Враг</button>
+          <button id="m-ally" class="m-ally" aria-pressed="false" data-mode="ally" data-t="mAlly">Союзник</button>
+          <button id="m-ban" class="m-ban" aria-pressed="false" data-mode="ban" data-t="mBan">Бан</button>
+          <button id="m-star" class="m-star" aria-pressed="false" data-mode="star" data-t="mStar">★ Мои</button>
+        </div>
+        <input id="q" type="search" data-tp="q" placeholder="Поиск: пудж, фантомка, Invoker…" aria-label="Поиск героя" data-ta="searchLabel">
+      </div>
+      <p class="note kbd-hint" data-t="kbdHint">Клавиши: / — поиск, 1–5 — позиция, 0 — любая, E, A, B — враг, союзник, бан.</p>
+      <div id="pool"></div>
+    </section>
+
+    <section class="results" aria-label="Рекомендации" data-ta="resultsLabel">
+      <div class="res-head">
+        <h2 data-t="best">Лучшие пики</h2>
+        <div class="tools">
+          <select id="src" aria-label="Статистика" data-ta="srcLabel"></select>
+          <select id="role" aria-label="Фильтр по роли" data-ta="roleLabel" hidden></select>
+          <button id="share" class="share" data-share data-t="copyLink">Скопировать ссылку</button>
+        </div>
+        <p id="share-msg" class="share-msg" role="status" hidden></p>
+      </div>
+      <div class="chips poschips" id="poschips" role="group" aria-label="Позиция" data-ta="posLabel"></div><p class="pos-legend" id="pos-legend"></p>
+      <div id="lane" class="bans lane" hidden></div>
+      <div class="legend" id="legend"></div>
+      <div id="bans" class="bans" hidden></div>
+      <div id="out"></div>
+      <div id="buy" class="bans buy" hidden></div>
+      <div id="vs-tips" class="vs-tips" hidden></div>
+      <p class="note" id="note"></p>
+    </section>
+  </div>
+  <details class="results stream" id="stream"><summary data-t="stH">Для стрима (OBS)</summary><div id="stream-body"></div></details>
+  </section>
+
+  <section id="meta" class="wrap" style="max-width:none;margin:0" aria-label="Мета" data-ta="metaLabel">
+    <div class="block-title"><h2 class="big" data-t="metaTitle">Мета</h2><span class="sub" data-t="metaSub">Сильнейшие герои сейчас: тир-лист по группе рангов и позиции, тренд за неделю и главное из патча.</span></div>
+    <div class="meta-grid">
+      <div class="results meta-main">
+        <div class="tools"><select id="meta-src" aria-label="Группа рангов" data-ta="metaSrcLabel"></select><input id="meta-q" type="search" data-tp="metaQ" placeholder="Найти героя…" aria-label="Найти героя…"></div>
+        <div class="chips poschips" id="meta-pos" role="group" aria-label="Позиция" data-ta="posLabel"></div>
+        <div id="meta-table"></div>
+        <p class="note" id="meta-note"></p>
+      </div>
+      <aside class="results patch-box" id="patch" hidden></aside>
+    </div>
+  </section>
+
+  <section id="match" class="wrap" style="max-width:none;margin:0" aria-label="Разбор матча" data-ta="matchLabel">
+    <div class="block-title"><h2 class="big" data-t="matchTitle">Разбор матча</h2><span class="sub" data-t="matchSub">Вставь номер матча или выбери из своих последних игр. Выводы — только из данных матча.</span></div>
+    <div class="results match-box">
+      <form class="me-form" id="match-form"><input id="match-id" type="text" inputmode="text" autocomplete="off" data-tp="matchInput" placeholder="Номер матча или ссылка Dotabuff, OpenDota" aria-label="Номер матча" data-ta="matchInput"><button type="submit" class="me-go" data-t="mLoadBtn">Разобрать</button><button type="button" class="share" id="match-recent"></button></form>
+      <div id="match-recent-list"></div>
+      <p id="match-status" class="match-status" role="status" hidden></p>
+      <div id="match-out"></div>
+    </div>
+  </section>
+
+  <section id="tips-block" class="wrap" style="max-width:none;margin:0" aria-label="Фишки" data-ta="tipsLabel">
+    <div class="block-title"><h2 class="big" data-t="tipsTitle">Фишки</h2><span class="sub" data-t="tipsSub">Короткие приёмы, которые знают не все. Метка 7.41 — про текущий патч.</span></div>
+    <div class="featured" id="featured"></div>
+    <div class="tips-head"><button class="share" id="quiz-open" data-t="qzOpenBtn">Викторина</button><div class="progress"><span class="progress-track"><span class="progress-fill" id="prog"></span></span><span id="prog-text"></span></div></div>
+    <div class="tips-tools">
+      <div class="chips" id="tip-cats" role="group" aria-label="Тема" data-ta="catLabel"></div>
+      <div class="tips-row"><div class="chips" id="tip-lvls" role="group" aria-label="Уровень" data-ta="lvlLabel"></div><input id="tq" type="search" data-tp="tq" placeholder="Найти фишку…" aria-label="Поиск по фишкам" data-ta="tqLabel"><label><input type="checkbox" id="hide-known"> <span data-t="hideKnown">скрыть изученные</span></label><span id="tip-count"></span></div>
+    </div>
+    <div class="tips" id="tips"></div>
+  </section>
+  <section id="about" class="wrap" style="max-width:none;margin:0" aria-label="О сайте" data-ta="aboutLabel" hidden>
+    <div class="block-title"><h2 class="big" data-t="abTitle">О сайте</h2><span class="sub" data-t="abSub">Кто мы и зачем этот сайт</span></div>
+    <div class="ab">
+      <article class="ab-letter">
+        <h3 data-t="abHello">Привет!</h3>
+        <p data-t="abP1">Я играю в Dota ещё с тех времён, когда она была картой в Warcraft III. Прошли тысячи матчей, патчи сменяли друг друга, а знакомое чувство осталось: идёт пик, таймер тикает, и непонятно, кого брать против такого состава и почему.</p>
+        <p data-t="abP2">DotaPick я сделал как проект для тех, кто любит эту игру так же, как я. Чтобы в момент пика быстро увидеть, кто действительно силён против врагов и подходит команде, а после игры спокойно разобрать матч и понять, где он был выигран или проигран.</p>
+        <p data-t="abP3">Здесь нет магии и «секретных билдов» — только статистика миллионов свежих матчей и честные выводы из твоей собственной игры. Сайт бесплатный, без регистрации и рекламы, и он растёт вместе с сообществом.</p>
+        <ul class="ab-points">
+          <li><b data-t="abPt1h">Пик</b><span data-t="abPt1">кого брать сейчас и почему — по цифрам, а не по ощущениям</span></li>
+          <li><b data-t="abPt2h">Разбор</b><span data-t="abPt2">что пошло не так в прошлой игре и что сделать иначе</span></li>
+          <li><b data-t="abPt3h">Рост</b><span data-t="abPt3">фишки и мета, чтобы каждая следующая игра была чуть увереннее</span></li>
+        </ul>
+        <p class="ab-sign"><span class="ab-nick">finik__1</span> · <span data-t="abSign">автор DotaPick</span></p>
+        <div class="ab-links">
+          <a class="ab-link tw" href="https://www.twitch.tv/finik__1" target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4.3 3 3 6.4v13.2h4.6V22h2.6l2.4-2.4h3.7l5-5V3H4.3Zm15.2 10.8-2.9 2.9H12l-2.4 2.4v-2.4H5.8V4.7h13.7v9.1ZM16.6 7.8h-1.7v5h1.7v-5Zm-4.6 0h-1.7v5H12v-5Z"/></svg><span>Twitch · finik__1</span></a>
+          <a class="ab-link st" href="https://steamcommunity.com/profiles/76561199422825012" target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-9.97 9.2l5.36 2.22a2.8 2.8 0 0 1 1.6-.5h.16l2.39-3.46v-.05a3.78 3.78 0 1 1 3.78 3.78h-.09l-3.4 2.43v.13a2.84 2.84 0 0 1-5.62.56L2.4 14.8A10 10 0 1 0 12 2Zm-4.73 15.2-1.23-.51a2.13 2.13 0 1 0 1.16-2.88l1.27.53a1.57 1.57 0 1 1-1.2 2.86Zm9.2-7.6a2.52 2.52 0 1 0-2.52 2.52 2.52 2.52 0 0 0 2.52-2.52Zm-4.4 0a1.89 1.89 0 1 1 1.88 1.89 1.89 1.89 0 0 1-1.88-1.89Z"/></svg><span>Steam</span></a>
+        </div>
+        <section class="ab-donate" aria-labelledby="ab-don-h">
+          <figure class="ab-qrbox"><img class="ab-qr" src="donate-usdt-trc20.svg" width="148" height="148" alt="QR: USDT TRC20" loading="lazy"><figcaption>USDT · TRC20</figcaption></figure>
+          <div class="ab-don-body">
+            <h4 id="ab-don-h" data-t="abDonH">Поддержать проект</h4>
+            <p data-t="abDon">Сайт бесплатный и без рекламы. Если он помог тебе выиграть — можно угостить автора: донат идёт на сервер, данные и новые функции.</p>
+            <p><a class="ab-link da" href="https://www.donationalerts.com/r/finik__1" target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 21.4 10.6 20C5.4 15.4 2 12.3 2 8.5A5.4 5.4 0 0 1 7.5 3c1.7 0 3.4.8 4.5 2.1A6 6 0 0 1 16.5 3 5.4 5.4 0 0 1 22 8.5c0 3.8-3.4 6.9-8.6 11.5L12 21.4Z"/></svg><span data-t="abDa">Донат картой — DonationAlerts</span></a></p>
+            <p class="ab-or" data-t="abOr">или криптой:</p>
+            <p class="ab-net"><b>USDT</b> · <span data-t="abNet">сеть</span> <b>TRC20 (Tron)</b></p>
+            <div class="ab-addr"><code id="ab-wallet">TB9RB31iwb2Jxztrv3uB3XaeFPaguHQeiG</code><button type="button" class="share" data-copy="ab-wallet" data-t="abCopy">Скопировать адрес</button></div>
+            <p class="ab-warn" data-t="abWarn">Отправляй только USDT в сети TRC20 — другие монеты и сети не дойдут.</p>
+            <span class="share-msg" id="ab-copied" role="status"></span>
+          </div>
+        </section>
+        <form class="ab-form" id="fb-form" novalidate>
+          <h4 data-t="fbH">Предложить идею или сообщить об ошибке</h4>
+          <p data-t="fbS">Письмо придёт автору на почту. Ответ — по контакту, если оставишь его.</p>
+          <label><span data-t="fbSubj">Тема</span><input id="fb-subject" name="subject" maxlength="120" required autocomplete="off"></label>
+          <label><span data-t="fbMsg">Описание</span><textarea id="fb-message" name="message" rows="5" maxlength="3000" required></textarea></label>
+          <label><span data-t="fbContact">Как с тобой связаться (необязательно): почта, Telegram, Discord</span><input id="fb-contact" name="contact" maxlength="120" autocomplete="email"></label>
+          <input type="checkbox" name="botcheck" class="fb-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <div class="fb-row"><button type="submit" class="me-go" id="fb-send" data-t="fbSend">Отправить</button><span class="fb-status" id="fb-status" role="status"></span></div>
+        </form>
+      </article>
+      <p class="ab-fine"><span data-t="abValve">Dota 2 — товарный знак Valve Corporation. DotaPick — фанатский проект и не связан с Valve.</span> <span data-t="abCredArt">Картина на фоне — </span><a href="https://eranfolio.com" target="_blank" rel="noopener">Eran Fowler</a>. <span data-t="abCredData">Статистика — </span><a href="https://www.opendota.com" target="_blank" rel="noopener">OpenDota</a>, Steam Web API. <span data-t="abUpd">Статистика обновлена:</span> <b id="ab-updated">—</b>.</p>
+    </div>
+  </section>
+
+</div>
+<div id="me" class="me-pop" role="dialog" aria-labelledby="me-title" hidden></div>
+<dialog id="quiz" class="hero-dlg quiz-dlg" aria-labelledby="quiz-title"><div id="quiz-body"></div></dialog>
+<dialog id="hero" class="hero-dlg" aria-labelledby="hero-title"><div id="hero-body"></div></dialog>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"ab487f05d8374196a14f962d54bd146c"}'></script>
+</body>
+</html>
