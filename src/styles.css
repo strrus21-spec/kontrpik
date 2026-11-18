@@ -1138,23 +1138,24 @@ input[type=search]:focus,select:focus,.me-form input:focus{outline:none;border-c
 .vt-code{font-family:var(--body)}
 .obs-btn{border-color:var(--gold);color:var(--gold)}
 
-/* ===== вкладка «О сайте» ===== */
-.ab{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:18px;width:100%}
-.ab-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-.ab-card{display:flex;flex-direction:column;gap:8px;padding:18px;border-radius:8px;text-decoration:none;color:var(--fg-2);
-  background:linear-gradient(180deg,var(--surf-a),var(--surf-b));border:1px solid var(--gold-line);box-shadow:var(--shadow);transition:border-color .2s,transform .2s}
-.ab-card:hover{border-color:var(--gold);transform:translateY(-2px)}
-.ab-card b{font:700 22px var(--serif);letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
-.ab-card span{font-size:15px;line-height:1.5}
-.ab-cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-.ab-box{display:flex;flex-direction:column;gap:10px;padding:18px 20px;border-radius:8px;background:linear-gradient(180deg,var(--surf-a),var(--surf-b));border:1px solid var(--gold-line);box-shadow:var(--shadow)}
-.ab-box h3{margin:0;font:700 20px var(--serif);letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
-.ab-box p{margin:0;font-size:15px;line-height:1.55;color:var(--fg-2)}
-.ab-box a:not(.share){color:var(--gold);text-underline-offset:3px}
-.ab-box .share{align-self:flex-start;text-decoration:none}
-.ab-upd b{color:var(--fg)}
-@media (max-width:1000px){.ab-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ab-cols{grid-template-columns:1fr}}
-@media (max-width:520px){.ab-grid{grid-template-columns:1fr}}
+/* ===== вкладка «О сайте»: письмо от автора ===== */
+.ab{max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:18px;width:100%}
+.ab-letter{position:relative;display:flex;flex-direction:column;gap:16px;padding:34px 40px 30px;border-radius:10px;
+  background:linear-gradient(180deg,var(--surf-a),var(--surf-b));border:1px solid var(--gold-line);box-shadow:var(--shadow)}
+.ab-letter::before,.ab-letter::after{content:"";position:absolute;top:-5px;width:9px;height:9px;transform:rotate(45deg);background:linear-gradient(135deg,#f0c35a,#8a6d33)}
+.ab-letter::before{left:24px}.ab-letter::after{right:24px}
+.ab-letter h3{margin:0;font:700 34px var(--serif);letter-spacing:.06em;color:var(--gold)}
+.ab-letter p{margin:0;font-size:17px;line-height:1.7;color:var(--fg-2)}
+.ab-letter p:first-of-type::first-letter{font:700 46px/1 var(--serif);float:left;margin:4px 8px 0 0;color:var(--gold)}
+.ab-points{list-style:none;margin:6px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.ab-points li{display:flex;flex-direction:column;gap:4px;padding:14px 16px;border-radius:8px;border:1px solid var(--line);background:color-mix(in srgb,var(--gold) 5%,transparent)}
+.ab-points b{font:700 18px var(--serif);letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+.ab-points span{font-size:14.5px;line-height:1.5;color:var(--fg-2)}
+.ab-sign{text-align:right;font:italic 600 19px var(--serif)!important;color:var(--fg)!important;letter-spacing:.03em}
+.ab-letter .share{text-decoration:none;white-space:normal;line-height:1.35}
+.ab-fine{margin:0;font-size:13px;line-height:1.6;color:var(--muted);text-align:center}
+.ab-fine a{color:var(--gold);text-underline-offset:3px}
+@media (max-width:700px){.ab-letter{padding:26px 20px 22px}.ab-letter h3{font-size:28px}.ab-letter p{font-size:16px}.ab-points{grid-template-columns:1fr}}
 /* телефон: 5 вкладок в одну строку */
 @media (max-width:700px){
   .nav.topbar .tabs-nav{flex-wrap:nowrap;justify-content:space-between;gap:0}
@@ -1163,4 +1164,4 @@ input[type=search]:focus,select:focus,.me-form input:focus{outline:none;border-c
   .nav.topbar .tabs-nav a[aria-current="page"]::after{left:5px;right:5px}
 }
 @media (max-width:360px){.nav.topbar .tabs-nav a{font-size:12.5px;padding:5px 3px;letter-spacing:.02em}}
-.ab-box .share{white-space:normal;line-height:1.35;text-align:left}
+.ab-letter .share{display:inline-block;align-self:flex-start;text-align:left}

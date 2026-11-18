@@ -148,33 +148,22 @@ try{var t=localStorage.getItem('kontrpik-theme');if(t!=='light'&&t!=='dark')t=ma
     <div class="tips" id="tips"></div>
   </section>
   <section id="about" class="wrap" style="max-width:none;margin:0" aria-label="О сайте" data-ta="aboutLabel" hidden>
-    <div class="block-title"><h2 class="big" data-t="abTitle">О сайте</h2><span class="sub" data-t="abSub">Бесплатный помощник для игроков Dota 2: кого пикнуть, кто сейчас силён и что пошло не так в твоём матче.</span></div>
+    <div class="block-title"><h2 class="big" data-t="abTitle">О сайте</h2><span class="sub" data-t="abSub">Кто мы и зачем этот сайт</span></div>
     <div class="ab">
-      <div class="ab-grid">
-        <a class="ab-card" href="#counterpick"><b data-t="nav1">Контрпик</b><span data-t="abCp">Отметь врагов и союзников — сайт покажет героев, которые чаще всего побеждают против этого пика и сочетаются с твоей командой. С учётом позиции и ранга.</span></a>
-        <a class="ab-card" href="#meta"><b data-t="nav3">Мета</b><span data-t="abMeta">Тир-лист героев по рангам и позициям, тренд за неделю, главное из патча и сборки предметов про-игроков.</span></a>
-        <a class="ab-card" href="#match"><b data-t="nav4">Разбор</b><span data-t="abMatch">Вставь номер матча — графики, тайминги предметов, карта с вардами и драками по минутам и конкретные советы с цифрами.</span></a>
-        <a class="ab-card" href="#tips-block"><b data-t="nav2">Фишки</b><span data-t="abTips">Короткие приёмы, которые знают не все, и викторина, чтобы проверить себя.</span></a>
-      </div>
-      <div class="ab-cols">
-        <div class="ab-box"><h3 data-t="abDataH">Откуда данные</h3>
-          <p data-t="abData1">Каждую ночь сайт берёт свежие рейтинговые матчи из OpenDota — больше миллиона игр за последние дни — и считает, кто против кого выигрывает чаще, чем ожидалось бы по общим винрейтам.</p>
-          <p data-t="abData2">Если OpenDota недоступен, статистика считается по матчам из Steam Web API, а разбивка по рангам — по последнему снимку OpenDota. Сайт не остаётся без данных.</p>
-          <p class="ab-upd"><span data-t="abUpd">Статистика обновлена:</span> <b id="ab-updated">—</b></p>
-        </div>
-        <div class="ab-box"><h3 data-t="abStreamH">Для стримеров</h3>
-          <p data-t="abStream">Оверлей для OBS показывает вражеский пик и топ-3 контрпика прямо на трансляции. Зрители голосуют за героя в чате (!1, !2, !3) или кликом на странице голосования — с телефона тоже.</p>
-          <a class="share" href="#counterpick" data-t="abStreamGo">Настроить оверлей</a>
-        </div>
-        <div class="ab-box"><h3 data-t="abPrivH">Без регистрации</h3>
-          <p data-t="abPriv">Аккаунт не нужен. Твой Steam ID, отмеченные герои и драфт хранятся только в твоём браузере. Счётчик посещений — без cookie и без слежки за отдельными людьми.</p>
-        </div>
-      </div>
-      <div class="ab-box ab-credits"><h3 data-t="abCredH">Благодарности</h3>
-        <p><span data-t="abCredArt">Картина на фоне — </span><a href="https://eranfolio.com" target="_blank" rel="noopener">Eran Fowler</a>. <span data-t="abCredData">Статистика — </span><a href="https://www.opendota.com" target="_blank" rel="noopener">OpenDota</a>, <a href="https://steamcommunity.com/dev" target="_blank" rel="noopener">Steam Web API</a>.</p>
-        <p class="bans-note" data-t="abValve">Dota 2 — товарный знак Valve Corporation. DotaPick — фанатский проект и не связан с Valve.</p>
+      <article class="ab-letter">
+        <h3 data-t="abHello">Привет!</h3>
+        <p data-t="abP1">Я играю в Dota ещё с тех времён, когда она была картой в Warcraft III. Прошли тысячи матчей, патчи сменяли друг друга, а знакомое чувство осталось: идёт пик, таймер тикает, и непонятно, кого брать против такого состава и почему.</p>
+        <p data-t="abP2">DotaPick я сделал как проект для тех, кто любит эту игру так же, как я. Чтобы в момент пика быстро увидеть, кто действительно силён против врагов и подходит команде, а после игры спокойно разобрать матч и понять, где он был выигран или проигран.</p>
+        <p data-t="abP3">Здесь нет магии и «секретных билдов» — только статистика миллионов свежих матчей и честные выводы из твоей собственной игры. Сайт бесплатный, без регистрации и рекламы, и он растёт вместе с сообществом.</p>
+        <ul class="ab-points">
+          <li><b data-t="abPt1h">Пик</b><span data-t="abPt1">кого брать сейчас и почему — по цифрам, а не по ощущениям</span></li>
+          <li><b data-t="abPt2h">Разбор</b><span data-t="abPt2">что пошло не так в прошлой игре и что сделать иначе</span></li>
+          <li><b data-t="abPt3h">Рост</b><span data-t="abPt3">фишки и мета, чтобы каждая следующая игра была чуть увереннее</span></li>
+        </ul>
+        <p class="ab-sign" data-t="abSign">— автор DotaPick</p>
         <p><a class="share" href="https://github.com/strrus21-spec/kontrpik/issues/new" target="_blank" rel="noopener" data-t="abIdea">Предложить идею или сообщить об ошибке</a></p>
-      </div>
+      </article>
+      <p class="ab-fine"><span data-t="abValve">Dota 2 — товарный знак Valve Corporation. DotaPick — фанатский проект и не связан с Valve.</span> <span data-t="abCredArt">Картина на фоне — </span><a href="https://eranfolio.com" target="_blank" rel="noopener">Eran Fowler</a>. <span data-t="abCredData">Статистика — </span><a href="https://www.opendota.com" target="_blank" rel="noopener">OpenDota</a>, Steam Web API. <span data-t="abUpd">Статистика обновлена:</span> <b id="ab-updated">—</b>.</p>
     </div>
   </section>
 
