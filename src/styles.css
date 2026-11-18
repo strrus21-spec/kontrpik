@@ -1165,3 +1165,10 @@ input[type=search]:focus,select:focus,.me-form input:focus{outline:none;border-c
 }
 @media (max-width:360px){.nav.topbar .tabs-nav a{font-size:12.5px;padding:5px 3px;letter-spacing:.02em}}
 .ab-letter .share{display:inline-block;align-self:flex-start;text-align:left}
+.ab-sign .ab-nick{font-style:normal;color:var(--gold)}
+.ab-sign::before{content:"— "}
+.ab-links{display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-end}
+.ab-link{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:6px;text-decoration:none;font-weight:600;font-size:15px;border:1px solid var(--line-2);color:var(--fg);background:var(--card);transition:border-color .2s,background .2s}
+.ab-link.tw{border-color:rgba(145,70,255,.55);color:#bf94ff}
+.ab-link.tw:hover{background:rgba(145,70,255,.14);border-color:#9146ff}
+[data-theme="light"] .ab-link.tw{color:#6b2fd6}
