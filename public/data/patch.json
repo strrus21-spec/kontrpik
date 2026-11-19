@@ -1,12 +1,12 @@
 {
-  "version": "7.41",
-  "url": "https://www.dota2.com/patches/7.41",
+  "version": "7.42",
+  "url": "https://www.dota2.com/patches/7.42",
   "items": [
-    { "ru": "Аспекты (facets) убраны из игры.", "en": "Facets are removed from the game." },
-    { "ru": "Девять новых предметов, среди них Shawl, Splintmail, Wizard Hat и Crella's Crozier.", "en": "Nine new items, including Shawl, Splintmail, Wizard Hat and Crella's Crozier." },
-    { "ru": "Refresher Orb перезаряжает только способности, предметы — нет.", "en": "Refresher Orb resets abilities only, not items." },
-    { "ru": "Shiva's Guard увеличивает радиус способностей и больше не режет лечение.", "en": "Shiva's Guard increases ability radius and no longer reduces healing." },
-    { "ru": "Blade Mail собирается из Splintmail, Arcane Boots — из Wizard Hat.", "en": "Blade Mail builds from Splintmail, Arcane Boots from Wizard Hat." },
-    { "ru": "7.41e: рут во время Twin Gates отменяет телепорт.", "en": "7.41e: a root during Twin Gates cancels the warp." }
+    { "ru": "Убраны Javelin, Khanda и Helm of the Overlord; добавлены Quarterstaff и шесть новых предметов.", "en": "Javelin, Khanda and Helm of the Overlord are removed; Quarterstaff and six new items are added." },
+    { "ru": "Торментор появляется на 15-й минуте и даёт Greater Horn of Battle — волну мега-крипов на все линии.", "en": "Tormentor spawns at 15:00 and drops Greater Horn of Battle, which sends Mega Creeps down every lane." },
+    { "ru": "Рошан с каждым убийством возрождается на минуту быстрее, но не быстрее 5 минут.", "en": "Roshan respawns a minute faster after each kill, down to a 5-minute minimum." },
+    { "ru": "Меньше золота с леса, вышек и ранних убийств, больше — с поздних волн крипов и поздних убийств.", "en": "Less gold from jungle, towers and early kills; more from late creep waves and late kills." },
+    { "ru": "Способности сквозь иммунитет к дебаффам больше не игнорируют его сопротивление магии.", "en": "Abilities that pierce debuff immunity no longer ignore its magic resistance." },
+    { "ru": "Переделаны Juggernaut, Meepo (теперь универсал), Chaos Knight, Lycan, Batrider, Nature's Prophet, Leshrac, Chen и Pugna.", "en": "Reworks for Juggernaut, Meepo (now Universal), Chaos Knight, Lycan, Batrider, Nature's Prophet, Leshrac, Chen and Pugna." }
   ]
 }

@@ -25,8 +25,8 @@ const list = wanted
 const out = list.map(h => {
   const p = heroProfile(stats, heroes, positions, h, 'all');
   return {
-    enemy: { name: h.name, render: slugOf(h.odId), games: games(h.i) },
-    counters: p.losesTo.filter(m => m.g >= 1500).slice(0, 3).map(m => ({ name: m.h.name, render: slugOf(m.h.odId), adv: +m.adv.toFixed(1), g: m.g, pos: mainPos(m.h, positions)[0] })),
+    enemy: { name: h.name, render: slugOf(h.odId ?? 0), games: games(h.i) },
+    counters: p.losesTo.filter(m => m.g >= 1500).slice(0, 3).map(m => ({ name: m.h.name, render: slugOf(m.h.odId ?? 0), adv: +m.adv.toFixed(1), g: m.g, pos: mainPos(m.h, positions)[0] })),
   };
 });
 const total = Object.values(stats.counts).reduce((a, b) => Math.max(a, b), 0);
