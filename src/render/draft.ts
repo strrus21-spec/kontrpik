@@ -48,7 +48,7 @@ export function renderSlots(x: Ctx) {
   // Закреплённая полоска пиков: видна, когда доска уехала вверх при прокрутке.
   const mini = (side: 'ally' | 'enemy') => {
     const ids = s[side], n = side === 'ally' ? 5 : 5;
-    let h = ids.map(id => `<button class="dm-h" data-hero="${id}" title="${esc(H[id].name)}"><img src="${esc(H[id].img)}" alt="" width="34" height="34"></button>`).join('');
+    let h = ids.map(id => `<button class="dm-h" data-hero="${id}" title="${esc(H[id].name)}" aria-label="${esc(H[id].name)}"><img src="${esc(H[id].img)}" alt="" width="34" height="34"></button>`).join('');
     for (let i = ids.length; i < n; i++) h += '<span class="dm-h dm-empty"></span>';
     return `<div class="dm-side dm-${side}">${h}</div>`;
   };
