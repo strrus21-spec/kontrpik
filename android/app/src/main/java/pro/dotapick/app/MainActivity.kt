@@ -70,7 +70,7 @@ class MainActivity : ComponentActivity() {
             cacheMode = WebSettings.LOAD_DEFAULT
             mediaPlaybackRequiresUserGesture = true
             // по этой метке сайт понимает, что открыт в приложении (нижнее меню, кнопки «Поделиться» и т. п.)
-            userAgentString = "$userAgentString DotaPickApp/${BuildConfig.VERSION_NAME}"
+            userAgentString = "$userAgentString DotaPickApp/${BuildConfig.VERSION_NAME}" + (if (BuildConfig.SELF_UPDATE) "" else " DotaPickPlay")
         }
         web.addJavascriptInterface(Bridge(), "DotaPickApp")
 
@@ -107,8 +107,13 @@ class MainActivity : ComponentActivity() {
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (offlineShown()) { finish(); return }
-                web.evaluateJavascript("(window.dpBack && window.dpBack()) ? 'site' : 'exit'") { r ->
-                    if (r?.contains("site") != true) finish()
+                // страница без dpBack (например, политика конфиденциальности) — обычный шаг назад
+                web.evaluateJavascript("window.dpBack ? (window.dpBack() ? 'site' : 'exit') : 'page'") { r ->
+                    when {
+                        r?.contains("site") == true -> {}
+                        r?.contains("page") == true && web.canGoBack() -> web.goBack()
+                        else -> finish()
+                    }
                 }
             }
         })
@@ -118,7 +123,7 @@ class MainActivity : ComponentActivity() {
         if (savedInstanceState != null) web.restoreState(savedInstanceState)
         else load(intent?.data?.takeIf { isOwn(it) }?.toString() ?: HOME)
 
-        checkUpdate()
+        if (BuildConfig.SELF_UPDATE) checkUpdate()   // в Google Play обновляет магазин
     }
 
     override fun onNewIntent(intent: Intent) {

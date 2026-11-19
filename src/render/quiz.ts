@@ -1,5 +1,6 @@
 // Викторина в <dialog>: 10 вопросов, рекорд в localStorage.
 import { t } from '../i18n.ts';
+import { inPlay } from '../app.ts';
 import { loadBest, makeQuiz, saveBest, type Question } from '../quiz.ts';
 import { counter } from '../scoring.ts';
 import type { AppData } from '../data.ts';
@@ -15,7 +16,7 @@ function boardHtml() {
   if (!roomEnabled) return '';
   const L = t();
   return `<section class="lb"><h3>${L.lbH}</h3>
-    ${saved ? '' : `<form class="me-form" id="lb-form"><input id="lb-name" type="text" maxlength="20" autocomplete="nickname" value="${esc(savedName())}" placeholder="${esc(L.lbName)}" aria-label="${esc(L.lbName)}"><button class="me-go" type="submit">${L.lbSave}</button></form>`}
+    ${saved || inPlay ? '' : `<form class="me-form" id="lb-form"><input id="lb-name" type="text" maxlength="20" autocomplete="nickname" value="${esc(savedName())}" placeholder="${esc(L.lbName)}" aria-label="${esc(L.lbName)}"><button class="me-go" type="submit">${L.lbSave}</button></form>`}
     ${lbMsg ? `<p class="bans-note" role="status">${esc(lbMsg)}</p>` : ''}
     ${board ? (board.length ? `<ol class="lb-list">${board.slice(0, 10).map(b => `<li><span>${esc(b.name)}</span><b>${b.score}</b></li>`).join('')}</ol>` : `<p class="bans-note">${L.lbEmpty}</p>`) : ''}</section>`;
 }

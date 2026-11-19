@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Политика конфиденциальности — DotaPick / Privacy Policy</title>
+<meta name="description" content="Какие данные обрабатывают сайт dotapick.pro и приложение DotaPick для Android.">
+<link rel="icon" href="favicon.png">
+<style>
+:root{--bg:#0d1014;--card:#151a20;--fg:#e9e2d0;--muted:#a59c88;--gold:#d9b25b;--line:rgba(217,178,91,.35)}
+@media (prefers-color-scheme:light){:root{--bg:#f4efe6;--card:#fffdf8;--fg:#1f1a12;--muted:#6b6250;--gold:#8a5a10;--line:rgba(138,90,16,.3)}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:760px;margin:0 auto;padding:28px 16px 48px}
+h1{font:600 28px/1.2 Georgia,serif;color:var(--gold);letter-spacing:.02em;margin:0 0 6px}
+h2{font:600 19px/1.3 Georgia,serif;color:var(--gold);margin:28px 0 8px}
+p,li{margin:0 0 10px}
+ul{padding-left:20px}
+.meta{color:var(--muted);font-size:14px}
+.lang{display:flex;gap:8px;margin:14px 0 22px}
+.lang a{border:1px solid var(--line);padding:6px 12px;border-radius:4px;color:var(--fg);text-decoration:none}
+section.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:18px 18px 8px;margin-bottom:22px}
+table{width:100%;border-collapse:collapse;font-size:15px;margin:6px 0 14px}
+th,td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+a{color:var(--gold)}
+</style>
+</head>
+<body>
+<main>
+<h1>Политика конфиденциальности</h1>
+<p class="meta">Сайт dotapick.pro и приложение DotaPick для Android · действует с 19 ноября 2026</p>
+<nav class="lang"><a href="#ru">Русский</a><a href="#en">English</a></nav>
+
+<section class="card" id="ru" lang="ru">
+<h2>Коротко</h2>
+<ul>
+<li>Регистрации и аккаунтов нет. Рекламы, платежей и рекламных идентификаторов нет.</li>
+<li>Настройки и выбор героев хранятся только на вашем устройстве.</li>
+<li>Данные уходят во внешние сервисы только когда вы сами вводите номер матча или профиля, отправляете сообщение через форму обратной связи или участвуете в голосовании стрима.</li>
+</ul>
+
+<h2>Что хранится на устройстве</h2>
+<p>В памяти браузера или приложения (localStorage): язык и тема, текущий драфт, отмеченные герои «★ Мои», введённый Steam ID / ID игрока Dota, просмотренные фишки и рекорд викторины, список открытых матчей, случайный анонимный идентификатор для голосования и код комнаты стрима. Эти данные не передаются нам. Удалить их можно, очистив данные сайта в браузере или данные приложения в настройках Android (или удалив приложение).</p>
+
+<h2>Что передаётся и кому</h2>
+<table>
+<tr><th>Когда</th><th>Что</th><th>Куда и зачем</th></tr>
+<tr><td>Вы вводите номер матча или ID/ссылку профиля</td><td>Номер матча, ID игрока</td><td>OpenDota (api.opendota.com) — получить публичную статистику матча и последних игр. Это публичные данные Dota 2.</td></tr>
+<tr><td>Вы отправляете форму «Обратная связь»</td><td>Тема, текст, контакт (если укажете)</td><td>Web3Forms (api.web3forms.com) пересылает сообщение автору на почту. Используется только для ответа и исправления ошибок.</td></tr>
+<tr><td>Вы создаёте комнату стрима или голосуете в ней</td><td>Код комнаты, ваш голос, анонимный идентификатор, IP-адрес</td><td>Сервер комнат DotaPick на Cloudflare Workers. IP-адрес используется только против накрутки голосов и удаляется при следующем голосовании в комнате.</td></tr>
+<tr><td>Вы записываете результат викторины в таблицу лидеров (только на сайте)</td><td>Имя, которое вы ввели, и результат</td><td>Сервер DotaPick на Cloudflare Workers; имя и результат видны всем в таблице лидеров.</td></tr>
+<tr><td>Любая загрузка страниц</td><td>Технические данные запроса (IP-адрес, тип браузера)</td><td>Хостинг GitHub Pages и сеть доставки изображений Valve (Steam CDN) получают их автоматически, как при открытии любого сайта.</td></tr>
+<tr><td>Посещение сайта в браузере (не в приложении)</td><td>Просмотры страниц без cookie</td><td>Cloudflare Web Analytics — общий подсчёт посещений. В приложении не используется.</td></tr>
+</table>
+<p>Мы не продаём данные и не передаём их для рекламы. Соединения защищены HTTPS.</p>
+
+<h2>Приложение для Android</h2>
+<p>Приложение открывает сайт dotapick.pro и хранит его копию для работы без интернета. Разрешения: доступ в интернет и проверка состояния сети. Картинку с итогом матча приложение создаёт только по вашей команде «Поделиться» и передаёт через стандартное меню Android.</p>
+
+<h2>Дети</h2>
+<p>Сервис рассчитан на игроков Dota 2 и не предназначен для детей младше 13 лет.</p>
+
+<h2>Удаление и вопросы</h2>
+<p>Данные на устройстве удаляются очисткой данных сайта/приложения. Чтобы удалить сообщение, отправленное через форму, или задать вопрос о данных, напишите через форму обратной связи на <a href="https://dotapick.pro/#about">dotapick.pro → О сайте</a>.</p>
+<p class="meta">DotaPick — фанатский проект, не связан с Valve. Dota 2 — товарный знак Valve Corporation.</p>
+</section>
+
+<section class="card" id="en" lang="en">
+<h1>Privacy Policy</h1>
+<p class="meta">dotapick.pro website and the DotaPick Android app · effective November 19, 2026</p>
+<h2>In short</h2>
+<ul>
+<li>No sign-up and no accounts. No ads, no payments, no advertising IDs.</li>
+<li>Your settings and hero selections are stored only on your device.</li>
+<li>Data goes to outside services only when you enter a match or profile ID, send a message through the feedback form, or take part in a stream vote.</li>
+</ul>
+<h2>Stored on your device</h2>
+<p>In browser/app storage (localStorage): language and theme, current draft, “★ Mine” heroes, the Steam ID / Dota player ID you entered, viewed tips and quiz record, recently opened matches, a random anonymous voting ID and a stream room code. This data is not sent to us. Remove it by clearing site data in your browser or app data in Android settings (or by uninstalling the app).</p>
+<h2>What is sent and to whom</h2>
+<table>
+<tr><th>When</th><th>What</th><th>Where and why</th></tr>
+<tr><td>You enter a match ID or a profile ID/link</td><td>Match ID, player ID</td><td>OpenDota (api.opendota.com) to fetch public match and recent-game stats. This is public Dota 2 data.</td></tr>
+<tr><td>You submit the feedback form</td><td>Subject, message, contact (optional)</td><td>Web3Forms (api.web3forms.com) forwards the message to the author by email. Used only to reply and fix issues.</td></tr>
+<tr><td>You create or vote in a stream room</td><td>Room code, your vote, anonymous ID, IP address</td><td>DotaPick room server on Cloudflare Workers. The IP address is used only against vote spam and is deleted when the room starts its next vote.</td></tr>
+<tr><td>You save a quiz result to the leaderboard (website only)</td><td>The name you typed and your score</td><td>DotaPick server on Cloudflare Workers; the name and score are shown publicly on the leaderboard.</td></tr>
+<tr><td>Any page load</td><td>Technical request data (IP address, browser type)</td><td>GitHub Pages hosting and Valve’s image CDN (Steam CDN) receive it automatically, as with any website.</td></tr>
+<tr><td>Visiting the website in a browser (not the app)</td><td>Cookie-free page views</td><td>Cloudflare Web Analytics for aggregate visit counts. Not used in the app.</td></tr>
+</table>
+<p>We do not sell data or share it for advertising. Connections use HTTPS.</p>
+<h2>Android app</h2>
+<p>The app opens dotapick.pro and keeps a copy for offline use. Permissions: internet access and network state. The match summary image is created only when you tap “Share” and is passed through the standard Android share menu.</p>
+<h2>Children</h2>
+<p>The service is made for Dota 2 players and is not directed to children under 13.</p>
+<h2>Deletion and questions</h2>
+<p>On-device data is removed by clearing site/app data. To delete a message you sent through the form or to ask about your data, write via the feedback form at <a href="https://dotapick.pro/#about">dotapick.pro → About</a>.</p>
+<p class="meta">DotaPick is a fan project, not affiliated with Valve. Dota 2 is a trademark of Valve Corporation.</p>
+</section>
+</main>
+</body>
+</html>

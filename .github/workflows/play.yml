@@ -1,0 +1,53 @@
+# Сборка для Google Play: AAB варианта play (без самообновления). Только артефакт — в магазин загружает издатель.
+# Подпись ключом загрузки — если заданы секреты PLAY_UPLOAD_KEYSTORE_B64, PLAY_UPLOAD_STORE_PASSWORD,
+# PLAY_UPLOAD_KEY_ALIAS, PLAY_UPLOAD_KEY_PASSWORD; иначе AAB неподписанный (его подписывает издатель).
+name: Google Play
+on:
+  workflow_dispatch:
+  push:
+    branches: [play-release]
+    paths: ['android/**', '.github/workflows/play.yml', 'src/**', 'index.html']
+
+permissions:
+  contents: read
+
+jobs:
+  aab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - name: Копия сайта для работы без интернета
+        run: |
+          if git fetch --depth=1 origin data; then git archive FETCH_HEAD | tar -x -C public; fi
+          npx vite build
+          rm -rf android/app/src/main/assets/site && mkdir -p android/app/src/main/assets
+          cp -r dist android/app/src/main/assets/site
+          rm -f android/app/src/main/assets/site/sw.js
+        env: { VITE_BASE: /, VITE_SITE_URL: 'https://dotapick.pro/', VITE_CF_BEACON: 'off' }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 17 }
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Ключ загрузки (если задан)
+        env: { KS: '${{ secrets.PLAY_UPLOAD_KEYSTORE_B64 }}' }
+        run: |
+          if [ -n "$KS" ]; then echo "$KS" | base64 -d > "$RUNNER_TEMP/upload.jks"; echo "UPLOAD_KEYSTORE=$RUNNER_TEMP/upload.jks" >> "$GITHUB_ENV"; echo "Подпись: ключ загрузки"; else echo "Ключа нет — AAB будет неподписанным"; fi
+      - name: Собрать AAB
+        working-directory: android
+        env:
+          VERSION_CODE: ${{ github.run_number }}
+          VERSION_NAME: 1.1.${{ github.run_number }}
+          UPLOAD_STORE_PASSWORD: ${{ secrets.PLAY_UPLOAD_STORE_PASSWORD }}
+          UPLOAD_KEY_ALIAS: ${{ secrets.PLAY_UPLOAD_KEY_ALIAS }}
+          UPLOAD_KEY_PASSWORD: ${{ secrets.PLAY_UPLOAD_KEY_PASSWORD }}
+        run: ./gradlew --no-daemon bundlePlayRelease
+      - name: Проверка манифеста
+        run: |
+          AAB=android/app/build/outputs/bundle/playRelease/app-play-release.aab
+          unzip -p "$AAB" base/manifest/AndroidManifest.xml | strings | grep -iE 'permission|targetSdk|versionCode' | sort -u || true
+          cp "$AAB" DotaPick-play-${{ github.run_number }}.aab
+      - uses: actions/upload-artifact@v4
+        with: { name: DotaPick-play-aab, path: 'DotaPick-play-*.aab' }

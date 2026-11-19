@@ -14,7 +14,8 @@ const analytics = (): Plugin => ({
   name: 'analytics',
   // оверлей для OBS не считаем: он открыт часами и исказил бы статистику
   transformIndexHtml: (html, ctx) => !/^[a-f0-9]{32}$/i.test(CF_BEACON) || process.env.STANDALONE || /overlay/.test(ctx.filename) ? html
-    : html.replace('</body>', `<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"${CF_BEACON}"}'></script>\n</body>`),
+    // в приложении DotaPick (метка DotaPickApp в User-Agent) счётчик не подключаем
+    : html.replace('</body>', `<script>if(!/DotaPickApp\\//.test(navigator.userAgent)){var b=document.createElement('script');b.defer=true;b.src='https://static.cloudflareinsights.com/beacon.min.js';b.setAttribute('data-cf-beacon','{"token":"${CF_BEACON}"}');document.body.appendChild(b)}</script>\n</body>`),
 });
 
 const spaFallback = (): Plugin => ({

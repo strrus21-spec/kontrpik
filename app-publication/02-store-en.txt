@@ -1,0 +1,29 @@
+[Title] (up to 30 characters)
+DotaPick: Counterpicks & Meta
+
+[Short description] (up to 80 characters)
+Who to pick vs the enemy: Dota 2 counterpicks from real match stats
+
+[Full description] (up to 4000 characters)
+DotaPick helps Dota 2 players pick a hero against the enemy draft. Mark the heroes the enemy picked and instantly see the best counterpicks based on real match statistics.
+
+Key features:
+• Counterpick. Mark enemy heroes, allies and bans. The app shows the heroes that win most often against this draft and fit your team, with their advantage and key items.
+• Your position and rank. Picks take your position (Pos 1–5) and rank group into account, from Herald to Immortal, or the pro scene.
+• Hero page. Positions, win rate by rank, who the hero counters and who counters him, best teammates and item builds.
+• Meta. Tier list by rank and position, weekly trend and the key changes of the latest patch.
+• Match review. Paste a match ID or Steam ID to see where the game slipped: lane, fights, vision, and your numbers compared with other players on the same hero.
+• Tips. Short animated tricks not everyone knows, plus a quiz.
+• For streamers: viewer voting for the pick and an OBS overlay.
+
+To get started, open Counterpick and mark the enemy heroes; recommendations appear right away.
+
+Internet is needed for fresh stats and match reviews. Offline, a built-in copy keeps counterpicks, meta and tips working with the last downloaded stats.
+No sign-up. Free, no ads, no purchases. Interface in English and Russian.
+
+Statistics come from open OpenDota data and the Steam Web API and are updated daily.
+DotaPick is a fan project and is not affiliated with Valve. Dota 2 is a trademark of Valve Corporation.
+Support: [contact agreed with the publisher]
+
+[First release]
+First DotaPick release for Android: counterpicks for the enemy draft, patch 7.42 meta, match review, tips and a quiz. Works offline with the last downloaded stats.

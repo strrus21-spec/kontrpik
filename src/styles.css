@@ -1278,3 +1278,6 @@ body:not([data-tab="counterpick"]) .draft-mini,body.compact .draft-mini{display:
 /* версия приложения внизу */
 .app-ver{margin:4px auto 12px;text-align:center;font-size:12px;color:var(--muted);letter-spacing:.04em}
 .app-ver[hidden]{display:none}
+
+/* сборка Google Play: без донатов (оплата вне магазина) */
+html.in-play .ab-donate{display:none}

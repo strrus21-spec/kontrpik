@@ -7,6 +7,9 @@ const bridge = (): Bridge | null => (globalThis as { DotaPickApp?: Bridge }).Dot
 
 export const inApp = /DotaPickApp\//.test(navigator.userAgent);
 if (inApp) document.documentElement.classList.add('in-app');
+/** Сборка из Google Play: без донатов и публичной таблицы лидеров (правила магазина). */
+export const inPlay = /DotaPickPlay/.test(navigator.userAgent);
+if (inPlay) document.documentElement.classList.add('in-play');
 
 /** Поделиться ссылкой: в приложении — системное меню Android, иначе — меню браузера; false — не получилось. */
 export async function shareLink(text: string, url: string): Promise<boolean> {

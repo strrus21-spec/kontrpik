@@ -34,10 +34,10 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - name: Собрать APK
         working-directory: android
-        run: ./gradlew --no-daemon assembleRelease
+        run: ./gradlew --no-daemon assembleSideloadRelease
       - name: APK и version.json
         run: |
-          cp android/app/build/outputs/apk/release/app-release.apk DotaPick.apk
+          cp android/app/build/outputs/apk/sideload/release/app-sideload-release.apk DotaPick.apk
           echo "{\"versionCode\": ${{ github.run_number }}, \"versionName\": \"1.0.${{ github.run_number }}\"}" > version.json
       - uses: actions/upload-artifact@v4
         with: { name: DotaPick-apk, path: DotaPick.apk }
