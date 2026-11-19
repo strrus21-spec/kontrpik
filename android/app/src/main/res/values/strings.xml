@@ -2,6 +2,11 @@
 <resources>
     <string name="app_name">DotaPick</string>
     <string name="offline_title">Нет подключения</string>
-    <string name="offline_text">DotaPick нужен интернет: статистика и разбор матчей приходят с сайта.</string>
+    <string name="offline_text">Это первый запуск без интернета, и сохранённых данных пока нет. Подключись один раз — дальше DotaPick будет работать и офлайн.</string>
     <string name="retry">Повторить</string>
+    <string name="update_title">Есть новая версия DotaPick</string>
+    <string name="update_text">Доступна версия %1$s. Скачать и установить поверх текущей? Профиль и настройки сохранятся.</string>
+    <string name="update_go">Скачать</string>
+    <string name="update_later">Позже</string>
+    <string name="saved_to_gallery">Сохранено в Галерею → DotaPick</string>
 </resources>

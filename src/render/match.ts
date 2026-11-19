@@ -9,6 +9,7 @@ import type { Hero } from '../types.ts';
 import { $, esc } from './html.ts';
 import { positionOf } from '../matchx.ts';
 import { HERO_NPC } from '../heroNpc.ts';
+import { isOffline, rememberMatch, saveImage, seenMatches, shareLink } from '../app.ts';
 import { mapFrame } from './matchx.ts';
 import { damageBlock, deathsBlock, fightsBlock, historyBlock, itemsBlock, laneBlock, posBlock, shareCard, statsBlock, summaryBlock, teamsBlock, tipsBlock, type MxCtx } from './matchx.ts';
 import { loadHistory, summarize, type HistSummary } from '../history.ts';
@@ -54,7 +55,13 @@ export function renderMatch(x: Ctx) {
     const h = heroOf(x, r.hero_id);
     return `<button class="m-rec ${won(r) ? 'w' : 'l'}" data-mid="${r.match_id}" data-slot="${r.player_slot}">${icon(h)}<span>${esc(h?.name || '?')}</span><b>${r.kills}/${r.deaths}/${r.assists}</b><small>${won(r) ? L.mWin : L.mLoss} · ${dateOne(LANG, r.start_time)}</small></button>`;
   }).join('')}</div>` : '');
+  const seen = isOffline() ? seenMatches() : [];
+  if (seen.length) list.innerHTML += `<h3 class="m-h">${L.mSeenH}</h3><div class="m-recent">${seen.map(r => {
+    const h = heroOf(x, r.hero);
+    return `<button class="m-rec ${r.win ? 'w' : 'l'}" data-mid="${r.id}" data-slot="${r.slot ?? ''}">${icon(h)}<span>${esc(h?.name || '?')}</span><b>#${r.id}</b><small>${r.win ? L.mWin : L.mLoss} · ${dateOne(LANG, Math.floor(r.at / 1000))}</small></button>`;
+  }).join('')}</div>`;
   const out = $('match-out');
+  if (!current && isOffline() && !$('match-status').textContent) status(L.mOffline);
   if (!current) { out.innerHTML = ''; return; }
   const m = current.match;
   const p = current.slot !== null ? m.players.find(pl => pl.player_slot === current!.slot) : undefined;
@@ -89,10 +96,12 @@ async function analyze(x: Ctx, id: number, slot: number | null, push = true) {
   try { od = await odHeroes(); } catch { od = null; }
   const r = await loadParsed(id, { onProgress: s => { if (my === runId) status(t().mParsing(mmss(s))); } });
   if (my !== runId) return;
-  if (!r.ok) { status(r.reason === 'notFound' ? L.mNotFound : r.reason === 'timeout' ? L.mTimeout : L.mNet, true); return; }
+  if (!r.ok) { status(r.reason === 'notFound' ? L.mNotFound : r.reason === 'timeout' ? L.mTimeout : isOffline() ? L.mOffline : L.mNet, true); renderMatch(x); return; }
   status(null);
   const mine = me.player ? r.match.players.find(p => p.account_id === me.player!.id) : undefined;
   current = { match: r.match, slot: slot ?? mine?.player_slot ?? null };
+  { const pl = r.match.players.find(p => p.player_slot === current!.slot) ?? r.match.players[0];
+    rememberMatch({ id, slot: current.slot, hero: pl.hero_id, win: r.match.radiant_win === isRadiant(pl), at: Date.now() }); }
   renderMatch(x);
   // Пока шла загрузка, игрок мог уйти на другую вкладку — не перетаскиваем его обратно.
   if (push && currentTab() === 'match') updateUrl();
@@ -105,6 +114,9 @@ function updateUrl() {
 }
 
 export function bindMatch(x: Ctx) {
+  // интернет пропал или появился — обновить подсказку и список «открытые раньше»
+  addEventListener('offline', () => renderMatch(x));
+  addEventListener('online', () => { if ($('match-status').textContent === t().mOffline) status(null); renderMatch(x); });
   $('match-form').addEventListener('submit', e => {
     e.preventDefault();
     const id = parseMatchId(($('match-id') as HTMLInputElement).value);
@@ -149,7 +161,7 @@ export function bindMatch(x: Ctx) {
   $('match').addEventListener('click', async e => {
     const b = (e.target as Element).closest<HTMLElement>('[data-mid],[data-pslot],[data-mshare],[data-mother],[data-mcard]'); if (!b) return;
     e.stopPropagation();
-    if (b.dataset.mid) { ($('match-id') as HTMLInputElement).value = b.dataset.mid; void analyze(x, +b.dataset.mid, +b.dataset.slot!); }
+    if (b.dataset.mid) { ($('match-id') as HTMLInputElement).value = b.dataset.mid; void analyze(x, +b.dataset.mid, b.dataset.slot ? +b.dataset.slot : null); }
     else if (b.dataset.pslot && current) {
       current.slot = +b.dataset.pslot; renderMatch(x); updateUrl();
       // из таблицы команд — к началу разбора; из прилипающей полоски — остаёмся на том же месте
@@ -161,6 +173,7 @@ export function bindMatch(x: Ctx) {
       const m = current.match, p = m.players.find(pl => pl.player_slot === current!.slot); if (!p) return;
       const blob = await shareCard(m, p, { heroOf: id => heroOf(x, id), heroByNpc: n => heroByNpc(x, n), items: x.data.items }, m.radiant_win === isRadiant(p));
       if (!blob) return;
+      if (await saveImage(blob, `dotapick-match-${m.match_id}.png`)) return;   // приложение: Галерея + «Поделиться»
       const file = new File([blob], `match-${m.match_id}.png`, { type: 'image/png' });
       const nav = navigator as Navigator & { canShare?: (d: unknown) => boolean };
       if (nav.canShare?.({ files: [file] })) { try { await navigator.share({ files: [file] }); return; } catch { /* отмена */ } }
@@ -171,6 +184,8 @@ export function bindMatch(x: Ctx) {
     else if (b.dataset.mshare !== undefined && current) {
       updateUrl();
       const url = location.origin + location.pathname + location.search, msg = $('m-share-msg');
+      const title = document.querySelector('#match-out .m-title strong')?.textContent || '';
+      if (document.documentElement.classList.contains('in-app') && await shareLink(`DotaPick — ${title}`, url)) return;
       try { await navigator.clipboard.writeText(url); msg.textContent = t().copied; } catch { msg.textContent = url; }
     }
   });

@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="offline_title">No connection</string>
-    <string name="offline_text">DotaPick needs the internet: stats and match analysis come from the website.</string>
+    <string name="offline_text">This is the first launch without internet and nothing is saved yet. Connect once — after that DotaPick works offline too.</string>
     <string name="retry">Retry</string>
+    <string name="update_title">A new version of DotaPick is available</string>
+    <string name="update_text">Version %1$s is out. Download and install it over the current one? Your profile and settings stay.</string>
+    <string name="update_go">Download</string>
+    <string name="update_later">Later</string>
+    <string name="saved_to_gallery">Saved to Gallery → DotaPick</string>
 </resources>
