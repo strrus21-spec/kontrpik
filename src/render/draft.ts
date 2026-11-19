@@ -45,6 +45,14 @@ export function renderSlots(x: Ctx) {
     $('slots-' + side).innerHTML = html;
   }
   $('exampleTag').hidden = !s.example;
+  // Закреплённая полоска пиков: видна, когда доска уехала вверх при прокрутке.
+  const mini = (side: 'ally' | 'enemy') => {
+    const ids = s[side], n = side === 'ally' ? 5 : 5;
+    let h = ids.map(id => `<button class="dm-h" data-hero="${id}" title="${esc(H[id].name)}"><img src="${esc(H[id].img)}" alt="" width="34" height="34"></button>`).join('');
+    for (let i = ids.length; i < n; i++) h += '<span class="dm-h dm-empty"></span>';
+    return `<div class="dm-side dm-${side}">${h}</div>`;
+  };
+  $('draft-mini').innerHTML = `${mini('ally')}<b class="dm-vs">VS</b>${mini('enemy')}`;
 }
 
 export function renderPool(x: Ctx) {
@@ -223,8 +231,20 @@ async function copyLink(x: Ctx, btn: HTMLButtonElement) {
   clearTimeout(shareTimer); shareTimer = window.setTimeout(() => { if (msg.textContent === L.copied) msg.hidden = true; }, 2500);
 }
 
+function bindMini() {
+  const board = document.querySelector<HTMLElement>('.dota-draft'), mini = $('draft-mini');
+  if (!board || !('IntersectionObserver' in window)) return;
+  const bar = document.querySelector<HTMLElement>('.nav.topbar');
+  new IntersectionObserver(([e]) => {
+    const show = !e.isIntersecting && e.boundingClientRect.bottom < 120;
+    if (show) mini.style.top = Math.round(bar?.getBoundingClientRect().bottom ?? 0) + 'px';
+    mini.classList.toggle('on', show);
+  }, { rootMargin: '-110px 0px 0px 0px' }).observe(board);
+}
+
 export function bindDraft(x: Ctx) {
   const s = x.state;
+  bindMini();
   const commit = () => { save(x); renderDraft(x); };
   $('bans').addEventListener('click', e => {
     const b = (e.target as Element).closest<HTMLElement>('[data-ban]'); if (!b) return;

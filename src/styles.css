@@ -1249,3 +1249,26 @@ html.in-app #offline-bar{bottom:calc(84px + env(safe-area-inset-bottom,0px))}
 
 /* приложение: размытие верхней полосы ломало закрепление нижнего меню (fixed внутри blur) */
 html.in-app .nav.topbar,html.in-app .nav.topbar.solid{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;transform:none!important;filter:none!important}
+
+/* VS на телефоне — тонкая черта между командами, а не блок после колонок */
+@media (max-width:880px){
+  .draft-center{display:contents}
+  .dota-draft .team.radiant{order:1} .dota-draft .vs-badge{order:2} .dota-draft .team.dire{order:3} .dota-draft .side.ban{order:4}
+  .dota-draft .vs-badge{display:flex;align-items:center;gap:12px;font-size:18px;padding:0;margin:-4px 0;background:none!important;border:0!important;box-shadow:none!important;letter-spacing:.15em}
+  .dota-draft .vs-badge::before,.dota-draft .vs-badge::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold-dim))}
+  .dota-draft .vs-badge::after{background:linear-gradient(90deg,var(--gold-dim),transparent)}
+}
+/* закреплённая полоска пиков при прокрутке */
+.draft-mini{position:fixed;left:0;right:0;z-index:15;display:flex;align-items:center;justify-content:center;gap:10px;padding:6px max(10px,calc((100vw - 1240px)/2));
+  background:#0b0d10;border-bottom:1px solid var(--gold-dim);box-shadow:0 6px 16px rgba(0,0,0,.45);
+  transform:translateY(-130%);opacity:0;pointer-events:none;transition:transform .2s,opacity .2s}
+.draft-mini.on{transform:none;opacity:1;pointer-events:auto}
+body:not([data-tab="counterpick"]) .draft-mini,body.compact .draft-mini{display:none}
+.dm-side{display:flex;gap:4px;flex:0 1 auto;min-width:0}
+.dm-h{width:36px;height:36px;padding:0;border-radius:3px;overflow:hidden;background:#0c0f12;border:1px solid var(--radiant);cursor:pointer;flex:0 1 36px;min-width:0}
+.dm-enemy{flex-direction:row-reverse} .dm-enemy .dm-h{border-color:var(--dire)}
+.dm-h img{width:100%;height:100%;object-fit:cover;display:block}
+.dm-h.dm-empty{border-style:dashed;opacity:.45;background:transparent;cursor:default}
+.dm-vs{font-family:var(--serif);font-size:16px;letter-spacing:.12em;color:var(--title);flex:none}
+@media (prefers-reduced-motion:reduce){.draft-mini{transition:none}}
+[data-theme="light"] .draft-mini{background:#faf6ee;border-bottom-color:rgba(143,90,0,.28);box-shadow:0 6px 20px -14px rgba(70,50,20,.5)}
