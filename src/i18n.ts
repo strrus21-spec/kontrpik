@@ -111,6 +111,10 @@ const ru = {
   patchH: (v: string) => `Что изменилось в патче ${v}`, patchLink: 'Официальные заметки патча',
   sortBy: (c: string) => `Сортировать: ${c}`,
   // этап 5: разбор матча
+  offBar: (d: string) => `Нет интернета — показаны сохранённые данные${d ? ' от ' + d : ''}`,
+  mOffline: 'Нет интернета. Новый матч разобрать не получится, но разборы, которые ты уже открывал, работают и без сети.',
+  mSeenH: 'Открытые раньше — работают без интернета', fbOffline: 'Нет интернета — отправь, когда появится связь.',
+  appQuickH: 'Что делаем?',
   mLoad: 'Разобрать', mRecent: 'Мои последние игры', mRecentH: 'Последние игры', mNeedMe: 'Чтобы видеть свои игры, загрузи профиль: кнопка с силуэтом в верхнем меню.',
   mBad: 'Не понимаю номер матча. Вставь число или ссылку на матч с Dotabuff или OpenDota.',
   mLoading: 'Загружаю матч…', mParsing: (t: string) => `Матч обрабатывается, обычно 1–3 минуты. Прошло ${t}.`,
@@ -214,6 +218,7 @@ const ru = {
   copyLink: 'Скопировать ссылку', copied: 'Ссылка скопирована', copyFail: 'Скопируй ссылку вручную:',
   st: {
     title: 'DotaPick — контрпик Dota 2', h1a: 'Dota', h1b: 'Pick', sub: 'Подбор контрпика по статистике матчей и сборник фишек, которые помогают выигрывать.',
+    aqCp: 'Кого пикнуть против врагов', aqMatch: 'Мои последние игры и разбор матча', aqMeta: 'Кто силён в этом патче', aqTips: 'Приёмы и викторина',
     nav5: 'О сайте', aboutLabel: 'О сайте', abTitle: 'О сайте', abSub: 'Кто мы и зачем этот сайт',
     abHello: 'Привет!',
     abP1: 'Я играю в Dota ещё с тех времён, когда она была картой в Warcraft III. Прошли тысячи матчей, патчи сменяли друг друга, а знакомое чувство осталось: идёт пик, таймер тикает, и непонятно, кого брать против такого состава и почему.',
@@ -333,6 +338,10 @@ const en: Dict = {
   trendSince: d => `▲▼: win rate change since ${d}.`,
   patchH: v => `What changed in patch ${v}`, patchLink: 'Official patch notes',
   sortBy: c => `Sort by ${c}`,
+  offBar: d => `No internet — showing saved data${d ? ' from ' + d : ''}`,
+  mOffline: 'No internet. A new match cannot be analyzed, but the matches you opened before still work offline.',
+  mSeenH: 'Opened before — work offline', fbOffline: 'No internet — send it once you are back online.',
+  appQuickH: 'What are we doing?',
   mLoad: 'Analyze', mRecent: 'My recent games', mRecentH: 'Recent games', mNeedMe: 'To see your games, load your profile: the profile button in the top menu.',
   mBad: 'Can’t read the match ID. Paste a number or a Dotabuff or OpenDota match link.',
   mLoading: 'Loading the match…', mParsing: t => `The match is being parsed, usually 1–3 minutes. ${t} elapsed.`,
@@ -430,6 +439,7 @@ const en: Dict = {
   copyLink: 'Copy link', copied: 'Link copied', copyFail: 'Copy the link manually:',
   st: {
     title: 'DotaPick — Dota 2 counterpicks', h1a: 'Dota', h1b: 'Pick', sub: 'Counterpicks based on match statistics and a collection of tips that help you win.',
+    aqCp: 'Whom to pick against the enemies', aqMatch: 'My recent games and match analysis', aqMeta: 'Who is strong this patch', aqTips: 'Tricks and a quiz',
     nav5: 'About', aboutLabel: 'About', abTitle: 'About', abSub: 'Who we are and why this site exists',
     abHello: 'Hi!',
     abP1: 'I have been playing Dota since it was a custom map in Warcraft III. Thousands of matches and countless patches later, one feeling never went away: the draft is on, the timer is ticking, and you are not sure whom to pick against that lineup — or why.',

@@ -1,0 +1,103 @@
+# Android-приложение DotaPick (папка android/): сборка APK с вшитой копией сайта (работа без интернета),
+# релиз на GitHub (APK + version.json для проверки обновлений) и скриншоты с эмулятора.
+name: Android
+on:
+  push:
+    branches: [main, android-app]
+    paths: ['android/**', '.github/workflows/android.yml', 'src/**', 'index.html']
+  workflow_dispatch:
+  schedule:
+    - cron: '41 5 * * 1'     # раз в неделю — свежая вшитая копия сайта и статистики
+
+permissions:
+  contents: write
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - name: Копия сайта для работы без интернета (с последней статистикой)
+        run: |
+          if git fetch --depth=1 origin data; then git archive FETCH_HEAD | tar -x -C public; fi
+          npx vite build
+          rm -rf android/app/src/main/assets/site && mkdir -p android/app/src/main/assets
+          cp -r dist android/app/src/main/assets/site
+          rm -f android/app/src/main/assets/site/sw.js
+        env: { VITE_BASE: /, VITE_SITE_URL: 'https://dotapick.pro/', VITE_CF_BEACON: 'off' }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 17 }
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Собрать APK
+        working-directory: android
+        run: ./gradlew --no-daemon assembleRelease
+      - name: APK и version.json
+        run: |
+          cp android/app/build/outputs/apk/release/app-release.apk DotaPick.apk
+          echo "{\"versionCode\": ${{ github.run_number }}, \"versionName\": \"1.0.${{ github.run_number }}\"}" > version.json
+      - uses: actions/upload-artifact@v4
+        with: { name: DotaPick-apk, path: DotaPick.apk }
+      - name: Релиз «Android — последняя версия»
+        env: { GH_TOKEN: '${{ github.token }}' }
+        run: |
+          TAG=android-latest
+          NOTES="DotaPick для Android 1.0.${{ github.run_number }} ($(date -u +%F)). Установка: скачать DotaPick.apk на телефон и открыть."
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" DotaPick.apk version.json --clobber
+            gh release edit "$TAG" --notes "$NOTES" --target "${{ github.sha }}"
+          else
+            gh release create "$TAG" DotaPick.apk version.json --title "DotaPick для Android" --notes "$NOTES" --target "${{ github.sha }}" --prerelease
+          fi
+
+  screenshots:
+    needs: apk
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { name: DotaPick-apk }
+      - name: Включить KVM для эмулятора
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules && sudo udevadm trigger --name-match=kvm
+      - name: 'Эмулятор — первый запуск без интернета, затем с интернетом'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          script: |
+            adb install -r DotaPick.apk
+            adb shell settings put system system_locales ru-RU || true
+            adb shell svc wifi disable; adb shell svc data disable; adb shell cmd connectivity airplane-mode enable || true
+            sleep 3
+            adb shell am start -n pro.dotapick.app/.MainActivity
+            sleep 20
+            adb exec-out screencap -p > off-1-home.png
+            adb shell am start -a android.intent.action.VIEW -d https://dotapick.pro/#counterpick pro.dotapick.app
+            sleep 8
+            adb exec-out screencap -p > off-2-counterpick.png
+            adb shell am start -a android.intent.action.VIEW -d https://dotapick.pro/#meta pro.dotapick.app
+            sleep 8
+            adb exec-out screencap -p > off-3-meta.png
+            adb shell am start -a android.intent.action.VIEW -d https://dotapick.pro/#match pro.dotapick.app
+            sleep 8
+            adb exec-out screencap -p > off-4-match.png
+            adb shell cmd connectivity airplane-mode disable || true; adb shell svc wifi enable; adb shell svc data enable
+            sleep 10
+            adb shell am force-stop pro.dotapick.app
+            adb shell am start -n pro.dotapick.app/.MainActivity
+            sleep 25
+            adb exec-out screencap -p > on-1-home.png
+      - name: Скриншоты в релиз
+        env: { GH_TOKEN: '${{ github.token }}', GH_REPO: '${{ github.repository }}' }
+        run: |
+          gh release delete-asset android-latest shot-home.png -y || true
+          for f in shot-counterpick.png shot-about.png shot-back.png shot-offline.png shot-launcher.png; do gh release delete-asset android-latest $f -y || true; done
+          gh release upload android-latest off-*.png on-*.png --clobber

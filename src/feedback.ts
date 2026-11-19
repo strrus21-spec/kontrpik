@@ -14,6 +14,7 @@ export function bindFeedback() {
     status.classList.remove('ok', 'err');
     if (!subject || !message) { status.textContent = S.fbEmpty; status.classList.add('err'); return; }
     if ((form.elements.namedItem('botcheck') as HTMLInputElement).checked) return;   // ловушка для ботов
+    if (!navigator.onLine) { status.textContent = t().fbOffline; status.classList.add('err'); return; }
     btn.disabled = true; status.textContent = S.fbSending;
     try {
       const r = await fetch('https://api.web3forms.com/submit', {

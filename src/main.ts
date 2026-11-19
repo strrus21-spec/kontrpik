@@ -11,6 +11,7 @@ import { dateOne, initialLang, saveLang, setLang, t, LANG, type Lang } from './i
 import { loadData, portraitFallback } from './data.ts';
 import { bindFx } from './fx.ts';
 import { bindFeedback } from './feedback.ts';
+import { appTheme, inApp, setStatsDate } from './app.ts';
 portraitFallback();
 // «Скопировать» для элементов с data-copy (адрес кошелька на «О сайте»)
 document.addEventListener('click', async e => {
@@ -67,9 +68,10 @@ function setTheme(th: 'light' | 'dark') {
   document.documentElement.dataset.theme = th;
   try { localStorage.setItem('kontrpik-theme', th); } catch { /* приватный режим */ }
   document.querySelector('meta[name="theme-color"]')?.setAttribute('content', th === 'light' ? '#f3eee5' : '#0d1014');
-  themeLabel();
+  themeLabel(); appTheme(th);
 }
 if (!document.documentElement.dataset.theme) document.documentElement.dataset.theme = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+appTheme(document.documentElement.dataset.theme || 'dark');
 document.getElementById('theme-btn')?.addEventListener('click', () => setTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light'));
 applyStatic();
 
@@ -94,6 +96,7 @@ async function start() {
 
   const renderAll = () => {
     const upd = document.getElementById('ab-updated'); if (upd) upd.textContent = dateOne(LANG, data.stats.updated);
+    setStatsDate(data.stats.updated);
     applyStatic(); renderSelects(x); renderPosChips(x); renderTipFilters(); renderFeatured(); renderMe(); renderDraft(x); renderMeta(x); renderMatch(x); renderStream(); renderTips(); refreshHero(x); refreshQuiz(); applyCompact();
   };
   bindDraft(x); bindTips(data.tips);
@@ -136,7 +139,8 @@ async function start() {
 start();
 
 // PWA: service worker только в сборке; установка — по событию браузера.
-if (import.meta.env.PROD && 'serviceWorker' in navigator && location.protocol !== 'file:') {
+// в приложении офлайн обеспечивает само приложение (OfflineCache), service worker не нужен
+if (import.meta.env.PROD && !inApp && 'serviceWorker' in navigator && location.protocol !== 'file:') {
   window.addEventListener('load', () => { navigator.serviceWorker.register(import.meta.env.BASE_URL + 'sw.js', { scope: import.meta.env.BASE_URL }).catch(() => {}); });
 }
 let installEvt: (Event & { prompt(): Promise<void> }) | null = null;
