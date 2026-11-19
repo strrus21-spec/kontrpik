@@ -8,3 +8,4 @@ worker/.wrangler/
 .wrangler/
 dist-standalone/
 kontrpik.html
+app-publication/release/*.aab
