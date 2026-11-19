@@ -52,7 +52,10 @@ export function renderSlots(x: Ctx) {
     for (let i = ids.length; i < n; i++) h += '<span class="dm-h dm-empty"></span>';
     return `<div class="dm-side dm-${side}">${h}</div>`;
   };
-  $('draft-mini').innerHTML = `${mini('ally')}<b class="dm-vs">VS</b>${mini('enemy')}`;
+  const mb = (m: Mode, k: 'mEnemy' | 'mAlly' | 'mBan' | 'mStar') =>
+    `<button class="m-${m}" data-mode="${m}" aria-pressed="${s.mode === m}">${L.st[k]}</button>`;
+  $('draft-mini').innerHTML = `<div class="dm-row">${mini('ally')}<b class="dm-vs">VS</b>${mini('enemy')}</div>
+    <div class="mode dm-mode" role="group" aria-label="${esc(L.st.modeLabel)}">${mb('enemy', 'mEnemy')}${mb('ally', 'mAlly')}${mb('ban', 'mBan')}${mb('star', 'mStar')}</div>`;
 }
 
 export function renderPool(x: Ctx) {
