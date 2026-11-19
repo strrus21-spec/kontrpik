@@ -50,3 +50,11 @@ export function rememberMatch(s: Seen) {
   } catch { /* ignore */ }
 }
 export function seenMatches(): Seen[] { try { return JSON.parse(localStorage.getItem(SEEN) || '[]'); } catch { return []; } }
+
+/** Версия приложения внизу страницы (только в приложении). */
+export function showAppVersion() {
+  let v = ''; try { v = bridge()?.version() ?? ''; } catch { /* старое приложение */ }
+  const el = document.getElementById('app-ver'); if (!el || !v) return;
+  document.getElementById('app-ver-n')!.textContent = v;
+  el.hidden = false;
+}

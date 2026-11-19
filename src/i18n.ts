@@ -219,7 +219,7 @@ const ru = {
   st: {
     title: 'DotaPick — контрпик Dota 2', h1a: 'Dota', h1b: 'Pick', sub: 'Подбор контрпика по статистике матчей и сборник фишек, которые помогают выигрывать.',
     aqCp: 'Кого пикнуть против врагов', aqMatch: 'Мои последние игры и разбор матча', aqMeta: 'Кто силён в этом патче', aqTips: 'Приёмы и викторина',
-    nav5: 'О сайте', aboutLabel: 'О сайте', abTitle: 'О сайте', abSub: 'Кто мы и зачем этот сайт',
+    nav5: 'О сайте', appVer: 'Версия приложения', aboutLabel: 'О сайте', abTitle: 'О сайте', abSub: 'Кто мы и зачем этот сайт',
     abHello: 'Привет!',
     abP1: 'Я играю в Dota ещё с тех времён, когда она была картой в Warcraft III. Прошли тысячи матчей, патчи сменяли друг друга, а знакомое чувство осталось: идёт пик, таймер тикает, и непонятно, кого брать против такого состава и почему.',
     abP2: 'DotaPick я сделал как проект для тех, кто любит эту игру так же, как я. Чтобы в момент пика быстро увидеть, кто действительно силён против врагов и подходит команде, а после игры спокойно разобрать матч и понять, где он был выигран или проигран.',
@@ -440,7 +440,7 @@ const en: Dict = {
   st: {
     title: 'DotaPick — Dota 2 counterpicks', h1a: 'Dota', h1b: 'Pick', sub: 'Counterpicks based on match statistics and a collection of tips that help you win.',
     aqCp: 'Whom to pick against the enemies', aqMatch: 'My recent games and match analysis', aqMeta: 'Who is strong this patch', aqTips: 'Tricks and a quiz',
-    nav5: 'About', aboutLabel: 'About', abTitle: 'About', abSub: 'Who we are and why this site exists',
+    nav5: 'About', appVer: 'App version', aboutLabel: 'About', abTitle: 'About', abSub: 'Who we are and why this site exists',
     abHello: 'Hi!',
     abP1: 'I have been playing Dota since it was a custom map in Warcraft III. Thousands of matches and countless patches later, one feeling never went away: the draft is on, the timer is ticking, and you are not sure whom to pick against that lineup — or why.',
     abP2: 'I built DotaPick for people who love this game as much as I do. So that during the draft you can quickly see who is genuinely strong against the enemies and fits your team, and after the game you can calmly break the match down and see where it was won or lost.',

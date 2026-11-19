@@ -11,7 +11,7 @@ import { dateOne, initialLang, saveLang, setLang, t, LANG, type Lang } from './i
 import { loadData, portraitFallback } from './data.ts';
 import { bindFx } from './fx.ts';
 import { bindFeedback } from './feedback.ts';
-import { appTheme, inApp, setStatsDate } from './app.ts';
+import { appTheme, inApp, setStatsDate, showAppVersion } from './app.ts';
 portraitFallback();
 // «Скопировать» для элементов с data-copy (адрес кошелька на «О сайте»)
 document.addEventListener('click', async e => {
@@ -134,6 +134,7 @@ async function start() {
   syncHeroFromPath(x);
   syncMatchFromPath(x);
   document.getElementById('tab0')?.remove();   // дальше вкладками управляет showTab
+  showAppVersion();
   document.documentElement.dataset.ready = '1';   // приложение готово (используют e2e-тесты)
   startAnims();
 }
