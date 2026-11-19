@@ -1261,8 +1261,8 @@ html.in-app .nav.topbar,html.in-app .nav.topbar.solid{backdrop-filter:none!impor
 /* закреплённая полоска пиков при прокрутке */
 .draft-mini{position:fixed;left:0;right:0;z-index:15;display:flex;flex-direction:column;align-items:center;gap:6px;padding:6px max(10px,calc((100vw - 1240px)/2));
   background:#0b0d10;border-bottom:1px solid var(--gold-dim);box-shadow:0 6px 16px rgba(0,0,0,.45);
-  transform:translateY(-130%);opacity:0;visibility:hidden;pointer-events:none;transition:transform .2s,opacity .2s,visibility .2s}
-.draft-mini.on{transform:none;opacity:1;visibility:visible;pointer-events:auto}
+  transform:translateY(-130%);visibility:hidden;pointer-events:none;transition:transform .2s,visibility .2s}
+.draft-mini.on{transform:none;visibility:visible;pointer-events:auto}
 body:not([data-tab="counterpick"]) .draft-mini,body.compact .draft-mini{display:none}
 .dm-row{display:flex;align-items:center;justify-content:center;gap:10px;max-width:100%}
 .dm-mode button{padding:5px 12px;font-size:12px}
