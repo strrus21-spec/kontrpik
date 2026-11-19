@@ -25,6 +25,11 @@
 <meta name="twitter:image" content="%SITE_URL%og.jpg">
 <script>/* режим до отрисовки — без мигания: сохранённый выбор или настройка системы */
 try{var t=localStorage.getItem('kontrpik-theme');if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.dataset.theme=t}catch(e){document.documentElement.dataset.theme='dark'}</script>
+<script>/* вкладка до отрисовки — при обновлении на «Мете» не мелькает главная */
+(function(){var T=['home','counterpick','meta','match','tips-block','about'],h=location.hash.slice(1);
+if(T.indexOf(h)<0)h=/\/match\/\d/.test(location.pathname)?'match':'home';
+var s=document.createElement('style');s.id='tab0';s.textContent='#'+T.join(',#')+'{display:none!important}#'+h+'{display:flex!important}';
+document.head.appendChild(s);})();</script>
 </head>
 <body>
 <div class="bg-art" aria-hidden="true"></div>

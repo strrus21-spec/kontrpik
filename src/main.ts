@@ -133,6 +133,7 @@ async function start() {
   if (!location.pathname.includes('/match/') && !location.pathname.includes('/hero/')) window.scrollTo(0, 0);
   syncHeroFromPath(x);
   syncMatchFromPath(x);
+  document.getElementById('tab0')?.remove();   // дальше вкладками управляет showTab
   document.documentElement.dataset.ready = '1';   // приложение готово (используют e2e-тесты)
   startAnims();
 }
