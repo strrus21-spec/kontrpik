@@ -56,12 +56,12 @@ test('Без истории — понятная пометка; с истори
 test('Патч: 6 пунктов и ссылка на официальные заметки, в обоих языках', async ({ page }) => {
   await page.goto('/#meta');
   await page.waitForSelector('html[data-ready]');
-  await expect(page.locator('#patch h2')).toHaveText('Что изменилось в патче 7.41');
+  await expect(page.locator('#patch h2')).toHaveText('Что изменилось в патче 7.42');
   await expect(page.locator('#patch li')).toHaveCount(6);
-  await expect(page.locator('#patch a')).toHaveAttribute('href', 'https://www.dota2.com/patches/7.41');
+  await expect(page.locator('#patch a')).toHaveAttribute('href', 'https://www.dota2.com/patches/7.42');
   await page.locator('.lang [data-lang="en"]').click();
-  await expect(page.locator('#patch h2')).toHaveText('What changed in patch 7.41');
-  await expect(page.locator('#patch li').first()).toHaveText('Facets are removed from the game.');
+  await expect(page.locator('#patch h2')).toHaveText('What changed in patch 7.42');
+  await expect(page.locator('#patch li').first()).toHaveText('Javelin, Khanda and Helm of the Overlord are removed; Quarterstaff and six new items are added.');
 });
 
 test('Клик по герою в тир-листе открывает карточку', async ({ page }) => {
