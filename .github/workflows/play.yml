@@ -9,7 +9,7 @@ on:
     paths: ['android/**', '.github/workflows/play.yml', 'src/**', 'index.html']
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   aab:
@@ -47,7 +47,18 @@ jobs:
       - name: Проверка манифеста
         run: |
           AAB=android/app/build/outputs/bundle/playRelease/app-play-release.aab
-          unzip -p "$AAB" base/manifest/AndroidManifest.xml | strings | grep -iE 'permission|targetSdk|versionCode' | sort -u || true
+          AAPT2=$(ls -d $ANDROID_HOME/build-tools/*/aapt2 | sort -V | tail -1)
+          "$AAPT2" dump xmltree --file base/manifest/AndroidManifest.xml "$AAB" | grep -E 'uses-permission|android:name\(.*\)="android.permission|targetSdkVersion|versionCode|versionName|package=' | sed 's/^ *//' | tee manifest-check.txt || true
+          if grep -qiE 'AD_ID|REQUEST_INSTALL_PACKAGES' manifest-check.txt; then echo "::error::в манифесте лишние разрешения"; exit 1; fi
           cp "$AAB" DotaPick-play-${{ github.run_number }}.aab
       - uses: actions/upload-artifact@v4
         with: { name: DotaPick-play-aab, path: 'DotaPick-play-*.aab' }
+      - name: Черновой релиз play-latest (виден только владельцу репозитория)
+        env: { GH_TOKEN: '${{ github.token }}' }
+        run: |
+          TAG=play-latest
+          if ! gh release view "$TAG" >/dev/null 2>&1; then
+            gh release create "$TAG" --draft --title "DotaPick для Google Play (AAB)" --notes "Сборка для издателя. Не для установки на телефон." --target "${{ github.sha }}"
+          fi
+          for a in $(gh release view "$TAG" --json assets -q '.assets[].name'); do gh release delete-asset "$TAG" "$a" -y; done
+          gh release upload "$TAG" DotaPick-play-${{ github.run_number }}.aab manifest-check.txt --clobber
