@@ -1,6 +1,7 @@
 // Вкладки: каждый раздел — отдельная страница. Адрес вкладки — хеш (#meta), работает и на GitHub Pages, и в файле.
 import { bindAnims } from './anim/player.ts';
 import { replaceUrl } from './nav.ts';
+import { inApp } from './app.ts';
 
 export const TABS = ['home', 'counterpick', 'meta', 'match', 'tips-block', 'about'] as const;
 export type Tab = typeof TABS[number];
@@ -37,9 +38,33 @@ export function initialTab(): Tab {
 export function bindTabs() {
   window.addEventListener('hashchange', () => { const h = location.hash.slice(1); if (isTab(h)) showTab(h); });
   // клик по уже открытой вкладке: хеш не меняется — просто наверх
+  // В приложении вкладки не копятся в истории: «Назад» не перебирает все открытые раньше вкладки.
+  if (inApp) document.addEventListener('click', e => {
+    const a = (e.target as Element).closest<HTMLAnchorElement>('a[href^="#"]'); if (!a) return;
+    const h = a.getAttribute('href')!.slice(1); if (!isTab(h)) return;
+    e.preventDefault();
+    replaceUrl(history.state, import.meta.env.BASE_URL + '#' + h);
+    showTab(h);
+  }, true);
   document.querySelector('.nav')!.addEventListener('click', e => {
     const a = (e.target as Element).closest<HTMLAnchorElement>('a[href^="#"]'); if (!a) return;
     const h = a.getAttribute('href')!.slice(1);
     if (isTab(h) && h === current && location.hash === '#' + h) { e.preventDefault(); showTab(h); }
   });
 }
+
+/**
+ * Кнопка «Назад» Android (вызывает приложение): закрыть открытое окно → на главную → выйти.
+ * true — обработано на сайте, false — приложение закрывается.
+ */
+export function appBack(): boolean {
+  const hero = document.getElementById('hero') as HTMLDialogElement | null;
+  if (hero?.open) { hero.dispatchEvent(new Event('cancel', { cancelable: true })); return true; }
+  const quiz = document.getElementById('quiz') as HTMLDialogElement | null;
+  if (quiz?.open) { quiz.close(); return true; }
+  const me = document.getElementById('me');
+  if (me && !me.hidden) { me.hidden = true; document.getElementById('prof-btn')?.setAttribute('aria-expanded', 'false'); return true; }
+  if (current !== 'home') { replaceUrl(null, import.meta.env.BASE_URL + '#home'); showTab('home'); return true; }
+  return false;
+}
+(globalThis as { dpBack?: () => boolean }).dpBack = appBack;

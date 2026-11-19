@@ -102,10 +102,14 @@ class MainActivity : ComponentActivity() {
 
         findViewById<Button>(R.id.retry).setOnClickListener { retry() }
 
-        // «Назад»: сначала по истории сайта (вкладки, разбор), потом выход
+        // «Назад» как в приложениях с нижним меню: закрыть открытое окно → на главную → выйти.
+        // Решает сайт (window.dpBack); если сайт не ответил — выходим.
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (web.canGoBack() && !offlineShown()) web.goBack() else finish()
+                if (offlineShown()) { finish(); return }
+                web.evaluateJavascript("(window.dpBack && window.dpBack()) ? 'site' : 'exit'") { r ->
+                    if (r?.contains("site") != true) finish()
+                }
             }
         })
 
