@@ -1,6 +1,6 @@
 СБОРКА ДЛЯ GOOGLE PLAY (AAB)
 
-В этой папке: DotaPick-play-3.aab — versionName 1.1.3, versionCode 3, БЕЗ ПОДПИСИ (ключ загрузки ещё не согласован).
+В этой папке: DotaPick-play-4.aab — пакет com.roundcatstudio.dotapick, versionName 1.1.4, versionCode 4, БЕЗ ПОДПИСИ (ключ загрузки ещё не согласован).
 Манифест проверен: только INTERNET и ACCESS_NETWORK_STATE, minSdk 24, targetSdk 36, AD_ID нет.
 
 Где взять AAB
