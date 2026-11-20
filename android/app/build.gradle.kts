@@ -20,7 +20,12 @@ android {
     flavorDimensions += "store"
     productFlavors {
         create("sideload") { dimension = "store"; buildConfigField("boolean", "SELF_UPDATE", "true") }
-        create("play") { dimension = "store"; buildConfigField("boolean", "SELF_UPDATE", "false") }
+        create("play") {
+            dimension = "store"
+            // пакет для Google Play (разработчик roundcatstudio); у APK с GitHub остаётся pro.dotapick.app
+            applicationId = "com.roundcatstudio.dotapick"
+            buildConfigField("boolean", "SELF_UPDATE", "false")
+        }
     }
 
     // Ключи подписи: sideload — для APK с GitHub, лежит в репозитории (сборки с GitHub и из Android Studio ставятся поверх друг друга);
