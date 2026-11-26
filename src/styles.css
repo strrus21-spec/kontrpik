@@ -1281,3 +1281,15 @@ body:not([data-tab="counterpick"]) .draft-mini,body.compact .draft-mini{display:
 
 /* сборка Google Play: без донатов (оплата вне магазина) */
 html.in-play .ab-donate{display:none}
+
+/* Google Play: кнопка на главной (только в браузере), ссылка в «О сайте», подсказка в APK с GitHub */
+.gp-btn{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:6px;text-decoration:none;font-weight:600;font-size:15px;
+  color:#1a1205;background:linear-gradient(180deg,#ffe7a3,#e0a940);border:1px solid #a8731d;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+.gp-btn:hover{filter:brightness(1.06)}
+.gp-land{margin-top:18px}
+html.in-app .gp-land,html.in-play .ab-link.gp{display:none}
+.gp-hint{position:relative;margin:16px auto 0;max-width:420px;padding:14px 40px 14px 16px;border-radius:8px;text-align:left;
+  background:rgba(10,12,15,.88);border:1px solid var(--gold-dim);color:#efe7d3;display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.gp-hint[hidden]{display:none}
+.gp-hint p{margin:0;font-size:14px;flex:1 1 200px}
+.gp-x{position:absolute;top:6px;right:8px;background:none;border:0;color:#b8ad96;font-size:22px;line-height:1;cursor:pointer;padding:4px}

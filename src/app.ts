@@ -61,3 +61,12 @@ export function showAppVersion() {
   document.getElementById('app-ver-n')!.textContent = v;
   el.hidden = false;
 }
+
+/** APK с GitHub: один раз подсказываем, что приложение есть в Google Play (крестик — больше не показывать). */
+export function gpHint() {
+  const box = document.getElementById('gp-hint'); if (!box || !inApp || inPlay) return;
+  const KEY = 'kontrpik-gp-hint';
+  try { if (localStorage.getItem(KEY)) return; } catch { /* */ }
+  box.hidden = false;
+  document.getElementById('gp-x')?.addEventListener('click', () => { box.hidden = true; try { localStorage.setItem(KEY, '1'); } catch { /* */ } });
+}
